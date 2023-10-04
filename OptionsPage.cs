@@ -24,30 +24,21 @@ namespace Gp4ProjectBuilder {
 
 
         private void CustomPKGPathBox_TextChanged(object sender, EventArgs e) {
-            if(CustomPKGPathBox.Font.Italic) {
-
-            }
+            if(CustomPKGPathBox.Font.Italic) CustomPKGPathBox.Font = new Font("Microsoft YaHei UI", 8.25F);
 
         }
 
         private void IgnoreFilterBox_TextChanged(object sender, EventArgs e) {
-            if(IgnoreFilterBox.Font.Italic) {
-
-            }
+            if(IgnoreFilterBox.Font.Italic) IgnoreFilterBox.Font = new Font("Microsoft YaHei UI", 8.25F);
 
         }
 
         private void CustomPasscodeBox_TextChanged(object sender, EventArgs e) {
-            if(CustomPasscodeBox.Font.Italic) {
-
-            }
-
+            if(CustomPasscodeBox.Font.Italic) CustomPasscodeBox.Font = new Font("Microsoft YaHei UI", 8.25F);
         }
 
         private void CustomGP4PathBox_TextChanged(object sender, EventArgs e) {
-            if(CustomGP4PathBox.Font.Italic) {
-
-            }
+            if(CustomGP4PathBox.Font.Italic) CustomGP4PathBox.Font = new Font("Microsoft YaHei UI", 8.25F);
 
         }
 
@@ -82,10 +73,10 @@ namespace Gp4ProjectBuilder {
             // 
             // CustomGP4PathBox
             // 
-            this.CustomGP4PathBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CustomGP4PathBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
             this.CustomGP4PathBox.Location = new System.Drawing.Point(6, 30);
             this.CustomGP4PathBox.Name = "CustomGP4PathBox";
-            this.CustomGP4PathBox.Size = new System.Drawing.Size(376, 20);
+            this.CustomGP4PathBox.Size = new System.Drawing.Size(376, 21);
             this.CustomGP4PathBox.TabIndex = 2;
             this.CustomGP4PathBox.Text = "Custom .gp4 Output Directory...";
             this.CustomGP4PathBox.TextChanged += new System.EventHandler(this.CustomGP4PathBox_TextChanged);
@@ -103,7 +94,7 @@ namespace Gp4ProjectBuilder {
             // ExitBtn
             // 
             this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.ExitBtn.Location = new System.Drawing.Point(356, 2);
+            this.ExitBtn.Location = new System.Drawing.Point(359, 4);
             this.ExitBtn.Name = "ExitBtn";
             this.ExitBtn.Size = new System.Drawing.Size(22, 22);
             this.ExitBtn.TabIndex = 5;
@@ -123,30 +114,30 @@ namespace Gp4ProjectBuilder {
             // 
             // CustomPKGPathBox
             // 
-            this.CustomPKGPathBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CustomPKGPathBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
             this.CustomPKGPathBox.Location = new System.Drawing.Point(6, 56);
             this.CustomPKGPathBox.Name = "CustomPKGPathBox";
-            this.CustomPKGPathBox.Size = new System.Drawing.Size(375, 20);
+            this.CustomPKGPathBox.Size = new System.Drawing.Size(375, 21);
             this.CustomPKGPathBox.TabIndex = 9;
             this.CustomPKGPathBox.Text = "Custom Base Game .pkg Directory To GP4...";
             this.CustomPKGPathBox.TextChanged += new System.EventHandler(this.CustomPKGPathBox_TextChanged);
             // 
             // IgnoreFilterBox
             // 
-            this.IgnoreFilterBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IgnoreFilterBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Italic);
             this.IgnoreFilterBox.Location = new System.Drawing.Point(7, 133);
             this.IgnoreFilterBox.Name = "IgnoreFilterBox";
-            this.IgnoreFilterBox.Size = new System.Drawing.Size(375, 20);
+            this.IgnoreFilterBox.Size = new System.Drawing.Size(375, 21);
             this.IgnoreFilterBox.TabIndex = 10;
-            this.IgnoreFilterBox.Text = "Add Files/Folders You Want To Filter Out Here, Seperated By Semicolons";
+            this.IgnoreFilterBox.Text = "Add Files/Folders You Want To Exclude, Seperated By Semicolons";
             this.IgnoreFilterBox.TextChanged += new System.EventHandler(this.IgnoreFilterBox_TextChanged);
             // 
             // CustomPasscodeBox
             // 
-            this.CustomPasscodeBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CustomPasscodeBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
             this.CustomPasscodeBox.Location = new System.Drawing.Point(6, 158);
             this.CustomPasscodeBox.Name = "CustomPasscodeBox";
-            this.CustomPasscodeBox.Size = new System.Drawing.Size(375, 20);
+            this.CustomPasscodeBox.Size = new System.Drawing.Size(375, 21);
             this.CustomPasscodeBox.TabIndex = 11;
             this.CustomPasscodeBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
             this.CustomPasscodeBox.TextChanged += new System.EventHandler(this.CustomPasscodeBox_TextChanged);

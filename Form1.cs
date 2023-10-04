@@ -15,7 +15,7 @@ using System.Runtime.CompilerServices;
 
 namespace Gp4ProjectBuilder {
     
-    public partial class MainForm : Form { // ver 1.3.6
+    public partial class MainForm : Form { // ver 1.4.7
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -77,10 +77,13 @@ namespace Gp4ProjectBuilder {
             // 
             // AppFolderPathBox
             // 
+            this.AppFolderPathBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.AppFolderPathBox.Location = new System.Drawing.Point(8, 33);
             this.AppFolderPathBox.Name = "AppFolderPathBox";
-            this.AppFolderPathBox.Size = new System.Drawing.Size(437, 20);
+            this.AppFolderPathBox.Size = new System.Drawing.Size(437, 21);
             this.AppFolderPathBox.TabIndex = 2;
+            this.AppFolderPathBox.Text = "Paste Gamedata Path Here, Or Use The Browse Button...";
+            this.AppFolderPathBox.TextChanged += new System.EventHandler(this.AppFolderPathBox_TextChanged);
             // 
             // Title
             // 
@@ -117,7 +120,9 @@ namespace Gp4ProjectBuilder {
             // 
             // OutputWindow
             // 
+            this.OutputWindow.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.OutputWindow.Font = new System.Drawing.Font("Franklin Gothic Medium", 8.25F);
+            this.OutputWindow.ForeColor = System.Drawing.SystemColors.Window;
             this.OutputWindow.Location = new System.Drawing.Point(4, 103);
             this.OutputWindow.Name = "OutputWindow";
             this.OutputWindow.ReadOnly = true;
@@ -149,7 +154,7 @@ namespace Gp4ProjectBuilder {
             // OptionsBtn
             // 
             this.OptionsBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.OptionsBtn.Location = new System.Drawing.Point(9, 6);
+            this.OptionsBtn.Location = new System.Drawing.Point(8, 6);
             this.OptionsBtn.Name = "OptionsBtn";
             this.OptionsBtn.Size = new System.Drawing.Size(75, 23);
             this.OptionsBtn.TabIndex = 9;
@@ -262,6 +267,7 @@ namespace Gp4ProjectBuilder {
         }
         #endregion
 
+
         private void Out(object s) {
             if (!DisableLogBox.Checked)
             OutputWindow.AppendText("\n" + s);
@@ -283,6 +289,10 @@ namespace Gp4ProjectBuilder {
             Options = NewPage;
         }
 
+        private void AppFolderPathBox_TextChanged(object sender, EventArgs e) {
+            if(AppFolderPathBox.Font.Italic) AppFolderPathBox.Font = new Font("Microsoft YaHei UI", 8.25F);
+
+        }
         private void CreateBtn_Click(object sender, EventArgs e) {
             // TODO: 
             // - Add Error Handling For Missing Files Or Other Misc Crap
