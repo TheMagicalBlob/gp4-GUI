@@ -15,7 +15,7 @@ using System.Runtime.CompilerServices;
 
 namespace Gp4ProjectBuilder {
     
-    public partial class MainForm : Form { // ver 1.3.5
+    public partial class MainForm : Form { // ver 1.3.6
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -31,18 +31,22 @@ namespace Gp4ProjectBuilder {
 
         // GP4 Creation Variables
         byte[] BufferArray;
-        bool ignore_keystone = false;
         int chunk_count, scenario_count, default_id, index = 0;
         int[] scenario_types, scenario_chunk_range, initial_chunk_count;
-        string OUTPUT_DIRECTORY = @"C:\Users\Blob\Desktop\", APP_FOLDER, app_ver = "", version = "", content_id, title_id = "CUSA12345", passcode = "00000000000000000000000000000000", category = "?";
+        string APP_FOLDER, app_ver = "", version = "", content_id, title_id = "CUSA12345", category = "?";
         string[] chunk_labels, parameter_labels, scenario_labels, file_paths;
-        readonly string[] RequiredVariables = new string[] { "APP_VER", "CATEGORY", "CONTENT_ID", "TITLE_ID", "VERSION" };
+        readonly string[] RequiredSFOVariables = new string[] { "APP_VER", "CATEGORY", "CONTENT_ID", "TITLE_ID", "VERSION" };
         static XmlDocument GP4;
         XmlDeclaration Declaration;
         XmlElement file, chunk, scenario, dir, subdir;
 
+        // GP4 Options
+        public static bool ignore_keystone = false;
+        public static string passcode = "00000000000000000000000000000000", OUTPUT_DIRECTORY = @"C:\Users\Blob\Desktop\";
 
-        #region Designer
+
+        #region Basic Form Functions
+        #region Designer Managed
         private IContainer components = null;
         protected override void Dispose(bool disposing) {
             if(disposing) components?.Dispose();
@@ -114,7 +118,7 @@ namespace Gp4ProjectBuilder {
             // OutputWindow
             // 
             this.OutputWindow.Font = new System.Drawing.Font("Franklin Gothic Medium", 8.25F);
-            this.OutputWindow.Location = new System.Drawing.Point(4, 102);
+            this.OutputWindow.Location = new System.Drawing.Point(4, 103);
             this.OutputWindow.Name = "OutputWindow";
             this.OutputWindow.ReadOnly = true;
             this.OutputWindow.Size = new System.Drawing.Size(444, 241);
@@ -176,6 +180,7 @@ namespace Gp4ProjectBuilder {
             this.PerformLayout();
 
         }
+        #endregion
 
         public static void BorderFunc(Form form) {
             MainBox = new GroupBox();
@@ -251,12 +256,11 @@ namespace Gp4ProjectBuilder {
                 ActiveForm.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
                 ActiveForm.Update();
                 if(Options == null) return;
-                Options.Location = new Point(MousePosition.X - MouseDif.X + 30, MousePosition.Y - MouseDif.Y + 20);
+                Options.Location = new Point(MousePosition.X - MouseDif.X + 30, MousePosition.Y - MouseDif.Y + 60);
                 Options.Update();
             }
         }
         #endregion
-
 
         private void Out(object s) {
             if (!DisableLogBox.Checked)
@@ -512,7 +516,7 @@ namespace Gp4ProjectBuilder {
 
                 // Load The Rest Of The Required .pkg Variables From param.sfo
                 for(index = 0; index < ParamNameArrayLength; index++)
-                    if(RequiredVariables.Contains(parameter_labels[index])) { // Ignore Variables Not Needed For .gp4 Project Creation
+                    if(RequiredSFOVariables.Contains(parameter_labels[index])) { // Ignore Variables Not Needed For .gp4 Project Creation
 
                         sfo.Position = ParameterOffsets[index];
                         BufferArray = new byte[4];
