@@ -15,7 +15,7 @@ using System.Runtime.CompilerServices;
 
 namespace Gp4ProjectBuilder {
     
-    public partial class MainForm : Form { // ver 1.3.4
+    public partial class MainForm : Form { // ver 1.3.5
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -256,7 +256,6 @@ namespace Gp4ProjectBuilder {
             }
         }
         #endregion
-
 
 
         private void Out(object s) {

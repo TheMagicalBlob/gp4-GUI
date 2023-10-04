@@ -14,11 +14,12 @@ using System.Reflection;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class OptionsPage : Form { // ver 1.1.3
+    public partial class OptionsPage : Form {
         public OptionsPage() {
             InitializeComponent();
             MainForm.BorderFunc(this);
             MainForm.OptionsAreOpen = true;
+            MainForm.AddControlEventHandlers(Controls, this);
             Location = new Point(MainForm.LastPos.X + 30, MainForm.LastPos.Y + 20);
         }
 
@@ -162,6 +163,7 @@ namespace Gp4ProjectBuilder {
             MainForm.OptionsAreOpen = false;
             this.Dispose();
         }
+
         #endregion
 
 
