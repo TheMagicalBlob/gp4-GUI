@@ -14,7 +14,7 @@ using System.Reflection;
 
 namespace Gp4ProjectBuilder {
     
-    public partial class MainForm : Form { // ver 1.1.3
+    public partial class MainForm : Form { // ver 1.2.4
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
