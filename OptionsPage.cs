@@ -18,8 +18,10 @@ namespace Gp4ProjectBuilder {
         public OptionsPage() {
             InitializeComponent();
             MainForm.BorderFunc(this);
-            MainForm.AddControlEventHandlers(Controls, this);
+            MainForm.OptionsAreOpen = true;
+            Location = new Point(MainForm.LastPos.X + 30, MainForm.LastPos.Y + 20);
         }
+
 
         // Main Variables
         byte[] BufferArray;
@@ -46,7 +48,7 @@ namespace Gp4ProjectBuilder {
             this.KeystoneToggleBox = new System.Windows.Forms.CheckBox();
             this.CustomGP4PathBox = new System.Windows.Forms.TextBox();
             this.Title = new System.Windows.Forms.Label();
-            this.CloseBtn = new System.Windows.Forms.Button();
+            this.ExitBtn = new System.Windows.Forms.Button();
             this.IgnoreOutputBox = new System.Windows.Forms.CheckBox();
             this.CustomPKGPathBox = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -94,16 +96,16 @@ namespace Gp4ProjectBuilder {
             this.Title.TabIndex = 3;
             this.Title.Text = "Options";
             // 
-            // CloseBtn
+            // ExitBtn
             // 
-            this.CloseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CloseBtn.Location = new System.Drawing.Point(356, 2);
-            this.CloseBtn.Name = "CloseBtn";
-            this.CloseBtn.Size = new System.Drawing.Size(22, 22);
-            this.CloseBtn.TabIndex = 5;
-            this.CloseBtn.Text = "X";
-            this.CloseBtn.UseVisualStyleBackColor = true;
-            this.CloseBtn.Click += new System.EventHandler(this.CloseBtn_Click);
+            this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.ExitBtn.Location = new System.Drawing.Point(356, 2);
+            this.ExitBtn.Name = "ExitBtn";
+            this.ExitBtn.Size = new System.Drawing.Size(22, 22);
+            this.ExitBtn.TabIndex = 5;
+            this.ExitBtn.Text = "X";
+            this.ExitBtn.UseVisualStyleBackColor = true;
+            this.ExitBtn.Click += new System.EventHandler(this.ExitBtn_Click);
             // 
             // IgnoreOutputBox
             // 
@@ -142,20 +144,24 @@ namespace Gp4ProjectBuilder {
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.CustomPKGPathBox);
             this.Controls.Add(this.IgnoreOutputBox);
-            this.Controls.Add(this.CloseBtn);
+            this.Controls.Add(this.ExitBtn);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.CustomGP4PathBox);
             this.Controls.Add(this.KeystoneToggleBox);
             this.Controls.Add(this.Btn);
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.StartPosition = FormStartPosition.Manual;
             this.Name = "OptionsPage";
             this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
-        private void CloseBtn_Click(object sender, EventArgs e) => this.Dispose();
+        private void ExitBtn_Click(object sender, EventArgs e) {
+            MainForm.OptionsAreOpen = false;
+            this.Dispose();
+        }
         #endregion
 
 
@@ -583,7 +589,7 @@ namespace Gp4ProjectBuilder {
         private CheckBox KeystoneToggleBox;
         private TextBox CustomGP4PathBox;
         private Label Title;
-        private Button CloseBtn;
+        private Button ExitBtn;
         private CheckBox IgnoreOutputBox;
         private TextBox CustomPKGPathBox;
         private TextBox textBox1;

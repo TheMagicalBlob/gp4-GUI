@@ -11,10 +11,11 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Gp4ProjectBuilder {
     
-    public partial class MainForm : Form { // ver 1.2.4
+    public partial class MainForm : Form { // ver 1.3.4
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -22,87 +23,23 @@ namespace Gp4ProjectBuilder {
         }
 
         // Application Variables
-        static int MouseIsDown = 0;
-        static Point MouseDif;
+        public static int MouseIsDown = 0;
+        public static bool OptionsAreOpen;
+        public static Point MouseDif, LastPos;
+        static Form Options;
+
 
         // GP4 Creation Variables
         byte[] BufferArray;
+        bool ignore_keystone = false;
         int chunk_count, scenario_count, default_id, index = 0;
         int[] scenario_types, scenario_chunk_range, initial_chunk_count;
-        bool ignore_keystone = false;
         string OUTPUT_DIRECTORY = @"C:\Users\Blob\Desktop\", APP_FOLDER, app_ver = "", version = "", content_id, title_id = "CUSA12345", passcode = "00000000000000000000000000000000", category = "?";
-        string[] chunk_labels, parameter_labels, scenario_labels, file_paths,
-        RequiredVariables = new string[] { "APP_VER", "CATEGORY", "CONTENT_ID", "TITLE_ID", "VERSION" };
-
-        // Base Xml And XmlDeclaration
+        string[] chunk_labels, parameter_labels, scenario_labels, file_paths;
+        readonly string[] RequiredVariables = new string[] { "APP_VER", "CATEGORY", "CONTENT_ID", "TITLE_ID", "VERSION" };
         static XmlDocument GP4;
         XmlDeclaration Declaration;
         XmlElement file, chunk, scenario, dir, subdir;
-
-
-        public static void BorderFunc(Form form) {
-            MainBox = new GroupBox();
-            MainBox.Location = new Point(0, -6);
-            MainBox.Name = "MainBox";
-            MainBox.Size = new Size(form.Size.Width, form.Size.Height + 7);
-            form.Controls.Add(MainBox);
-        }
-
-        public static void AddControlEventHandlers(Control.ControlCollection Controls, Form form) { // Got Sick of Manually Editing InitializeComponent()
-            #region DebugLabel
-#if DEBUG
-            Label DebugLabel = new Label();
-            DebugLabel.Size = new Size(36, 19);
-            DebugLabel.Location = new Point(230, 1);
-            DebugLabel.ForeColor = SystemColors.Control;
-            DebugLabel.BackColor = SystemColors.WindowText;
-            DebugLabel.BorderStyle = BorderStyle.FixedSingle;
-            DebugLabel.Font = new Font("Franklin Gothic Medium", 7F, FontStyle.Bold);
-            DebugLabel.Text = "(Dev)";
-            Controls.Add(DebugLabel);
-            DebugLabel.BringToFront();
-#endif
-            #endregion
-            string[] Blacklist = new string[] { "ExitBtn", "MinimizeBtn" };
-
-
-            form.MouseDown += new MouseEventHandler(MouseDownFunc);
-            form.MouseUp += new MouseEventHandler(MouseUpFunc);
-            form.MouseMove += new MouseEventHandler(MoveForm);
-            Console.WriteLine("form " + form.Name);
-
-            foreach(Control Item in Controls) {
-                if(Item.HasChildren) { // Designer Added Some Things To The Form, And Some To The Group Box Used To Make The Border. This is me bing lazy. as long as it's not noticably slower
-                    foreach(Control Child in Item.Controls) {
-
-                        Child.MouseDown += new MouseEventHandler(MouseDownFunc);
-                        Child.MouseUp += new MouseEventHandler(MouseUpFunc);
-
-                        if(!Child.Name.Contains("PathBox")) // So You Can Drag Select The Text Lol
-                            Child.MouseMove += new MouseEventHandler(MoveForm);
-                    }
-                }
-
-                Item.MouseDown += new MouseEventHandler(MouseDownFunc);
-                Item.MouseUp += new MouseEventHandler(MouseUpFunc);
-
-                if(!Item.Name.Contains("PathBox")) // So You Can Drag Select The Text Lol
-                    Item.MouseMove += new MouseEventHandler(MoveForm);
-
-            }
-            try {
-                Controls.Find("MinimizeBtn", true)[0].Click += new EventHandler(MinimizeBtn_Click);
-                Controls.Find("MinimizeBtn", true)[0].MouseEnter += new EventHandler(ExitBtnMH);
-                Controls.Find("MinimizeBtn", true)[0].MouseLeave += new EventHandler(ExitBtnML);
-                Controls.Find("ExitBtn", true)[0].Click += new EventHandler(ExitBtn_Click);
-                Controls.Find("ExitBtn", true)[0].MouseEnter += new EventHandler(ExitBtnMH);
-                Controls.Find("ExitBtn", true)[0].MouseLeave += new EventHandler(ExitBtnML);
-                Controls.Find("MainBox", true)[0].MouseDown += new MouseEventHandler(MouseDownFunc);
-                Controls.Find("MainBox", true)[0].MouseUp += new MouseEventHandler(MouseUpFunc);
-                Controls.Find("MainBox", true)[0].MouseMove += new MouseEventHandler(MoveForm);
-            }
-            catch(IndexOutOfRangeException) {}
-        }
 
 
         #region Designer
@@ -239,11 +176,72 @@ namespace Gp4ProjectBuilder {
             this.PerformLayout();
 
         }
+
+        public static void BorderFunc(Form form) {
+            MainBox = new GroupBox();
+            MainBox.Location = new Point(0, -6);
+            MainBox.Name = "MainBox";
+            MainBox.Size = new Size(form.Size.Width, form.Size.Height + 7);
+            form.Controls.Add(MainBox);
+        }
+
+        public static void AddControlEventHandlers(Control.ControlCollection Controls, Form form) { // Got Sick of Manually Editing InitializeComponent()
+            #region DebugLabel
+#if DEBUG
+            Label DebugLabel = new Label();
+            DebugLabel.Size = new Size(36, 19);
+            DebugLabel.Location = new Point(form.Size.Width - 46 - (form.Controls.Find("ExitBtn", true)[0].Size.Width * 2), 3);
+            DebugLabel.ForeColor = SystemColors.Control;
+            DebugLabel.BackColor = SystemColors.WindowText;
+            DebugLabel.BorderStyle = BorderStyle.FixedSingle;
+            DebugLabel.Font = new Font("Franklin Gothic Medium", 7F, FontStyle.Bold);
+            DebugLabel.Text = "(Dev)";
+            Controls.Add(DebugLabel);
+            DebugLabel.BringToFront();
+#endif
+            #endregion
+
+            form.MouseDown += new MouseEventHandler(MouseDownFunc);
+            form.MouseUp += new MouseEventHandler(MouseUpFunc);
+            form.MouseMove += new MouseEventHandler(MoveForm);
+
+            foreach(Control Item in Controls) {
+                if(Item.HasChildren) { // Designer Added Some Things To The Form, And Some To The Group Box Used To Make The Border. This is me bing lazy. as long as it's not noticably slower
+                    foreach(Control Child in Item.Controls) {
+
+                        Child.MouseDown += new MouseEventHandler(MouseDownFunc);
+                        Child.MouseUp += new MouseEventHandler(MouseUpFunc);
+
+                        if(!Child.Name.Contains("PathBox")) // So You Can Drag Select The Text Lol
+                            Child.MouseMove += new MouseEventHandler(MoveForm);
+                    }
+                }
+                Item.MouseDown += new MouseEventHandler(MouseDownFunc);
+                Item.MouseUp += new MouseEventHandler(MouseUpFunc);
+                if(!Item.Name.Contains("PathBox")) // So You Can Drag Select The Text Lol
+                    Item.MouseMove += new MouseEventHandler(MoveForm);
+            }
+            try {
+                Controls.Find("MinimizeBtn", true)[0].Click += new EventHandler(MinimizeBtn_Click);
+                Controls.Find("MinimizeBtn", true)[0].MouseEnter += new EventHandler(ExitBtnMH);
+                Controls.Find("MinimizeBtn", true)[0].MouseLeave += new EventHandler(ExitBtnML);
+                Controls.Find("ExitBtn", true)[0].Click += new EventHandler(ExitBtn_Click);
+                Controls.Find("ExitBtn", true)[0].MouseEnter += new EventHandler(ExitBtnMH);
+                Controls.Find("ExitBtn", true)[0].MouseLeave += new EventHandler(ExitBtnML);
+                Controls.Find("MainBox", true)[0].MouseDown += new MouseEventHandler(MouseDownFunc);
+                Controls.Find("MainBox", true)[0].MouseUp += new MouseEventHandler(MouseUpFunc);
+                Controls.Find("MainBox", true)[0].MouseMove += new MouseEventHandler(MoveForm);
+            } catch(IndexOutOfRangeException){}
+        }
         private static void MinimizeBtn_Click(object sender, EventArgs e) => ActiveForm.WindowState = FormWindowState.Minimized;
         private static void ExitBtn_Click(object sender, EventArgs e) => Environment.Exit(0);
         public static void ExitBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(255, 227, 0);
-        public static void ExitBtnML(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(255, 255, 255);
-        public static void MouseUpFunc(object sender, MouseEventArgs e) => MouseIsDown = 0;
+        public static void ExitBtnML(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(0,0,0);
+        public static void MouseUpFunc(object sender, MouseEventArgs e) {
+            MouseIsDown = 0;
+            if(Options == null) return;
+            Options.BringToFront();
+        }
         public static void MouseDownFunc(object sender, MouseEventArgs e) {
             MouseDif = new Point(MousePosition.X - ActiveForm.Location.X, MousePosition.Y - ActiveForm.Location.Y);
             MouseIsDown = 1;
@@ -252,6 +250,9 @@ namespace Gp4ProjectBuilder {
             if(MouseIsDown != 0) {
                 ActiveForm.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
                 ActiveForm.Update();
+                if(Options == null) return;
+                Options.Location = new Point(MousePosition.X - MouseDif.X + 30, MousePosition.Y - MouseDif.Y + 20);
+                Options.Update();
             }
         }
         #endregion
@@ -269,8 +270,14 @@ namespace Gp4ProjectBuilder {
         }
 
         private void OptionsBtn_Click(object sender, EventArgs e) {
+            LastPos = Location;
+            if(OptionsAreOpen) {
+                Options.BringToFront();
+                return;
+            }
             OptionsPage NewPage = new OptionsPage();
             NewPage.Show();
+            Options = NewPage;
         }
 
         private void CreateBtn_Click(object sender, EventArgs e) {
