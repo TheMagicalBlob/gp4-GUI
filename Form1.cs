@@ -12,15 +12,20 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
-    
-    public partial class MainForm : Form { // ver 1.4.7
+
+    public partial class MainForm : Form { // ver 1.5.9
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
             AddControlEventHandlers(Controls, this);
+
+            // Designer Will Delete This From InitializeComponent If Added Manually
+            AppFolderPathTextBox.MouseClick += TextBoxReady;
         }
+
 
         // Application Variables
         public static int MouseIsDown = 0;
@@ -30,7 +35,7 @@ namespace Gp4ProjectBuilder {
 
 
         // GP4 Creation Variables
-        byte[] BufferArray;
+        public static byte[] BufferArray;
         int chunk_count, scenario_count, default_id, index = 0;
         int[] scenario_types, scenario_chunk_range, initial_chunk_count;
         string APP_FOLDER, app_ver = "", version = "", content_id, title_id = "CUSA12345", category = "?";
@@ -42,7 +47,13 @@ namespace Gp4ProjectBuilder {
 
         // GP4 Options
         public static bool ignore_keystone = false;
-        public static string passcode = "00000000000000000000000000000000", OUTPUT_DIRECTORY = @"C:\Users\Blob\Desktop\";
+        public static string
+            passcode = "00000000000000000000000000000000",
+            gp4_output_directory = @"C:\Users\Blob\Desktop\",
+            pkg_source = ""
+        ;
+        public static string[] FilterStrings;
+        private Button TmpBtn;
 
 
         #region Basic Form Functions
@@ -54,7 +65,7 @@ namespace Gp4ProjectBuilder {
         }
         private void InitializeComponent() {
             this.CreateBtn = new System.Windows.Forms.Button();
-            this.AppFolderPathBox = new System.Windows.Forms.TextBox();
+            this.AppFolderPathTextBox = new System.Windows.Forms.TextBox();
             this.Title = new System.Windows.Forms.Label();
             this.MinimizeBtn = new System.Windows.Forms.Button();
             this.ExitBtn = new System.Windows.Forms.Button();
@@ -62,6 +73,7 @@ namespace Gp4ProjectBuilder {
             this.BrowseBtn = new System.Windows.Forms.Button();
             this.DisableLogBox = new System.Windows.Forms.CheckBox();
             this.OptionsBtn = new System.Windows.Forms.Button();
+            this.TmpBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateBtn
@@ -75,15 +87,15 @@ namespace Gp4ProjectBuilder {
             this.CreateBtn.UseVisualStyleBackColor = true;
             this.CreateBtn.Click += new System.EventHandler(this.CreateBtn_Click);
             // 
-            // AppFolderPathBox
+            // AppFolderPathTextBox
             // 
-            this.AppFolderPathBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AppFolderPathBox.Location = new System.Drawing.Point(8, 33);
-            this.AppFolderPathBox.Name = "AppFolderPathBox";
-            this.AppFolderPathBox.Size = new System.Drawing.Size(437, 21);
-            this.AppFolderPathBox.TabIndex = 2;
-            this.AppFolderPathBox.Text = "Paste Gamedata Path Here, Or Use The Browse Button...";
-            this.AppFolderPathBox.TextChanged += new System.EventHandler(this.AppFolderPathBox_TextChanged);
+            this.AppFolderPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AppFolderPathTextBox.Location = new System.Drawing.Point(8, 33);
+            this.AppFolderPathTextBox.Name = "AppFolderPathTextBox";
+            this.AppFolderPathTextBox.Size = new System.Drawing.Size(437, 21);
+            this.AppFolderPathTextBox.TabIndex = 2;
+            this.AppFolderPathTextBox.Text = "Paste Gamedata Path Here, Or Use The Browse Button...";
+            this.AppFolderPathTextBox.TextChanged += new System.EventHandler(this.AppFolderPathBox_TextChanged);
             // 
             // Title
             // 
@@ -162,12 +174,24 @@ namespace Gp4ProjectBuilder {
             this.OptionsBtn.UseVisualStyleBackColor = true;
             this.OptionsBtn.Click += new System.EventHandler(this.OptionsBtn_Click);
             // 
+            // TmpBtn
+            // 
+            this.TmpBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.TmpBtn.Location = new System.Drawing.Point(210, 60);
+            this.TmpBtn.Name = "TmpBtn";
+            this.TmpBtn.Size = new System.Drawing.Size(22, 22);
+            this.TmpBtn.TabIndex = 13;
+            this.TmpBtn.Text = "!";
+            this.TmpBtn.UseVisualStyleBackColor = true;
+            this.TmpBtn.Click += new System.EventHandler(this.TmpBtn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowText;
             this.ClientSize = new System.Drawing.Size(452, 349);
+            this.Controls.Add(this.TmpBtn);
             this.Controls.Add(this.OptionsBtn);
             this.Controls.Add(this.DisableLogBox);
             this.Controls.Add(this.BrowseBtn);
@@ -175,7 +199,7 @@ namespace Gp4ProjectBuilder {
             this.Controls.Add(this.ExitBtn);
             this.Controls.Add(this.MinimizeBtn);
             this.Controls.Add(this.Title);
-            this.Controls.Add(this.AppFolderPathBox);
+            this.Controls.Add(this.AppFolderPathTextBox);
             this.Controls.Add(this.CreateBtn);
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -247,6 +271,13 @@ namespace Gp4ProjectBuilder {
         private static void ExitBtn_Click(object sender, EventArgs e) => Environment.Exit(0);
         public static void ExitBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(255, 227, 0);
         public static void ExitBtnML(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(0,0,0);
+
+        private void TmpBtn_Click(object sender, EventArgs e) {
+            foreach(string s in FilterStrings) {
+                Out(s);
+            }
+        }
+
         public static void MouseUpFunc(object sender, MouseEventArgs e) {
             MouseIsDown = 0;
             if(Options == null) return;
@@ -265,17 +296,17 @@ namespace Gp4ProjectBuilder {
                 Options.Update();
             }
         }
+        public void Out(object s) {
+            if(!DisableLogBox.Checked)
+                OutputWindow.AppendText("\n" + s);
+        }
         #endregion
 
 
-        private void Out(object s) {
-            if (!DisableLogBox.Checked)
-            OutputWindow.AppendText("\n" + s);
-        }
         private void BrowseBtn_Click(object sender, EventArgs e) {
             FolderBrowserDialog Browser = new FolderBrowserDialog();
             if(Browser.ShowDialog() == DialogResult.OK)
-                AppFolderPathBox.Text = Browser.SelectedPath;
+                AppFolderPathTextBox.Text = Browser.SelectedPath;
         }
 
         private void OptionsBtn_Click(object sender, EventArgs e) {
@@ -290,9 +321,32 @@ namespace Gp4ProjectBuilder {
         }
 
         private void AppFolderPathBox_TextChanged(object sender, EventArgs e) {
-            if(AppFolderPathBox.Font.Italic) AppFolderPathBox.Font = new Font("Microsoft YaHei UI", 8.25F);
-
+            APP_FOLDER = AppFolderPathTextBox.Text.Replace("\"", "");
         }
+
+        public static void TextBoxReady(object sender, EventArgs e) {
+            var Sender = sender as TextBox;
+            if(Sender.Font.Italic) Sender.Font = new Font("Microsoft YaHei UI", 8.25F);
+            Sender.Clear();
+        }
+
+        private bool PrebuildChecks() {
+
+            if(passcode.Length != 32) {
+                Out("Incorrect Passcode Length, Must Be 32 Characters");
+                return true;
+            }
+
+
+            if(!Directory.Exists(APP_FOLDER)) {
+                Out($"The Directory Given Does Not Exist!\n{APP_FOLDER}");
+                Out(".gp4 Creatuon Aborted");
+                return true;
+            }
+
+            return false;
+        }
+
         private void CreateBtn_Click(object sender, EventArgs e) {
             // TODO: 
             // - Add Error Handling For Missing Files Or Other Misc Crap
@@ -322,6 +376,8 @@ namespace Gp4ProjectBuilder {
               starting at 0x20:
               Param Offsets every 16 bytes
              */
+            if(PrebuildChecks()) return;
+
 
             OutputWindow.Clear();
             OutputWindow.AppendText("Starting .gp4 Creation");
@@ -330,12 +386,6 @@ namespace Gp4ProjectBuilder {
             var miliseconds = DateTime.Now.Millisecond; // Format Sony Used Doesn't Have Miliseconds, But I Still Wanna Track It For Now
             var InternalTimeStamp = $"{DateTime.Now}"; // Alternate One To Accurately Track Build Times
 
-            APP_FOLDER = AppFolderPathBox.Text.Replace("\"", "");
-            if(!Directory.Exists(APP_FOLDER)) {
-                Out($"The Directory Given Does Not Exist!\n{APP_FOLDER}");
-                Out(".gp4 Creatuon Aborted");
-                return;
-            }
 
             GP4 = new XmlDocument();
             Declaration = GP4.CreateXmlDeclaration("1.1", "utf-8", "yes");
@@ -692,9 +742,9 @@ namespace Gp4ProjectBuilder {
             chunk_info.AppendChild(scenarios);
             var stamp = GP4.CreateComment($"gengp4.exe Alternative. Time Taken For Build Process: {DateTime.Now.Minute - DateTime.Parse(TimeStamp).Minute}:{DateTime.Now.Second - DateTime.Parse(TimeStamp).Second}.{DateTime.Now.Millisecond - miliseconds}");
             GP4.AppendChild(stamp);
-            GP4.Save($@"{OUTPUT_DIRECTORY}\{title_id}-{(category == "gd" ? "app" : "patch")}.gp4");
+            GP4.Save($@"{gp4_output_directory}\{title_id}-{(category == "gd" ? "app" : "patch")}.gp4");
             
-            Out($"Finished!\nFile Saved At {OUTPUT_DIRECTORY.Remove(OUTPUT_DIRECTORY.Length - 1)}");
+            OutputWindow.AppendText($"Finished!\nFile Saved At {gp4_output_directory.Remove(gp4_output_directory.Length - 1)}");
             Out($"Time Taken {DateTime.Now.Subtract(DateTime.Parse(InternalTimeStamp))}");
         }
 
@@ -703,11 +753,14 @@ namespace Gp4ProjectBuilder {
 
 
         private Button CreateBtn;
-        private TextBox AppFolderPathBox;
+        private TextBox AppFolderPathTextBox;
         private Label Title;
         private Button MinimizeBtn;
         private Button ExitBtn;
-        private RichTextBox OutputWindow; private Button BrowseBtn; private CheckBox DisableLogBox; private Button OptionsBtn;
+        private RichTextBox OutputWindow;
+        private Button BrowseBtn;
+        private CheckBox DisableLogBox;
+        private Button OptionsBtn;
         private static GroupBox MainBox;
     }
 }
