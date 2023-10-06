@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.6.15
+    public partial class MainForm : Form { // ver 1.7.15
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -35,7 +35,7 @@ namespace Gp4ProjectBuilder {
         public static string[] DefaultTextBoxStrings = new string[] {
             "Paste Gamedata Path Here, Or Use The Browse Button...",
             "Custom .gp4 Output Directory...",
-            "Custom Base Game .pkg Directory To GP4...",
+            "Custom Base Game .pkg Directory... (Game Patches Only)",
             "Add Files/Folders You Want To Exclude, Seperated By Semicolons",
             "Add Custom .pkg Passcode Here (Defaults To All Zeros)"
         };
@@ -58,7 +58,7 @@ namespace Gp4ProjectBuilder {
         public static bool ignore_keystone = false;
         public static string
             passcode = "00000000000000000000000000000000",
-            gp4_output_directory = @"C:\Users\Blob\Desktop\",
+            gp4_output_directory = @"",
             pkg_source = ""
         ;
         public static string[] FilterStrings;
@@ -360,18 +360,21 @@ namespace Gp4ProjectBuilder {
         }
 
         private bool PrebuildChecks() {
-
             if(passcode.Length != 32) {
                 Out("Incorrect Passcode Length, Must Be 32 Characters");
                 return true;
             }
-
-
             if(!Directory.Exists(APP_FOLDER)) {
-                Out($"The Directory Given Does Not Exist!\n{APP_FOLDER}");
-                Out(".gp4 Creatuon Aborted");
+                Out($"Could Not Find The Game Data Directory\n{APP_FOLDER}");
+                Out(".gp4 Creation Aborted");
                 return true;
             }
+            if(!Directory.Exists(gp4_output_directory)) {
+                Out($"Could Not Find The Selected .gp4 Output Directory\n({gp4_output_directory})");
+                gp4_output_directory = APP_FOLDER.Remove(APP_FOLDER.LastIndexOf(@"\"));
+                Out($".gp4 Will Be Placed In {gp4_output_directory}");
+            }
+
 
             return false;
         }
@@ -413,8 +416,7 @@ namespace Gp4ProjectBuilder {
 
             var TimeStamp = $"{DateTime.Now.GetDateTimeFormats()[78]}"; // Sony One, For Consistency
             var miliseconds = DateTime.Now.Millisecond; // Format Sony Used Doesn't Have Miliseconds, But I Still Wanna Track It For Now
-            var InternalTimeStamp = $"{DateTime.Now}"; // Alternate One To Accurately Track Build Times
-
+            var InternalTimeStamp = new TimeSpan(DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond); // Alternate One To Accurately Track Build Times
 
             GP4 = new XmlDocument();
             Declaration = GP4.CreateXmlDeclaration("1.1", "utf-8", "yes");
@@ -772,11 +774,11 @@ namespace Gp4ProjectBuilder {
             var stamp = GP4.CreateComment($"gengp4.exe Alternative. Time Taken For Build Process: {DateTime.Now.Minute - DateTime.Parse(TimeStamp).Minute}:{DateTime.Now.Second - DateTime.Parse(TimeStamp).Second}.{DateTime.Now.Millisecond - miliseconds}");
             GP4.AppendChild(stamp);
             GP4.Save($@"{gp4_output_directory}\{title_id}-{(category == "gd" ? "app" : "patch")}.gp4");
-            
-            OutputWindow.AppendText($"Finished!\nFile Saved At {gp4_output_directory.Remove(gp4_output_directory.Length - 1)}");
-            Out($"Time Taken {DateTime.Now.Subtract(DateTime.Parse(InternalTimeStamp))}");
-        }
+            OutputWindow.AppendText($"Finished!\nFile Saved At {gp4_output_directory}");
 
+            var NewTime = new TimeSpan(DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond);
+            Out($"Time Taken {NewTime.Subtract(InternalTimeStamp)}");
+        }
 
 
 

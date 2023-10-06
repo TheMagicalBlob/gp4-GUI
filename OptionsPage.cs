@@ -101,7 +101,7 @@ namespace Gp4ProjectBuilder {
             this.CustomPKGPathTextBox.Name = "CustomPKGPathTextBox";
             this.CustomPKGPathTextBox.Size = new System.Drawing.Size(375, 21);
             this.CustomPKGPathTextBox.TabIndex = 2;
-            this.CustomPKGPathTextBox.Text = "Custom Base Game .pkg Directory To GP4...";
+            this.CustomPKGPathTextBox.Text = "Custom Base Game .pkg Directory... (Game Patches Only)";
             this.CustomPKGPathTextBox.TextChanged += new System.EventHandler(this.CustomPKGPathTextBox_TextChanged);
             // 
             // IgnoreFilterTextBox
