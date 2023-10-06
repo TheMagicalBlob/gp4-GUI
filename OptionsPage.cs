@@ -24,7 +24,7 @@ namespace Gp4ProjectBuilder {
             LoadOptions();
         }
 
-
+        #region Basic Form Functions
         #region Designer Managed
         private IContainer components = null;
         protected override void Dispose(bool disposing) {
@@ -59,7 +59,7 @@ namespace Gp4ProjectBuilder {
             this.CustomGP4PathTextBox.Location = new System.Drawing.Point(6, 30);
             this.CustomGP4PathTextBox.Name = "CustomGP4PathTextBox";
             this.CustomGP4PathTextBox.Size = new System.Drawing.Size(376, 21);
-            this.CustomGP4PathTextBox.TabIndex = 2;
+            this.CustomGP4PathTextBox.TabIndex = 1;
             this.CustomGP4PathTextBox.Text = "Custom .gp4 Output Directory...";
             this.CustomGP4PathTextBox.TextChanged += new System.EventHandler(this.CustomGP4PathTextBox_TextChanged);
             // 
@@ -100,7 +100,7 @@ namespace Gp4ProjectBuilder {
             this.CustomPKGPathTextBox.Location = new System.Drawing.Point(6, 56);
             this.CustomPKGPathTextBox.Name = "CustomPKGPathTextBox";
             this.CustomPKGPathTextBox.Size = new System.Drawing.Size(375, 21);
-            this.CustomPKGPathTextBox.TabIndex = 9;
+            this.CustomPKGPathTextBox.TabIndex = 2;
             this.CustomPKGPathTextBox.Text = "Custom Base Game .pkg Directory To GP4...";
             this.CustomPKGPathTextBox.TextChanged += new System.EventHandler(this.CustomPKGPathTextBox_TextChanged);
             // 
@@ -110,7 +110,7 @@ namespace Gp4ProjectBuilder {
             this.IgnoreFilterTextBox.Location = new System.Drawing.Point(7, 133);
             this.IgnoreFilterTextBox.Name = "IgnoreFilterTextBox";
             this.IgnoreFilterTextBox.Size = new System.Drawing.Size(375, 21);
-            this.IgnoreFilterTextBox.TabIndex = 10;
+            this.IgnoreFilterTextBox.TabIndex = 3;
             this.IgnoreFilterTextBox.Text = "Add Files/Folders You Want To Exclude, Seperated By Semicolons";
             this.IgnoreFilterTextBox.TextChanged += new System.EventHandler(this.IgnoreFilterTextBox_TextChanged);
             // 
@@ -120,7 +120,7 @@ namespace Gp4ProjectBuilder {
             this.CustomPasscodeTextBox.Location = new System.Drawing.Point(6, 158);
             this.CustomPasscodeTextBox.Name = "CustomPasscodeTextBox";
             this.CustomPasscodeTextBox.Size = new System.Drawing.Size(375, 21);
-            this.CustomPasscodeTextBox.TabIndex = 11;
+            this.CustomPasscodeTextBox.TabIndex = 4;
             this.CustomPasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
             this.CustomPasscodeTextBox.TextChanged += new System.EventHandler(this.CustomPasscodeTextBox_TextChanged);
             // 
@@ -153,6 +153,7 @@ namespace Gp4ProjectBuilder {
             MainForm.OptionsAreOpen = false;
             this.Dispose();
         }
+        #endregion
 
         private void LoadOptions() {
             if(MainForm.gp4_output_directory != "")
@@ -174,20 +175,32 @@ namespace Gp4ProjectBuilder {
 
             // Designer Will Delete These From InitializeComponent If Added Manually
             CustomPKGPathTextBox.MouseClick += MainForm.TextBoxReady;
+            CustomPKGPathTextBox.LostFocus += MainForm.TextBoxReset;
             CustomGP4PathTextBox.MouseClick += MainForm.TextBoxReady;
+            CustomGP4PathTextBox.LostFocus += MainForm.TextBoxReset;
             CustomPasscodeTextBox.MouseClick += MainForm.TextBoxReady;
+            CustomPasscodeTextBox.LostFocus += MainForm.TextBoxReset;
             IgnoreFilterTextBox.MouseClick += MainForm.TextBoxReady;
+            IgnoreFilterTextBox.LostFocus += MainForm.TextBoxReset;
         }
         private void Out(object s) {
+#if DEBUG
             Console.WriteLine(s);
+#endif
         }
 
         #region Options Related Functions
         // Options Related Functions
         private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => MainForm.ignore_keystone = KeystoneToggleBox.Checked;
 
-        private void CustomPKGPathTextBox_TextChanged(object sender, EventArgs e) => MainForm.pkg_source = CustomPKGPathTextBox.Text;
-
+        private void CustomGP4PathTextBox_TextChanged(object sender, EventArgs e) {
+            MainForm.gp4_output_directory = CustomGP4PathTextBox.Text;
+            MainForm.TextBoxHasChanged[1] = true;
+        }
+        private void CustomPKGPathTextBox_TextChanged(object sender, EventArgs e) {
+            MainForm.pkg_source = CustomPKGPathTextBox.Text;
+            MainForm.TextBoxHasChanged[2] = true;
+        }
         private void IgnoreFilterTextBox_TextChanged(object sender, EventArgs e) {
             if(IgnoreFilterTextBox.Text.Length == 0) return;
 
@@ -200,28 +213,29 @@ namespace Gp4ProjectBuilder {
             if(c == ';' || c == ',') filter_strings_length++;
 
             MainForm.FilterStrings = new string[filter_strings_length];
+            MainForm.TextBoxHasChanged[3] = true;
+
 
             try {
                 for(var index = 0; index < MainForm.FilterStrings.Length; index++) {
                     Builder = new StringBuilder();
 
                     while(MainForm.BufferArray[char_index] != 0x3B && MainForm.BufferArray[char_index] != 0x2C)
-                        Builder.Append(Encoding.UTF8.GetString(new byte[] { MainForm.BufferArray[char_index++] })); // Just Take A Byte, You Fussy Prick
+                    Builder.Append(Encoding.UTF8.GetString(new byte[] { MainForm.BufferArray[char_index++] })); // Just Take A Byte, You Fussy Prick
 
                     char_index++;
                     MainForm.FilterStrings[index] = Builder.ToString();
-
-                    Out("___");
-                    foreach(string s in MainForm.FilterStrings)
-                        Out(": "+s);
                 }
             }
             catch (IndexOutOfRangeException ex) { Out($"\n{ex.StackTrace}"); }
         }
 
-        private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) => MainForm.passcode = CustomPasscodeTextBox.Text;
+        private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) {
+            MainForm.passcode = CustomPasscodeTextBox.Text;
+            MainForm.TextBoxHasChanged[4] = true;
+        }
 
-        private void CustomGP4PathTextBox_TextChanged(object sender, EventArgs e) => MainForm.gp4_output_directory = CustomGP4PathTextBox.Text;
+
         #endregion
 
 

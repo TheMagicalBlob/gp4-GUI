@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.6.10
+    public partial class MainForm : Form { // ver 1.6.13
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -24,12 +24,21 @@ namespace Gp4ProjectBuilder {
 
             // Designer Will Delete This From InitializeComponent If Added Manually
             AppFolderPathTextBox.MouseClick += TextBoxReady;
+            AppFolderPathTextBox.LostFocus += TextBoxReset;
         }
 
 
         // Application Variables
         public static int MouseIsDown = 0;
         public static bool OptionsAreOpen;
+        public static bool[] TextBoxHasChanged = new bool[5];
+        public static string[] DefaultTextBoxStrings = new string[] {
+            "Paste Gamedata Path Here, Or Use The Browse Button...",
+            "Custom .gp4 Output Directory...",
+            "Custom Base Game .pkg Directory To GP4...",
+            "Add Files/Folders You Want To Exclude, Seperated By Semicolons",
+            "Add Custom .pkg Passcode Here (Defaults To All Zeros)"
+        };
         public static Point MouseDif, LastPos;
         static Form Options;
 
@@ -93,7 +102,7 @@ namespace Gp4ProjectBuilder {
             this.AppFolderPathTextBox.Location = new System.Drawing.Point(8, 33);
             this.AppFolderPathTextBox.Name = "AppFolderPathTextBox";
             this.AppFolderPathTextBox.Size = new System.Drawing.Size(437, 21);
-            this.AppFolderPathTextBox.TabIndex = 2;
+            this.AppFolderPathTextBox.TabIndex = 0;
             this.AppFolderPathTextBox.Text = "Paste Gamedata Path Here, Or Use The Browse Button...";
             this.AppFolderPathTextBox.TextChanged += new System.EventHandler(this.AppFolderPathBox_TextChanged);
             // 
@@ -177,13 +186,13 @@ namespace Gp4ProjectBuilder {
             // TmpBtn
             // 
             this.TmpBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.TmpBtn.Location = new System.Drawing.Point(210, 60);
+            this.TmpBtn.Location = new System.Drawing.Point(89, 7);
             this.TmpBtn.Name = "TmpBtn";
             this.TmpBtn.Size = new System.Drawing.Size(22, 22);
-            this.TmpBtn.TabIndex = 13;
+            this.TmpBtn.TabIndex = 0;
             this.TmpBtn.Text = "!";
             this.TmpBtn.UseVisualStyleBackColor = true;
-            this.TmpBtn.Click += new System.EventHandler(this.TmpBtn_Click);
+            this.TmpBtn.Click += new System.EventHandler(this.DebugDumpAllOptions);
             // 
             // MainForm
             // 
@@ -297,15 +306,17 @@ namespace Gp4ProjectBuilder {
             if(!DisableLogBox.Checked)
                 OutputWindow.AppendText("\n" + s);
         }
-        private void TmpBtn_Click(object sender, EventArgs e) {
-            if(FilterStrings != null)
-                foreach(string s in FilterStrings) {
-                    Out(s);
-                }
-            Out(passcode);
-            Out(gp4_output_directory);
-            Out(pkg_source);
+        private void DebugDumpAllOptions(object sender, EventArgs e) {
             Out(APP_FOLDER);
+            Out($"Passcode: {passcode}");
+            Out($"GP4 Output Directory: {gp4_output_directory}");
+            Out($"PKG Source: {pkg_source}");
+            if(FilterStrings != null) {
+                Out("Filter: ");
+                foreach(string s in FilterStrings) {
+                    Out($" {s}");
+                }
+            }
         }
 
 
@@ -329,12 +340,23 @@ namespace Gp4ProjectBuilder {
 
         private void AppFolderPathBox_TextChanged(object sender, EventArgs e) {
             APP_FOLDER = AppFolderPathTextBox.Text.Replace("\"", "");
+            if (Directory.Exists(APP_FOLDER))
+            TextBoxHasChanged[0] = true;
         }
 
         public static void TextBoxReady(object sender, EventArgs e) {
             var Sender = sender as TextBox;
-            if(Sender.Font.Italic) Sender.Font = new Font("Microsoft YaHei UI", 8.25F);
-            Sender.Clear();
+            if(Sender.Font.Italic) {
+                Sender.Font = new Font("Microsoft YaHei UI", 8.25F);
+                Sender.Clear();
+            }
+        }
+        public static void TextBoxReset(object sender, EventArgs e) {
+            var Sender = sender as TextBox;
+            if(!TextBoxHasChanged[Sender.TabIndex]) {
+                Sender.Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
+                Sender.Text = DefaultTextBoxStrings[Sender.TabIndex];
+            }
         }
 
         private bool PrebuildChecks() {
