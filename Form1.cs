@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.6.13
+    public partial class MainForm : Form { // ver 1.6.14
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -255,13 +255,13 @@ namespace Gp4ProjectBuilder {
                         Child.MouseDown += new MouseEventHandler(MouseDownFunc);
                         Child.MouseUp += new MouseEventHandler(MouseUpFunc);
 
-                        if(!Child.Name.Contains("PathBox")) // So You Can Drag Select The Text Lol
+                        if(!Child.Name.Contains("TextBox")) // So You Can Drag Select The Text Lol
                             Child.MouseMove += new MouseEventHandler(MoveForm);
                     }
                 }
                 Item.MouseDown += new MouseEventHandler(MouseDownFunc);
                 Item.MouseUp += new MouseEventHandler(MouseUpFunc);
-                if(!Item.Name.Contains("PathBox")) // So You Can Drag Select The Text Lol
+                if(!Item.Name.Contains("TextBox")) // So You Can Drag Select The Text Lol
                     Item.MouseMove += new MouseEventHandler(MoveForm);
             }
             try {
