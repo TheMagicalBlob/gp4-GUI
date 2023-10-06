@@ -160,10 +160,13 @@ namespace Gp4ProjectBuilder {
             if(MainForm.pkg_source != "")
                 CustomPKGPathTextBox.Text = MainForm.pkg_source;
 
-            if (MainForm.FilterStrings != null)
-            foreach(string file in MainForm.FilterStrings) {
+            if(MainForm.FilterStrings != null) {
+                IgnoreFilterTextBox.Text = string.Empty;
+                foreach(string file in MainForm.FilterStrings)
                 IgnoreFilterTextBox.Text += $"{file},";
+                IgnoreFilterTextBox.Text = IgnoreFilterTextBox.Text.TrimEnd(',');
             }
+
 
             if(MainForm.passcode != "00000000000000000000000000000000")
                 CustomPasscodeTextBox.Text = MainForm.passcode;

@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.5.9
+    public partial class MainForm : Form { // ver 1.6.10
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -272,12 +272,6 @@ namespace Gp4ProjectBuilder {
         public static void ExitBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(255, 227, 0);
         public static void ExitBtnML(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(0,0,0);
 
-        private void TmpBtn_Click(object sender, EventArgs e) {
-            foreach(string s in FilterStrings) {
-                Out(s);
-            }
-        }
-
         public static void MouseUpFunc(object sender, MouseEventArgs e) {
             MouseIsDown = 0;
             if(Options == null) return;
@@ -296,11 +290,24 @@ namespace Gp4ProjectBuilder {
                 Options.Update();
             }
         }
+        #endregion
+
+
         public void Out(object s) {
             if(!DisableLogBox.Checked)
                 OutputWindow.AppendText("\n" + s);
         }
-        #endregion
+        private void TmpBtn_Click(object sender, EventArgs e) {
+            if(FilterStrings != null)
+                foreach(string s in FilterStrings) {
+                    Out(s);
+                }
+            Out(passcode);
+            Out(gp4_output_directory);
+            Out(pkg_source);
+            Out(APP_FOLDER);
+        }
+
 
 
         private void BrowseBtn_Click(object sender, EventArgs e) {
