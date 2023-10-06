@@ -3,4 +3,4 @@ Legal gengp4.exe alternative written in C# made to avoid dealing with some of th
 aspects of gengp4.exe, like writing to param.sfo, or building useless gp4's if the folder name isn't
 formatted perfectly _(TITLEID-category)._
 
-This is the GUI version of the currently unnamed Open Source GP4 Blah blah blah I'm making a cmd line version and a .dll for inclusion in other projects
+This is the GUI version of the **CSharp GP4 Writer** POC. I'm making a proper cmd line version and a .dll for inclusion in other projects.
