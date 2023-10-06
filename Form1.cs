@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.6.14
+    public partial class MainForm : Form { // ver 1.6.15
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);

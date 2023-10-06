@@ -195,14 +195,20 @@ namespace Gp4ProjectBuilder {
 
         private void CustomGP4PathTextBox_TextChanged(object sender, EventArgs e) {
             MainForm.gp4_output_directory = CustomGP4PathTextBox.Text;
-            MainForm.TextBoxHasChanged[1] = true;
+            if(CustomGP4PathTextBox.Text != "" && CustomGP4PathTextBox.Text != MainForm.DefaultTextBoxStrings[1]) {
+                MainForm.TextBoxHasChanged[1] = true;
+                Out("GP4 Path Box Changed");
+            }
         }
         private void CustomPKGPathTextBox_TextChanged(object sender, EventArgs e) {
             MainForm.pkg_source = CustomPKGPathTextBox.Text;
-            MainForm.TextBoxHasChanged[2] = true;
+            if(CustomPKGPathTextBox.Text != "" && CustomPKGPathTextBox.Text != MainForm.DefaultTextBoxStrings[2]) {
+                MainForm.TextBoxHasChanged[2] = true;
+                Out("PKG Path Box Changed");
+            }
         }
         private void IgnoreFilterTextBox_TextChanged(object sender, EventArgs e) {
-            if(IgnoreFilterTextBox.Text.Length == 0) return;
+            if(IgnoreFilterTextBox.Text.Length == 0 || IgnoreFilterTextBox.Text == MainForm.DefaultTextBoxStrings[3]) return;
 
 
             StringBuilder Builder;
@@ -213,8 +219,6 @@ namespace Gp4ProjectBuilder {
             if(c == ';' || c == ',') filter_strings_length++;
 
             MainForm.FilterStrings = new string[filter_strings_length];
-            MainForm.TextBoxHasChanged[3] = true;
-
 
             try {
                 for(var index = 0; index < MainForm.FilterStrings.Length; index++) {
@@ -225,6 +229,7 @@ namespace Gp4ProjectBuilder {
 
                     char_index++;
                     MainForm.FilterStrings[index] = Builder.ToString();
+                    MainForm.TextBoxHasChanged[3] = true;
                 }
             }
             catch (IndexOutOfRangeException ex) { Out($"\n{ex.StackTrace}"); }
@@ -232,7 +237,10 @@ namespace Gp4ProjectBuilder {
 
         private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) {
             MainForm.passcode = CustomPasscodeTextBox.Text;
-            MainForm.TextBoxHasChanged[4] = true;
+            if(CustomPasscodeTextBox.Text != "" && CustomPasscodeTextBox.Text != MainForm.DefaultTextBoxStrings[4]) {
+                MainForm.TextBoxHasChanged[4] = true;
+                Out("Passcode Changed");
+            }
         }
 
 
