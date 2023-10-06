@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.7.15
+    public partial class MainForm : Form { // ver 1.7.16
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -192,6 +192,7 @@ namespace Gp4ProjectBuilder {
             this.TmpBtn.TabIndex = 0;
             this.TmpBtn.Text = "!";
             this.TmpBtn.UseVisualStyleBackColor = true;
+            this.TmpBtn.Visible = false;
             this.TmpBtn.Click += new System.EventHandler(this.DebugDumpAllOptions);
             // 
             // MainForm
