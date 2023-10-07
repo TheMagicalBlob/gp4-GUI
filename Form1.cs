@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.8.22
+    public partial class MainForm : Form { // ver 1.8.23
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -315,10 +315,9 @@ namespace Gp4ProjectBuilder {
         }
         public static void TextBoxReset(object sender, EventArgs e) {
             var Sender = sender as TextBox;
-            if(!text_box_changed[Sender.TabIndex] || Sender.Text == "") {
-                Sender.Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
+            if(!text_box_changed[Sender.TabIndex] | Sender.Text == "") {
                 Sender.Text = default_strings[Sender.TabIndex];
-                text_box_changed[Sender.TabIndex] = false; // jic
+                Sender.Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
             }
         }
 

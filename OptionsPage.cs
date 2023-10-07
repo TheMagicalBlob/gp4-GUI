@@ -48,7 +48,7 @@ namespace Gp4ProjectBuilder {
             this.KeystoneToggleBox.Location = new System.Drawing.Point(8, 85);
             this.KeystoneToggleBox.Name = "KeystoneToggleBox";
             this.KeystoneToggleBox.Size = new System.Drawing.Size(103, 17);
-            this.KeystoneToggleBox.TabIndex = 1;
+            this.KeystoneToggleBox.TabIndex = 5;
             this.KeystoneToggleBox.Text = "Ignore Keystone";
             this.KeystoneToggleBox.UseVisualStyleBackColor = true;
             this.KeystoneToggleBox.CheckedChanged += new System.EventHandler(this.KeystoneToggleBox_CheckedChanged);
@@ -79,7 +79,7 @@ namespace Gp4ProjectBuilder {
             this.ExitBtn.Location = new System.Drawing.Point(359, 4);
             this.ExitBtn.Name = "ExitBtn";
             this.ExitBtn.Size = new System.Drawing.Size(22, 22);
-            this.ExitBtn.TabIndex = 5;
+            this.ExitBtn.TabIndex = 7;
             this.ExitBtn.Text = "X";
             this.ExitBtn.UseVisualStyleBackColor = true;
             this.ExitBtn.Click += new System.EventHandler(this.ExitBtn_Click);
@@ -90,7 +90,7 @@ namespace Gp4ProjectBuilder {
             this.IgnoreOutputBox.Location = new System.Drawing.Point(7, 107);
             this.IgnoreOutputBox.Name = "IgnoreOutputBox";
             this.IgnoreOutputBox.Size = new System.Drawing.Size(196, 17);
-            this.IgnoreOutputBox.TabIndex = 8;
+            this.IgnoreOutputBox.TabIndex = 6;
             this.IgnoreOutputBox.Text = "Limit Log Output (Builds .gp4 Faster)";
             this.IgnoreOutputBox.UseVisualStyleBackColor = true;
             // 
