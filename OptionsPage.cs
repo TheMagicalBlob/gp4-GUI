@@ -201,7 +201,7 @@ namespace Gp4ProjectBuilder {
             }
         }
         private void CustomPKGPathTextBox_TextChanged(object sender, EventArgs e) {
-            MainForm.pkg_source = CustomPKGPathTextBox.Text;
+            MainForm.pkg_source = CustomPKGPathTextBox.Text.Replace("\"", "");
             if(CustomPKGPathTextBox.Text != "" && CustomPKGPathTextBox.Text != MainForm.DefaultTextBoxStrings[2]) {
                 MainForm.TextBoxHasChanged[2] = true;
                 Out("PKG Path Box Changed");

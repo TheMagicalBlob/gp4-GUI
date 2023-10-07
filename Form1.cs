@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.7.16
+    public partial class MainForm : Form { // ver 1.7.18
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -113,7 +113,7 @@ namespace Gp4ProjectBuilder {
             this.Title.Location = new System.Drawing.Point(132, 6);
             this.Title.Name = "Title";
             this.Title.Size = new System.Drawing.Size(183, 16);
-            this.Title.TabIndex = 3;
+            this.Title.TabIndex = 0;
             this.Title.Text = ".gp4 Creator For Orbis Packages";
             // 
             // MinimizeBtn
@@ -189,7 +189,7 @@ namespace Gp4ProjectBuilder {
             this.TmpBtn.Location = new System.Drawing.Point(89, 7);
             this.TmpBtn.Name = "TmpBtn";
             this.TmpBtn.Size = new System.Drawing.Size(22, 22);
-            this.TmpBtn.TabIndex = 0;
+            this.TmpBtn.TabIndex = 2222222;
             this.TmpBtn.Text = "!";
             this.TmpBtn.UseVisualStyleBackColor = true;
             this.TmpBtn.Visible = false;
@@ -679,7 +679,7 @@ namespace Gp4ProjectBuilder {
                 package.SetAttribute("storage_type", (category == "gp" ? "digital25" : "digital50"));
                 package.SetAttribute("app_type", "full");
             if(category == "gp")
-                package.SetAttribute("app_path", $"{content_id}-A{app_ver.Replace(".", "")}-V{version.Replace(".", "")}.pkg");
+                package.SetAttribute("app_path", $"{(pkg_source == "" ? $"{content_id}-A{app_ver.Replace(".", "")}-V{version.Replace(".", "")}.pkg" : pkg_source)}");
 
             var chunk_info = GP4.CreateElement("chunk_info");
                 chunk_info.SetAttribute("chunk_count", $"{chunk_count}");
