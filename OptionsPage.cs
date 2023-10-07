@@ -245,9 +245,11 @@ namespace Gp4ProjectBuilder {
             if(((TextBox)sender).Text == "") return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
-            MainForm.passcode = CustomPasscodeTextBox.Text;
             if(CustomPasscodeTextBox.Text != MainForm.default_strings[4])
                 MainForm.text_box_changed[4] = true;
+            else return;
+
+            MainForm.passcode = CustomPasscodeTextBox.Text;
         }
 #endregion
 
