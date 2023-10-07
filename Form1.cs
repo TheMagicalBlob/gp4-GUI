@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.9.31
+    public partial class MainForm : Form { // ver 1.9.31 r2
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -296,12 +296,12 @@ namespace Gp4ProjectBuilder {
             if(!text_box_changed[Sender.TabIndex] | Sender.Text == "") {
                 Sender.Text = default_strings[Sender.TabIndex];
                 Sender.Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
+            }
 
-                if(Sender.TabIndex == 4)
-                if(Sender.Text.Length < 32) {
-                    Sender.AppendText(new string('0', 32 - passcode.Length));
-                    passcode = Sender.Text;
-                }
+            if(Sender.TabIndex == 4)
+            if(Sender.Text.Length < 32) {
+                Sender.AppendText(new string('0', 32 - passcode.Length));
+                passcode = Sender.Text;
             }
         }
         private bool PrebuildChecks() {
