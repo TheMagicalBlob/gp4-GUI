@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.8.24 R2
+    public partial class MainForm : Form { // ver 1.8.25
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -710,13 +710,14 @@ namespace Gp4ProjectBuilder {
             volume.AppendChild(chunk_info);
             chunk_info.AppendChild(chunks);
             chunk_info.AppendChild(scenarios);
-            var stamp = GP4.CreateComment($"gengp4.exe Alternative. Time Taken For Build Process: {DateTime.Now.Minute - DateTime.Parse(TimeStamp).Minute}:{DateTime.Now.Second - DateTime.Parse(TimeStamp).Second}.{DateTime.Now.Millisecond - miliseconds}");
-            GP4.AppendChild(stamp);
-            GP4.Save($@"{gp4_output_directory}\{title_id}-{(category == "gd" ? "app" : "patch")}.gp4");
-            OutputWindow.AppendText($"\nFinished!\nFile Saved At {gp4_output_directory}");
 
             var NewTime = new TimeSpan(DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond);
-            Out($"Time Taken {NewTime.Subtract(InternalTimeStamp)}");
+            var stamp = GP4.CreateComment($"gengp4.exe Alternative. Time Taken For Build Process: {NewTime.Subtract(InternalTimeStamp)}");
+            
+            GP4.AppendChild(stamp);
+            GP4.Save($@"{gp4_output_directory}\{title_id}-{(category == "gd" ? "app" : "patch")}.gp4");
+            
+            OutputWindow.AppendText($"\nFinished!\nFile Saved At {gp4_output_directory}\nTime Taken {NewTime.Subtract(InternalTimeStamp)}");
         }
         #endregion
 
