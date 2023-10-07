@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.8.23
+    public partial class MainForm : Form { // ver 1.8.24 R2
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -235,6 +235,11 @@ namespace Gp4ProjectBuilder {
 
 
         #region Application Variables
+        /////////////////////\\\\\\\\\\\\\\\\\\\\
+        ///--     Application Variables     --\\\
+        /////////////////////\\\\\\\\\\\\\\\\\\\\
+        
+        // Main Application Variables
         public static int MouseIsDown = 0;
         public static bool OptionsAreOpen;
         public static bool[] text_box_changed = new bool[5];
@@ -268,44 +273,17 @@ namespace Gp4ProjectBuilder {
             pkg_source = ""
         ;
         public static string[] filter_array;
-#endregion
+        #endregion
 
 
-
+        #region Main Application Functions
+        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
+        ///--     Main Application Functions     --\\\
+        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         public void Out(object s) {
             if(!DisableLogBox.Checked)
                 OutputWindow.AppendText("\n" + s);
         }
-
-
-
-        private void BrowseBtn_Click(object sender, EventArgs e) {
-            FolderBrowserDialog Browser = new FolderBrowserDialog();
-            if(Browser.ShowDialog() == DialogResult.OK)
-                AppFolderPathTextBox.Text = Browser.SelectedPath;
-        }
-
-        private void OptionsBtn_Click(object sender, EventArgs e) {
-            LastPos = Location;
-            if(OptionsAreOpen) {
-                Options.BringToFront();
-                return;
-            }
-            OptionsPage NewPage = new OptionsPage();
-            NewPage.Show();
-            Options = NewPage;
-        }
-
-        private void AppFolderPathBox_TextChanged(object sender, EventArgs e) {
-            if(((TextBox)sender).Text == "") return;
-            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
-
-
-            gamedata_folder = AppFolderPathTextBox.Text.Replace("\"", "");
-            if (Directory.Exists(gamedata_folder))
-            text_box_changed[0] = true;
-        }
-
         public static void TextBoxReady(object sender, EventArgs e) {
             var Sender = sender as TextBox;
             if(Sender.Font.Italic) {
@@ -320,7 +298,6 @@ namespace Gp4ProjectBuilder {
                 Sender.Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
             }
         }
-
         private bool PrebuildChecks() {
             if(passcode.Length != 32) {
                 Out("Incorrect Passcode Length, Must Be 32 Characters");
@@ -341,38 +318,34 @@ namespace Gp4ProjectBuilder {
             return false;
         }
 
+        private void OptionsBtn_Click(object sender, EventArgs e) {
+            LastPos = Location;
+            if(OptionsAreOpen) {
+                Options.BringToFront();
+                return;
+            }
+            OptionsPage NewPage = new OptionsPage();
+            NewPage.Show();
+            Options = NewPage;
+        }
+        private void BrowseBtn_Click(object sender, EventArgs e) {
+            FolderBrowserDialog Browser = new FolderBrowserDialog();
+            if(Browser.ShowDialog() == DialogResult.OK)
+            AppFolderPathTextBox.Text = Browser.SelectedPath;
+        }
+        private void AppFolderPathBox_TextChanged(object sender, EventArgs e) {
+            if(((TextBox)sender).Text == "") return;
+            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
+
+            gamedata_folder = AppFolderPathTextBox.Text.Replace("\"", "");
+            if (Directory.Exists(gamedata_folder))
+            text_box_changed[0] = true;
+        }
+
+        // TODO: 
+        // - figure out pfs compression / chunk bs for certain file formats
         private void CreateBtn_Click(object sender, EventArgs e) {
-            // TODO: 
-            // - Add Error Handling For Missing Files Or Other Misc Crap
-            // - figure out pfs compression / chunk bs for certain file formats
-            /*
-             playgo-chunks.dat
-              0x00 - 0x8: Head
-              0x0A: Chunk Count
-              0x10: File End
-              0x0E: Scenario Count
-              0xE0: Scenario Data Section(s)
-              0x14: Default ID
-
-              0xD0: chunk label beggining
-              0xD4: Chunk Label Byte Array Length
-              0xD8: chunk label end (Padded)
-              0xE0: Senario 1 type (*0xE0 + 0x20 For Each Scenario After?)
-              0xF0: Scenario Labels
-              0xF4: Scenario Label Array Byte Length
-
-             param.sfo
-              0x00 - 0x8: Head
-              0x08 - Param Labels
-              0x0C - Param Values
-              0x10 - Param Count
-
-              starting at 0x20:
-              Param Offsets every 16 bytes
-             */
             if(PrebuildChecks()) return;
-
-
             OutputWindow.Clear();
             OutputWindow.AppendText("Starting .gp4 Creation");
 
@@ -419,8 +392,7 @@ namespace Gp4ProjectBuilder {
                     @"sce_sys\app\playgo-chunk",
                     @"sce_sys\.general_digests",
                     @"sce_sys\target-deltainfo.dat",
-                    @"sce_sys\app\playgo-manifest.xml",
-                    //
+                    @"sce_sys\app\playgo-manifest.xml"
                 };
 
                 foreach(var blacklisted_file_or_folder in blacklist)
@@ -746,8 +718,7 @@ namespace Gp4ProjectBuilder {
             var NewTime = new TimeSpan(DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond);
             Out($"Time Taken {NewTime.Subtract(InternalTimeStamp)}");
         }
-
-
+        #endregion
 
 
         #region ControlDeclarations
