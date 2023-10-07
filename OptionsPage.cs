@@ -161,9 +161,9 @@ namespace Gp4ProjectBuilder {
             if(MainForm.pkg_source != "")
                 CustomPKGPathTextBox.Text = MainForm.pkg_source;
 
-            if(MainForm.FilterStrings != null) {
+            if(MainForm.filter_array != null) {
                 IgnoreFilterTextBox.Text = string.Empty;
-                foreach(string file in MainForm.FilterStrings)
+                foreach(string file in MainForm.filter_array)
                 IgnoreFilterTextBox.Text += $"{file},";
                 IgnoreFilterTextBox.Text = IgnoreFilterTextBox.Text.TrimEnd(',');
             }
@@ -194,61 +194,71 @@ namespace Gp4ProjectBuilder {
         private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => MainForm.ignore_keystone = KeystoneToggleBox.Checked;
 
         private void CustomGP4PathTextBox_TextChanged(object sender, EventArgs e) {
+            if(((TextBox)sender).Text == "") return;
+            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
+
             MainForm.gp4_output_directory = CustomGP4PathTextBox.Text;
-            if(CustomGP4PathTextBox.Text != "" && CustomGP4PathTextBox.Text != MainForm.DefaultTextBoxStrings[1]) {
-                MainForm.TextBoxHasChanged[1] = true;
+            if(CustomGP4PathTextBox.Text != "" && CustomGP4PathTextBox.Text != MainForm.default_strings[1]) {
+                MainForm.text_box_changed[1] = true;
                 Out("GP4 Path Box Changed");
             }
         }
         private void CustomPKGPathTextBox_TextChanged(object sender, EventArgs e) {
+            if(((TextBox)sender).Text == "") return;
+            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
+
             MainForm.pkg_source = CustomPKGPathTextBox.Text.Replace("\"", "");
-            if(CustomPKGPathTextBox.Text != "" && CustomPKGPathTextBox.Text != MainForm.DefaultTextBoxStrings[2]) {
-                MainForm.TextBoxHasChanged[2] = true;
+            if(CustomPKGPathTextBox.Text != "" && CustomPKGPathTextBox.Text != MainForm.default_strings[2]) {
+                MainForm.text_box_changed[2] = true;
                 Out("PKG Path Box Changed");
             }
         }
         private void IgnoreFilterTextBox_TextChanged(object sender, EventArgs e) {
-            if(IgnoreFilterTextBox.Text.Length == 0 || IgnoreFilterTextBox.Text == MainForm.DefaultTextBoxStrings[3]) return;
+            if(((TextBox)sender).Text == "" || (IgnoreFilterTextBox.Text == MainForm.default_strings[3])) return;
+            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
 
             StringBuilder Builder;
             int filter_strings_length = 0, char_index = 0;
-            MainForm.BufferArray = Encoding.UTF8.GetBytes((IgnoreFilterTextBox.Text + ';').ToCharArray());
+            MainForm.buffer = Encoding.UTF8.GetBytes((IgnoreFilterTextBox.Text + ';').ToCharArray());
 
             foreach(char c in (IgnoreFilterTextBox.Text + ';').ToCharArray())
             if(c == ';' || c == ',') filter_strings_length++;
 
-            MainForm.FilterStrings = new string[filter_strings_length];
+            MainForm.filter_array = new string[filter_strings_length];
 
             try {
-                for(var index = 0; index < MainForm.FilterStrings.Length; index++) {
+                for(var array_index = 0; array_index < MainForm.filter_array.Length; array_index++) {
                     Builder = new StringBuilder();
 
-                    while(MainForm.BufferArray[char_index] != 0x3B && MainForm.BufferArray[char_index] != 0x2C)
-                    Builder.Append(Encoding.UTF8.GetString(new byte[] { MainForm.BufferArray[char_index++] })); // Just Take A Byte, You Fussy Prick
+                    while(MainForm.buffer[char_index] != 0x3B && MainForm.buffer[char_index] != 0x2C)
+                    Builder.Append(Encoding.UTF8.GetString(new byte[] { MainForm.buffer[char_index++] })); // Just Take A Byte, You Fussy Prick
 
                     char_index++;
-                    MainForm.FilterStrings[index] = Builder.ToString();
-                    MainForm.TextBoxHasChanged[3] = true;
+                    MainForm.filter_array[array_index] = Builder.ToString();
+                    MainForm.text_box_changed[3] = true;
                 }
             }
             catch (IndexOutOfRangeException ex) { Out($"\n{ex.StackTrace}"); }
         }
 
         private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) {
+            if(((TextBox)sender).Text == "") return;
+            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
+
             MainForm.passcode = CustomPasscodeTextBox.Text;
-            if(CustomPasscodeTextBox.Text != "" && CustomPasscodeTextBox.Text != MainForm.DefaultTextBoxStrings[4]) {
-                MainForm.TextBoxHasChanged[4] = true;
-                Out("Passcode Changed");
-            }
+            if(CustomPasscodeTextBox.Text != MainForm.default_strings[4])
+                MainForm.text_box_changed[4] = true;
         }
-
-
         #endregion
 
 
 
 
+        #region ControlDeclarations
+        ////////////////////\\\\\\\\\\\\\\\\\\\\
+        ///--     Control Declarations     --\\\
+        ////////////////////\\\\\\\\\\\\\\\\\\\\
         private CheckBox KeystoneToggleBox;
         private TextBox CustomGP4PathTextBox;
         private Label Title;
@@ -257,5 +267,6 @@ namespace Gp4ProjectBuilder {
         private TextBox CustomPKGPathTextBox;
         private TextBox IgnoreFilterTextBox;
         private TextBox CustomPasscodeTextBox;
+        #endregion
     }
 }
