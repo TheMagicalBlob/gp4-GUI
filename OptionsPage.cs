@@ -24,8 +24,10 @@ namespace Gp4ProjectBuilder {
             LoadOptions();
         }
 
-        #region Basic Form Functions
-        #region Designer Managed
+        #region Designer Managed Functions
+        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
+        ///--     Designer Managed Functions     --\\\
+        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         private IContainer components = null;
         protected override void Dispose(bool disposing) {
             if(disposing) components?.Dispose();
@@ -60,7 +62,7 @@ namespace Gp4ProjectBuilder {
             this.CustomGP4PathTextBox.Name = "CustomGP4PathTextBox";
             this.CustomGP4PathTextBox.Size = new System.Drawing.Size(376, 21);
             this.CustomGP4PathTextBox.TabIndex = 1;
-            this.CustomGP4PathTextBox.Text = "Custom .gp4 Output Directory...";
+            this.CustomGP4PathTextBox.Text = "Add A Custom .gp4 Output Directory Here...";
             this.CustomGP4PathTextBox.TextChanged += new System.EventHandler(this.CustomGP4PathTextBox_TextChanged);
             // 
             // Title
@@ -101,7 +103,7 @@ namespace Gp4ProjectBuilder {
             this.CustomPKGPathTextBox.Name = "CustomPKGPathTextBox";
             this.CustomPKGPathTextBox.Size = new System.Drawing.Size(375, 21);
             this.CustomPKGPathTextBox.TabIndex = 2;
-            this.CustomPKGPathTextBox.Text = "Custom Base Game .pkg Directory... (Game Patches Only)";
+            this.CustomPKGPathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
             this.CustomPKGPathTextBox.TextChanged += new System.EventHandler(this.CustomPKGPathTextBox_TextChanged);
             // 
             // IgnoreFilterTextBox
@@ -118,6 +120,7 @@ namespace Gp4ProjectBuilder {
             // 
             this.CustomPasscodeTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
             this.CustomPasscodeTextBox.Location = new System.Drawing.Point(6, 158);
+            this.CustomPasscodeTextBox.MaxLength = 32;
             this.CustomPasscodeTextBox.Name = "CustomPasscodeTextBox";
             this.CustomPasscodeTextBox.Size = new System.Drawing.Size(375, 21);
             this.CustomPasscodeTextBox.TabIndex = 4;
@@ -149,12 +152,11 @@ namespace Gp4ProjectBuilder {
         }
         #endregion
 
+
         private void ExitBtn_Click(object sender, EventArgs e) {
             MainForm.OptionsAreOpen = false;
             this.Dispose();
         }
-        #endregion
-
         private void LoadOptions() {
             if(MainForm.gp4_output_directory != "")
                 CustomGP4PathTextBox.Text = MainForm.gp4_output_directory;
@@ -183,14 +185,12 @@ namespace Gp4ProjectBuilder {
             IgnoreFilterTextBox.MouseClick += MainForm.TextBoxReady;
             IgnoreFilterTextBox.LostFocus += MainForm.TextBoxReset;
         }
-        private void Out(object s) {
-#if DEBUG
-            Console.WriteLine(s);
-#endif
-        }
+
 
         #region Options Related Functions
-        // Options Related Functions
+        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
+        ///--     Options Related Functions     --\\\
+        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
         private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => MainForm.ignore_keystone = KeystoneToggleBox.Checked;
 
         private void CustomGP4PathTextBox_TextChanged(object sender, EventArgs e) {
@@ -198,25 +198,20 @@ namespace Gp4ProjectBuilder {
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
             MainForm.gp4_output_directory = CustomGP4PathTextBox.Text;
-            if(CustomGP4PathTextBox.Text != "" && CustomGP4PathTextBox.Text != MainForm.default_strings[1]) {
+            if(CustomGP4PathTextBox.Text != "" && CustomGP4PathTextBox.Text != MainForm.default_strings[1])
                 MainForm.text_box_changed[1] = true;
-                Out("GP4 Path Box Changed");
-            }
         }
         private void CustomPKGPathTextBox_TextChanged(object sender, EventArgs e) {
             if(((TextBox)sender).Text == "") return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
             MainForm.pkg_source = CustomPKGPathTextBox.Text.Replace("\"", "");
-            if(CustomPKGPathTextBox.Text != "" && CustomPKGPathTextBox.Text != MainForm.default_strings[2]) {
+            if(CustomPKGPathTextBox.Text != "" && CustomPKGPathTextBox.Text != MainForm.default_strings[2])
                 MainForm.text_box_changed[2] = true;
-                Out("PKG Path Box Changed");
-            }
         }
         private void IgnoreFilterTextBox_TextChanged(object sender, EventArgs e) {
             if(((TextBox)sender).Text == "" || (IgnoreFilterTextBox.Text == MainForm.default_strings[3])) return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
-
 
             StringBuilder Builder;
             int filter_strings_length = 0, char_index = 0;
@@ -239,7 +234,11 @@ namespace Gp4ProjectBuilder {
                     MainForm.text_box_changed[3] = true;
                 }
             }
-            catch (IndexOutOfRangeException ex) { Out($"\n{ex.StackTrace}"); }
+            catch (IndexOutOfRangeException ex) {
+#if DEBUG
+                Console.WriteLine($"\n{ex.StackTrace}");
+#endif
+            }
         }
 
         private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) {
@@ -250,7 +249,7 @@ namespace Gp4ProjectBuilder {
             if(CustomPasscodeTextBox.Text != MainForm.default_strings[4])
                 MainForm.text_box_changed[4] = true;
         }
-        #endregion
+#endregion
 
 
 

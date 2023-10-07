@@ -16,7 +16,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.8.25
+    public partial class MainForm : Form { // ver 1.8.31
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -62,7 +62,7 @@ namespace Gp4ProjectBuilder {
             this.AppFolderPathTextBox.Name = "AppFolderPathTextBox";
             this.AppFolderPathTextBox.Size = new System.Drawing.Size(437, 21);
             this.AppFolderPathTextBox.TabIndex = 0;
-            this.AppFolderPathTextBox.Text = "Paste Gamedata Path Here, Or Use The Browse Button...";
+            this.AppFolderPathTextBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
             this.AppFolderPathTextBox.TextChanged += new System.EventHandler(this.AppFolderPathBox_TextChanged);
             // 
             // Title
@@ -244,10 +244,10 @@ namespace Gp4ProjectBuilder {
         public static bool OptionsAreOpen;
         public static bool[] text_box_changed = new bool[5];
         public static string[] default_strings = new string[] {
-            "Paste Gamedata Path Here, Or Use The Browse Button...",
-            "Custom .gp4 Output Directory...",
-            "Custom Base Game .pkg Directory... (Game Patches Only)",
-            "Add Files/Folders You Want To Exclude, Seperated By Semicolons",
+            "Paste The Gamedata Folder Path Here, Or Use The Browse Button...",
+            "Add A Custom .gp4 Output Directory Here...",
+            "Base Game .pkg Path... (For Game Patches)",
+            "Add Files/Folders You Want To Exclude From The .gp4, Seperated By Semicolons",
             "Add Custom .pkg Passcode Here (Defaults To All Zeros)"
         };
         public static Point MouseDif, LastPos;
