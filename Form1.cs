@@ -1,22 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Serialization;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms.VisualStyles;
+
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.9.31 r2
+    public partial class MainForm : Form { // ver 1.9.32
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -261,8 +255,8 @@ namespace Gp4ProjectBuilder {
         string gamedata_folder, app_ver = "", version = "", content_id, title_id = "CUSA12345", category = "?";
         string[] chunk_labels, parameter_labels, scenario_labels, file_paths;
         readonly string[] required_sfo_variables = new string[] { "APP_VER", "CATEGORY", "CONTENT_ID", "TITLE_ID", "VERSION" };
-        static XmlDocument GP4;
-        XmlDeclaration Declaration;
+        static XmlDocument gp4;
+        XmlDeclaration gp4_declaration;
         XmlElement file, chunk, scenario, dir, subdir;
 
         // GP4 Options
@@ -359,8 +353,8 @@ namespace Gp4ProjectBuilder {
             var miliseconds = DateTime.Now.Millisecond; // Format Sony Used Doesn't Have Miliseconds, But I Still Wanna Track It For Now
             var InternalTimeStamp = new TimeSpan(DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond); // Alternate One To Accurately Track Build Times
 
-            GP4 = new XmlDocument();
-            Declaration = GP4.CreateXmlDeclaration("1.1", "utf-8", "yes");
+            gp4 = new XmlDocument();
+            gp4_declaration = gp4.CreateXmlDeclaration("1.1", "utf-8", "yes");
 
 
             // Some Files Or Formats Aren't Supposed To Be Included. I Doubt I Got Lucky And My Game Happened To Have Them All, So I'm Probably Missing Shit
@@ -406,6 +400,7 @@ namespace Gp4ProjectBuilder {
                         Out($"Ignoring: {filepath}");
                         return true;
                     }
+                if (filter_array != null)
                 foreach(var blacklisted_file_or_folder in filter_array)
                     if(filepath.Contains(blacklisted_file_or_folder)) {
                         Out($"Ignoring: {filepath}");
@@ -602,22 +597,22 @@ namespace Gp4ProjectBuilder {
             ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
             ///--     Create Base .gp4 Elements     --\\\
             ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
-            var psproject = GP4.CreateElement("psproject");
+            var psproject = gp4.CreateElement("psproject");
                 psproject.SetAttribute("fmt", "gp4");
                 psproject.SetAttribute("version", "1000");
 
-            var volume = GP4.CreateElement("volume");
+            var volume = gp4.CreateElement("volume");
 
-            var volume_type = GP4.CreateElement("volume_type");
+            var volume_type = gp4.CreateElement("volume_type");
                 volume_type.InnerText = $"pkg_{(category == "gd" ? "ps4_app" : "ps4_patch")}";
 
-            var volume_id = GP4.CreateElement("volume_id");
+            var volume_id = gp4.CreateElement("volume_id");
                 volume_id.InnerText = "PS4VOLUME";
 
-            var volume_ts = GP4.CreateElement("volume_ts");
+            var volume_ts = gp4.CreateElement("volume_ts");
                 volume_ts.InnerText = TimeStamp;
 
-            var package = GP4.CreateElement("package");
+            var package = gp4.CreateElement("package");
                 package.SetAttribute("content_id", content_id);
                 package.SetAttribute("passcode", passcode);
                 package.SetAttribute("storage_type", (category == "gp" ? "digital25" : "digital50"));
@@ -625,14 +620,14 @@ namespace Gp4ProjectBuilder {
             if(category == "gp")
                 package.SetAttribute("app_path", $"{(pkg_source == "" ? $"{content_id}-A{app_ver.Replace(".", "")}-V{version.Replace(".", "")}.pkg" : pkg_source)}");
 
-            var chunk_info = GP4.CreateElement("chunk_info");
+            var chunk_info = gp4.CreateElement("chunk_info");
                 chunk_info.SetAttribute("chunk_count", $"{chunk_count}");
                 chunk_info.SetAttribute("scenario_count", $"{scenario_count}");
 
 
-            var chunks = GP4.CreateElement("chunks");
+            var chunks = gp4.CreateElement("chunks");
             for(int chunk_id = 0; chunk_id < chunk_count; chunk_id++) {
-                chunk = GP4.CreateElement("chunk");
+                chunk = gp4.CreateElement("chunk");
                 chunk.SetAttribute("id", $"{chunk_id}");
 
                 if(chunk_labels[chunk_id] == "") //  I Hope This Fix Works For Every Game...
@@ -643,11 +638,11 @@ namespace Gp4ProjectBuilder {
             }
 
 
-            var scenarios = GP4.CreateElement("scenarios");
+            var scenarios = gp4.CreateElement("scenarios");
                 scenarios.SetAttribute("default_id", $"{default_id}");
 
             for(index = 0; index < scenario_count; index++) {
-                scenario = GP4.CreateElement("scenario");
+                scenario = gp4.CreateElement("scenario");
                 scenario.SetAttribute("id", $"{index}");
                 scenario.SetAttribute("type", $"{(scenario_types[index] == 1 ? "sp" : "mp")}");
                 scenario.SetAttribute("initial_chunk_count", $"{initial_chunk_count[index]}");
@@ -657,10 +652,10 @@ namespace Gp4ProjectBuilder {
             }
 
 
-            var files = GP4.CreateElement("files");
+            var files = gp4.CreateElement("files");
             for(index = 0; index < file_paths.Length - 1; index++) {
                 if(FileShouldBeExcluded(file_paths[index])) goto Skip;
-                file = GP4.CreateElement("file");
+                file = gp4.CreateElement("file");
                 file.SetAttribute("targ_path", (file_paths[index].Replace(gamedata_folder + "\\", string.Empty)).Replace('\\', '/'));
                 file.SetAttribute("orig_path", file_paths[index]);
                 /* 
@@ -680,11 +675,11 @@ namespace Gp4ProjectBuilder {
             //////////////////////\\\\\\\\\\\\\\\\\\\\\\
 
             index = 0;
-            var rootdir = GP4.CreateElement("rootdir");
+            var rootdir = gp4.CreateElement("rootdir");
 
             void AppendSubfolder(string _dir, XmlElement node) {
                 foreach(string folder in Directory.GetDirectories(_dir)) {
-                    subdir = GP4.CreateElement("dir");
+                    subdir = gp4.CreateElement("dir");
                     subdir.SetAttribute("targ_name", folder.Substring(folder.LastIndexOf('\\') + 1));
                     if(folder.Substring(folder.LastIndexOf('\\') + 1) != "about")
                         node.AppendChild(subdir);
@@ -693,7 +688,7 @@ namespace Gp4ProjectBuilder {
             }
 
             foreach(string folder in Directory.GetDirectories(gamedata_folder)) {
-                dir = GP4.CreateElement("dir");
+                dir = gp4.CreateElement("dir");
                 dir.SetAttribute("targ_name", folder.Substring(folder.LastIndexOf('\\') + 1));
                 rootdir.AppendChild(dir);
                 if(Directory.GetDirectories(folder).Length > 0) AppendSubfolder(folder, dir);
@@ -704,8 +699,8 @@ namespace Gp4ProjectBuilder {
             ////////////////////\\\\\\\\\\\\\\\\\\\\
             ///--     Build .gp4 Structure     --\\\
             ////////////////////\\\\\\\\\\\\\\\\\\\\
-            GP4.AppendChild(Declaration);
-            GP4.AppendChild(psproject);
+            gp4.AppendChild(gp4_declaration);
+            gp4.AppendChild(psproject);
             psproject.AppendChild(volume);
             psproject.AppendChild(files);
             psproject.AppendChild(rootdir);
@@ -718,10 +713,10 @@ namespace Gp4ProjectBuilder {
             chunk_info.AppendChild(scenarios);
 
             var NewTime = new TimeSpan(DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond);
-            var stamp = GP4.CreateComment($"gengp4.exe Alternative. Time Taken For Build Process: {NewTime.Subtract(InternalTimeStamp)}");
+            var stamp = gp4.CreateComment($"gengp4.exe Alternative. Time Taken For Build Process: {NewTime.Subtract(InternalTimeStamp)}");
             
-            GP4.AppendChild(stamp);
-            GP4.Save($@"{gp4_output_directory}\{title_id}-{(category == "gd" ? "app" : "patch")}.gp4");
+            gp4.AppendChild(stamp);
+            gp4.Save($@"{gp4_output_directory}\{title_id}-{(category == "gd" ? "app" : "patch")}.gp4");
             
             OutputWindow.AppendText($"\nFinished!\nFile Saved At {gp4_output_directory}\nTime Taken {NewTime.Subtract(InternalTimeStamp)}");
         }
