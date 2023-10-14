@@ -131,7 +131,7 @@ namespace Gp4ProjectBuilder {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
             this.ClientSize = new System.Drawing.Size(387, 195);
             this.Controls.Add(this.CustomPasscodeTextBox);
             this.Controls.Add(this.IgnoreFilterTextBox);

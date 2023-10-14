@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.9.32
+    public partial class MainForm : Form { // ver 1.10.33
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -140,7 +140,7 @@ namespace Gp4ProjectBuilder {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.WindowText;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
             this.Controls.Add(this.OptionsBtn);
             this.Controls.Add(this.DisableLogBox);
@@ -228,10 +228,10 @@ namespace Gp4ProjectBuilder {
         #endregion
 
 
-        #region Application Variables
         /////////////////////\\\\\\\\\\\\\\\\\\\\
         ///--     Application Variables     --\\\
         /////////////////////\\\\\\\\\\\\\\\\\\\\
+        #region Application Variables
         
         // Main Application Variables
         public static int MouseIsDown = 0;
@@ -342,31 +342,17 @@ namespace Gp4ProjectBuilder {
             text_box_changed[0] = true;
         }
 
-        // TODO: 
-        // - figure out pfs compression / chunk bs for certain file formats
-        private void CreateBtn_Click(object sender, EventArgs e) {
-            if(PrebuildChecks()) return;
-            OutputWindow.Clear();
-            OutputWindow.AppendText("Starting .gp4 Creation");
 
-            var TimeStamp = $"{DateTime.Now.GetDateTimeFormats()[78]}"; // Sony One, For Consistency
-            var miliseconds = DateTime.Now.Millisecond; // Format Sony Used Doesn't Have Miliseconds, But I Still Wanna Track It For Now
-            var InternalTimeStamp = new TimeSpan(DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond); // Alternate One To Accurately Track Build Times
+        // Some Files Or Formats Aren't Supposed To Be Included. I Doubt I Got Lucky And My Game Happened To Have Them All, So I'm Probably Missing Shit
+        private bool FileShouldBeExcluded(string filepath) {
 
-            gp4 = new XmlDocument();
-            gp4_declaration = gp4.CreateXmlDeclaration("1.1", "utf-8", "yes");
+            if(!filepath.Contains('.'))
+                return false;
 
+            // To Exclude certain Files From sce_sys while not excluding them entirely
+            var filename = filepath.Remove(filepath.LastIndexOf(".")).Substring(filepath.LastIndexOf('\\') + 1);
 
-            // Some Files Or Formats Aren't Supposed To Be Included. I Doubt I Got Lucky And My Game Happened To Have Them All, So I'm Probably Missing Shit
-            bool FileShouldBeExcluded(string filepath) {
-
-                if(!filepath.Contains('.'))
-                    return false;
-
-                // To Exclude certain Files From sce_sys while not excluding them entirely
-                var filename = filepath.Remove(filepath.LastIndexOf(".")).Substring(filepath.LastIndexOf('\\') + 1);
-
-                string[] blacklist = new string[] {
+            string[] blacklist = new string[] {
                   // Drunk Canadian Guy
                     "right.sprx",
                     $"{(ignore_keystone ? @"sce_sys\keystone" : "@@")}",
@@ -395,34 +381,77 @@ namespace Gp4ProjectBuilder {
                     @"sce_sys\app\playgo-manifest.xml"
                 };
 
-                foreach(var blacklisted_file_or_folder in blacklist)
-                    if(filepath.Contains(blacklisted_file_or_folder)) {
-                        Out($"Ignoring: {filepath}");
-                        return true;
-                    }
-                if (filter_array != null)
+            foreach(var blacklisted_file_or_folder in blacklist)
+                if(filepath.Contains(blacklisted_file_or_folder)) {
+                    Out($"Ignoring: {filepath}");
+                    return true;
+                }
+            if(filter_array != null)
                 foreach(var blacklisted_file_or_folder in filter_array)
                     if(filepath.Contains(blacklisted_file_or_folder)) {
                         Out($"Ignoring: {filepath}");
                         return true;
                     }
-                return false;
+            return false;
+        }
+
+        private bool SkipCompression(string filepath) {
+            string[] Blacklist = new string[] {
+                "sce_sys",
+                "sce_module",
+                ".txt",
+                ".elf",
+                ".bin"
+            };
+
+            foreach(var file in Blacklist)
+                if(filepath.Contains(file))
+                    return true;
+
+            return false;
+        }
+        private bool SkipChunkAttribute(string filepath) {
+            string[] Blacklist = new string[] {
+                "sce_sys",
+                "sce_module",
+                ".bin"
+            };
+
+            foreach(var file in Blacklist)
+                if(filepath.Contains(file))
+                    return true;
+
+            return false;
+        }
+
+        private void LoadParameterLabels(string[] StringArray) {
+            int byteIndex = 0;
+            StringBuilder Builder;
+
+            for(index = 0; index < StringArray.Length; index++) {
+                Builder = new StringBuilder();
+
+                while(buffer[byteIndex] != 0)
+                    Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[byteIndex++] })); // Just Take A Byte, You Fussy Prick
+
+                byteIndex++; //!
+                StringArray[index] = Builder.ToString();
             }
+        }
 
-            void LoadParameterLabels(string[] StringArray) {
-                int byteIndex = 0;
-                StringBuilder Builder;
+        // TODO: 
+        // - figure out pfs compression / chunk bs for certain file formats
+        private void CreateBtn_Click(object sender, EventArgs e) {
+            if(PrebuildChecks()) return;
+            OutputWindow.Clear();
+            OutputWindow.AppendText("Starting .gp4 Creation");
 
-                for(index = 0; index < StringArray.Length; index++) {
-                    Builder = new StringBuilder();
+            var TimeStamp = $"{DateTime.Now.GetDateTimeFormats()[78]}"; // Sony One, For Consistency
+            var miliseconds = DateTime.Now.Millisecond; // Format Sony Used Doesn't Have Miliseconds, But I Still Wanna Track It For Now
+            var InternalTimeStamp = new TimeSpan(DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond); // Alternate One To Accurately Track Build Times
 
-                    while(buffer[byteIndex] != 0)
-                        Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[byteIndex++] })); // Just Take A Byte, You Fussy Prick
-
-                    byteIndex++; //!
-                    StringArray[index] = Builder.ToString();
-                }
-            }
+            gp4 = new XmlDocument();
+            gp4_declaration = gp4.CreateXmlDeclaration("1.1", "utf-8", "yes");
 
 
             //////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -658,12 +687,10 @@ namespace Gp4ProjectBuilder {
                 file = gp4.CreateElement("file");
                 file.SetAttribute("targ_path", (file_paths[index].Replace(gamedata_folder + "\\", string.Empty)).Replace('\\', '/'));
                 file.SetAttribute("orig_path", file_paths[index]);
-                /* 
-                   if (FileUsedPfsComporession(file_paths[path_index]))
-                   file.SetAttribute("pfs_compression", "enabled");
-                   if (FileWantsChunkyBeefStew(file_paths[path_index]))
-                   file.SetAttribute("chunks", file_paths[path_index]);
-                */
+                if (!SkipCompression(file_paths[index]))
+                    file.SetAttribute("pfs_compression", "enable");
+                if (!SkipChunkAttribute(file_paths[index]))
+                    file.SetAttribute("chunks", $"0-{chunk_count-1}");
                 files.AppendChild(file);
             Skip: { }
             }
