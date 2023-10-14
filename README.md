@@ -1,3 +1,9 @@
+### Report Any Issues To Myself. I Am Still Actively Working On This, And Use It Myself
+- themagicalblob (Discord)
+- @TheMagicalBlob (Twitter / X)
+- TheMagicalDildo (Reddit... Use Discord, Please)
+- alteringorbisgames@gmail.com
+
 # GP4 GUI
 Legal gengp4.exe alternative written in C# made to avoid dealing with some of the more infuriating
 aspects of gengp4.exe, like writing to param.sfo, or building useless gp4's if the folder name isn't
