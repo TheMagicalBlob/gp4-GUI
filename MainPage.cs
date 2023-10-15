@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.12.40
+    public partial class MainForm : Form { // ver 1.12.41
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -20,8 +20,6 @@ namespace Gp4ProjectBuilder {
             AppFolderPathTextBox.MouseClick += TextBoxReady;
             AppFolderPathTextBox.LostFocus += TextBoxReset;
         }
-
-        private Button debug;
 
 
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
@@ -44,7 +42,6 @@ namespace Gp4ProjectBuilder {
             this.BrowseBtn = new System.Windows.Forms.Button();
             this.DisableLogBox = new System.Windows.Forms.CheckBox();
             this.OptionsBtn = new System.Windows.Forms.Button();
-            this.debug = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateBtn
@@ -155,26 +152,12 @@ namespace Gp4ProjectBuilder {
             this.OptionsBtn.UseVisualStyleBackColor = false;
             this.OptionsBtn.Click += new System.EventHandler(this.OptionsBtn_Click);
             // 
-            // debug
-            // 
-            this.debug.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.debug.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.debug.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.debug.Location = new System.Drawing.Point(89, 6);
-            this.debug.Name = "debug";
-            this.debug.Size = new System.Drawing.Size(18, 23);
-            this.debug.TabIndex = 10;
-            this.debug.Text = "T";
-            this.debug.UseVisualStyleBackColor = false;
-            this.debug.Click += new System.EventHandler(this.debug_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
-            this.Controls.Add(this.debug);
             this.Controls.Add(this.OptionsBtn);
             this.Controls.Add(this.DisableLogBox);
             this.Controls.Add(this.BrowseBtn);
@@ -771,7 +754,6 @@ namespace Gp4ProjectBuilder {
             //////////////////////\\\\\\\\\\\\\\\\\\\\\\
             ///--     rootdir Directory Nesting     --\\\
             //////////////////////\\\\\\\\\\\\\\\\\\\\\\
-            index = 0;
             var rootdir = gp4.CreateElement("rootdir");
 
             void AppendSubfolder(string dir, XmlElement node) {
