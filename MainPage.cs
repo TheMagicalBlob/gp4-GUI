@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.10.33
+    public partial class MainForm : Form { // ver 1.12.40
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -20,7 +20,15 @@ namespace Gp4ProjectBuilder {
             AppFolderPathTextBox.MouseClick += TextBoxReady;
             AppFolderPathTextBox.LostFocus += TextBoxReset;
         }
-        #region Designer Managed
+
+        private Button debug;
+
+
+        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
+        ///--     Designer Managed Functions     --\\\
+        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
+        #region Designer Managed Functions
+#pragma warning disable CS0168 // var not used
         private IContainer components = null;
         protected override void Dispose(bool disposing) {
             if(disposing) components?.Dispose();
@@ -36,17 +44,20 @@ namespace Gp4ProjectBuilder {
             this.BrowseBtn = new System.Windows.Forms.Button();
             this.DisableLogBox = new System.Windows.Forms.CheckBox();
             this.OptionsBtn = new System.Windows.Forms.Button();
+            this.debug = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateBtn
             // 
+            this.CreateBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.CreateBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.CreateBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.CreateBtn.Location = new System.Drawing.Point(371, 58);
             this.CreateBtn.Name = "CreateBtn";
             this.CreateBtn.Size = new System.Drawing.Size(75, 23);
             this.CreateBtn.TabIndex = 0;
             this.CreateBtn.Text = "Build .gp4";
-            this.CreateBtn.UseVisualStyleBackColor = true;
+            this.CreateBtn.UseVisualStyleBackColor = false;
             this.CreateBtn.Click += new System.EventHandler(this.CreateBtn_Click);
             // 
             // AppFolderPathTextBox
@@ -71,6 +82,8 @@ namespace Gp4ProjectBuilder {
             // 
             // MinimizeBtn
             // 
+            this.MinimizeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.MinimizeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.MinimizeBtn.Font = new System.Drawing.Font("MS Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.MinimizeBtn.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -80,21 +93,23 @@ namespace Gp4ProjectBuilder {
             this.MinimizeBtn.TabIndex = 4;
             this.MinimizeBtn.Text = "-";
             this.MinimizeBtn.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.MinimizeBtn.UseVisualStyleBackColor = true;
+            this.MinimizeBtn.UseVisualStyleBackColor = false;
             // 
             // ExitBtn
             // 
+            this.ExitBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.ExitBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.ExitBtn.Location = new System.Drawing.Point(423, 6);
             this.ExitBtn.Name = "ExitBtn";
             this.ExitBtn.Size = new System.Drawing.Size(22, 22);
             this.ExitBtn.TabIndex = 5;
             this.ExitBtn.Text = "X";
-            this.ExitBtn.UseVisualStyleBackColor = true;
+            this.ExitBtn.UseVisualStyleBackColor = false;
             // 
             // OutputWindow
             // 
-            this.OutputWindow.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.OutputWindow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(10)))));
             this.OutputWindow.Font = new System.Drawing.Font("Franklin Gothic Medium", 8.25F);
             this.OutputWindow.ForeColor = System.Drawing.SystemColors.Window;
             this.OutputWindow.Location = new System.Drawing.Point(4, 103);
@@ -106,13 +121,15 @@ namespace Gp4ProjectBuilder {
             // 
             // BrowseBtn
             // 
+            this.BrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.BrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.BrowseBtn.Location = new System.Drawing.Point(305, 58);
             this.BrowseBtn.Name = "BrowseBtn";
             this.BrowseBtn.Size = new System.Drawing.Size(60, 22);
             this.BrowseBtn.TabIndex = 7;
             this.BrowseBtn.Text = "Browse...";
-            this.BrowseBtn.UseVisualStyleBackColor = true;
+            this.BrowseBtn.UseVisualStyleBackColor = false;
             this.BrowseBtn.Click += new System.EventHandler(this.BrowseBtn_Click);
             // 
             // DisableLogBox
@@ -127,14 +144,29 @@ namespace Gp4ProjectBuilder {
             // 
             // OptionsBtn
             // 
+            this.OptionsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.OptionsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.OptionsBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.OptionsBtn.Location = new System.Drawing.Point(8, 6);
             this.OptionsBtn.Name = "OptionsBtn";
             this.OptionsBtn.Size = new System.Drawing.Size(75, 23);
             this.OptionsBtn.TabIndex = 9;
             this.OptionsBtn.Text = "Tool Options";
-            this.OptionsBtn.UseVisualStyleBackColor = true;
+            this.OptionsBtn.UseVisualStyleBackColor = false;
             this.OptionsBtn.Click += new System.EventHandler(this.OptionsBtn_Click);
+            // 
+            // debug
+            // 
+            this.debug.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.debug.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.debug.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.debug.Location = new System.Drawing.Point(89, 6);
+            this.debug.Name = "debug";
+            this.debug.Size = new System.Drawing.Size(18, 23);
+            this.debug.TabIndex = 10;
+            this.debug.Text = "T";
+            this.debug.UseVisualStyleBackColor = false;
+            this.debug.Click += new System.EventHandler(this.debug_Click);
             // 
             // MainForm
             // 
@@ -142,6 +174,7 @@ namespace Gp4ProjectBuilder {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
+            this.Controls.Add(this.debug);
             this.Controls.Add(this.OptionsBtn);
             this.Controls.Add(this.DisableLogBox);
             this.Controls.Add(this.BrowseBtn);
@@ -160,7 +193,12 @@ namespace Gp4ProjectBuilder {
 
         }
         #endregion
-        #region Basic Form Functions
+
+
+        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
+        ///--     Basic Form Init Functions     --\\\
+        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
+        #region Basic Form Init Functions
         public static void BorderFunc(Form form) {
             MainBox = new GroupBox();
             MainBox.Location = new Point(0, -6);
@@ -192,7 +230,7 @@ namespace Gp4ProjectBuilder {
             }
             try {
                 Controls.Find("MinimizeBtn", true)[0].Click += new EventHandler(MinimizeBtn_Click);
-                Controls.Find("MinimizeBtn", true)[0].MouseEnter += new EventHandler(ExitBtnMH);
+                Controls.Find("MinimizeBtn", true)[0].MouseEnter += new EventHandler(MinimizeBtnMH);
                 Controls.Find("MinimizeBtn", true)[0].MouseLeave += new EventHandler(ExitBtnML);
                 Controls.Find("ExitBtn", true)[0].Click += new EventHandler(ExitBtn_Click);
                 Controls.Find("ExitBtn", true)[0].MouseEnter += new EventHandler(ExitBtnMH);
@@ -205,19 +243,20 @@ namespace Gp4ProjectBuilder {
         }
         private static void MinimizeBtn_Click(object sender, EventArgs e) => ActiveForm.WindowState = FormWindowState.Minimized;
         private static void ExitBtn_Click(object sender, EventArgs e) => Environment.Exit(0);
-        public static void ExitBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(255, 227, 0);
+        public static void ExitBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100);
+        public static void MinimizeBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255);
         public static void ExitBtnML(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0);
 
         public static void MouseUpFunc(object sender, MouseEventArgs e) {
-            MouseIsDown = 0;
+            mouse_is_down = 0;
             Options?.BringToFront();
         }
         public static void MouseDownFunc(object sender, MouseEventArgs e) {
             MouseDif = new Point(MousePosition.X - ActiveForm.Location.X, MousePosition.Y - ActiveForm.Location.Y);
-            MouseIsDown = 1;
+            mouse_is_down = 1;
         }
         public static void MoveForm(object sender, MouseEventArgs e) {
-            if(MouseIsDown != 0) {
+            if(mouse_is_down != 0) {
                 ActiveForm.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
                 ActiveForm.Update();
                 if(Options == null) return;
@@ -232,34 +271,21 @@ namespace Gp4ProjectBuilder {
         ///--     Application Variables     --\\\
         /////////////////////\\\\\\\\\\\\\\\\\\\\
         #region Application Variables
-        
-        // Main Application Variables
-        public static int MouseIsDown = 0;
-        public static bool OptionsAreOpen;
-        public static bool[] text_box_changed = new bool[5];
-        public static string[] default_strings = new string[] {
-            "Paste The Gamedata Folder Path Here, Or Use The Browse Button...",
-            "Add A Custom .gp4 Output Directory Here...",
-            "Base Game .pkg Path... (For Game Patches)",
-            "Add Files/Folders You Want To Exclude From The .gp4, Seperated By Semicolons",
-            "Add Custom .pkg Passcode Here (Defaults To All Zeros)"
-        };
-        public static Point MouseDif, LastPos;
-        static Form Options;
 
-
-        // GP4 Creation Variables
+        #region GP4 Creation Variables
         public static byte[] buffer;
-        int chunk_count, scenario_count, default_id, index = 0;
-        int[] scenario_types, scenario_chunk_range, initial_chunk_count;
-        string gamedata_folder, app_ver = "", version = "", content_id, title_id = "CUSA12345", category = "?";
-        string[] chunk_labels, parameter_labels, scenario_labels, file_paths;
-        readonly string[] required_sfo_variables = new string[] { "APP_VER", "CATEGORY", "CONTENT_ID", "TITLE_ID", "VERSION" };
-        static XmlDocument gp4;
-        XmlDeclaration gp4_declaration;
-        XmlElement file, chunk, scenario, dir, subdir;
+        private int chunk_count, scenario_count, default_id, index = 0;
+        private int[] scenario_types, scenario_chunk_range, initial_chunk_count;
+        private string gamedata_folder, app_ver = "", version = "", content_id, title_id = "CUSA12345", category = "?";
+        private string[] chunk_labels, parameter_labels, scenario_labels, file_paths;
+        private readonly string[] required_sfo_variables = new string[] { "APP_VER", "CATEGORY", "CONTENT_ID", "TITLE_ID", "VERSION" };
+        private static XmlDocument gp4;
+        private XmlDeclaration gp4_declaration;
+        private XmlElement file, chunk, scenario, dir, subdir;
+        #endregion
 
-        // GP4 Options
+
+        #region GP4 Creation Options
         public static bool ignore_keystone = false;
         public static string
             passcode = "00000000000000000000000000000000",
@@ -270,14 +296,28 @@ namespace Gp4ProjectBuilder {
         #endregion
 
 
-        #region Main Application Functions
-        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
-        ///--     Main Application Functions     --\\\
-        ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
-        public void Out(object s) {
-            if(!DisableLogBox.Checked)
-                OutputWindow.AppendText("\n" + s);
-        }
+        #region Main Application Variables
+        public static int mouse_is_down = 0;
+        public static bool options_page_is_open, limit_output;
+        public static bool[] text_box_changed = new bool[5];
+        public static string[] default_strings = new string[] {
+            "Paste The Gamedata Folder Path Here, Or Use The Browse Button...",
+            "Add A Custom .gp4 Output Directory Here...",
+            "Base Game .pkg Path... (For Game Patches)",
+            "Add Files/Folders You Want To Exclude From The .gp4, Seperated By Semicolons",
+            "Add Custom .pkg Passcode Here (Defaults To All Zeros)"
+        };
+        public static Point MouseDif, LastPos;
+        static Form Options;
+        #endregion
+        #endregion
+
+
+        ////////////////////\\\\\\\\\\\\\\\\\\\
+        ///--     Main Form Functions     --\\\
+        ////////////////////\\\\\\\\\\\\\\\\\\\
+        #region Main Form Functions
+
         public static void TextBoxReady(object sender, EventArgs e) {
             var Sender = sender as TextBox;
             if(Sender.Font.Italic) {
@@ -298,6 +338,57 @@ namespace Gp4ProjectBuilder {
                 passcode = Sender.Text;
             }
         }
+
+
+        /// <summary> Apply The Path In The Text Box To gamedata_path
+        /// </summary>
+        private void AppFolderPathBox_TextChanged(object sender, EventArgs e) {
+            if(((TextBox)sender).Text == "") return;
+            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
+
+            gamedata_folder = AppFolderPathTextBox.Text.Replace("\"", "");
+            if(Directory.Exists(gamedata_folder))
+                text_box_changed[0] = true;
+        }
+
+        /// <summary> Create Page For Changing Various .gp4 Options <br/>(passcode, source pkg, etc)
+        /// </summary>
+        private void OptionsBtn_Click(object sender, EventArgs e) {
+            LastPos = Location;
+
+            Options?.BringToFront();
+            if(options_page_is_open) return;
+
+            OptionsPage NewPage = new OptionsPage();
+            Options = NewPage;
+            NewPage.Show();
+        }
+
+        /// <summary> Open Windows' Ghastly File Browser Dialog To Search For The Gamedata Folder
+        /// </summary>
+        private void BrowseBtn_Click(object sender, EventArgs e) {
+            FolderBrowserDialog Browser = new FolderBrowserDialog();
+
+            if(Browser.ShowDialog() == DialogResult.OK)
+                AppFolderPathTextBox.Text = Browser.SelectedPath;
+        }
+        private void CreateBtn_Click(object sender, EventArgs e) => Build();
+        private void debug_Click(object sender, EventArgs e) {
+            if (filter_array != null)
+            foreach(var f in filter_array) {
+                Out($"filter:{f}");
+            }
+        }
+        #endregion
+
+
+
+        /////////////////////\\\\\\\\\\\\\\\\\\\\
+        ///--     GP4 Related Functions     --\\\
+        /////////////////////\\\\\\\\\\\\\\\\\\\\
+        #region GP4 Related Functions
+        private void Out(object s) { if (!DisableLogBox.Checked) OutputWindow.AppendText("\n" + s); }
+
         private bool PrebuildChecks() {
             if(passcode.Length != 32) {
                 Out("Incorrect Passcode Length, Must Be 32 Characters");
@@ -318,39 +409,11 @@ namespace Gp4ProjectBuilder {
             return false;
         }
 
-        private void OptionsBtn_Click(object sender, EventArgs e) {
-            LastPos = Location;
-            if(OptionsAreOpen) {
-                Options.BringToFront();
-                return;
-            }
-            OptionsPage NewPage = new OptionsPage();
-            NewPage.Show();
-            Options = NewPage;
-        }
-        private void BrowseBtn_Click(object sender, EventArgs e) {
-            FolderBrowserDialog Browser = new FolderBrowserDialog();
-            if(Browser.ShowDialog() == DialogResult.OK)
-            AppFolderPathTextBox.Text = Browser.SelectedPath;
-        }
-        private void AppFolderPathBox_TextChanged(object sender, EventArgs e) {
-            if(((TextBox)sender).Text == "") return;
-            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
-
-            gamedata_folder = AppFolderPathTextBox.Text.Replace("\"", "");
-            if (Directory.Exists(gamedata_folder))
-            text_box_changed[0] = true;
-        }
-
-
-        // Some Files Or Formats Aren't Supposed To Be Included. I Doubt I Got Lucky And My Game Happened To Have Them All, So I'm Probably Missing Shit
         private bool FileShouldBeExcluded(string filepath) {
 
-            if(!filepath.Contains('.'))
-                return false;
-
-            // To Exclude certain Files From sce_sys while not excluding them entirely
-            var filename = filepath.Remove(filepath.LastIndexOf(".")).Substring(filepath.LastIndexOf('\\') + 1);
+            string filename = string.Empty;
+            if(filepath.Contains('.'))
+            filename = filepath.Remove(filepath.LastIndexOf(".")).Substring(filepath.LastIndexOf('\\') + 1);
 
             string[] blacklist = new string[] {
                   // Drunk Canadian Guy
@@ -383,15 +446,21 @@ namespace Gp4ProjectBuilder {
 
             foreach(var blacklisted_file_or_folder in blacklist)
                 if(filepath.Contains(blacklisted_file_or_folder)) {
+                    #if DEBUG
                     Out($"Ignoring: {filepath}");
+                    #endif
                     return true;
                 }
             if(filter_array != null)
-                foreach(var blacklisted_file_or_folder in filter_array)
+                foreach(var blacklisted_file_or_folder in filter_array) {
+                    if(blacklisted_file_or_folder == "") return false; // Lazy Fix For Null String in filter
                     if(filepath.Contains(blacklisted_file_or_folder)) {
-                        Out($"Ignoring: {filepath}");
+                        #if DEBUG
+                        Out($"User Ignoring: {filepath}");
+                        #endif
                         return true;
                     }
+                }
             return false;
         }
 
@@ -401,7 +470,9 @@ namespace Gp4ProjectBuilder {
                 "sce_module",
                 ".txt",
                 ".elf",
-                ".bin"
+                ".bin",
+                ".prx",
+                ".dll"
             };
 
             foreach(var file in Blacklist)
@@ -441,7 +512,7 @@ namespace Gp4ProjectBuilder {
 
         // TODO: 
         // - figure out pfs compression / chunk bs for certain file formats
-        private void CreateBtn_Click(object sender, EventArgs e) {
+        private void Build() {
             if(PrebuildChecks()) return;
             OutputWindow.Clear();
             OutputWindow.AppendText("Starting .gp4 Creation");
@@ -627,31 +698,31 @@ namespace Gp4ProjectBuilder {
             ///--     Create Base .gp4 Elements     --\\\
             ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
             var psproject = gp4.CreateElement("psproject");
-                psproject.SetAttribute("fmt", "gp4");
-                psproject.SetAttribute("version", "1000");
+            psproject.SetAttribute("fmt", "gp4");
+            psproject.SetAttribute("version", "1000");
 
             var volume = gp4.CreateElement("volume");
 
             var volume_type = gp4.CreateElement("volume_type");
-                volume_type.InnerText = $"pkg_{(category == "gd" ? "ps4_app" : "ps4_patch")}";
+            volume_type.InnerText = $"pkg_{(category == "gd" ? "ps4_app" : "ps4_patch")}";
 
             var volume_id = gp4.CreateElement("volume_id");
-                volume_id.InnerText = "PS4VOLUME";
+            volume_id.InnerText = "PS4VOLUME";
 
             var volume_ts = gp4.CreateElement("volume_ts");
-                volume_ts.InnerText = TimeStamp;
+            volume_ts.InnerText = TimeStamp;
 
             var package = gp4.CreateElement("package");
-                package.SetAttribute("content_id", content_id);
-                package.SetAttribute("passcode", passcode);
-                package.SetAttribute("storage_type", (category == "gp" ? "digital25" : "digital50"));
-                package.SetAttribute("app_type", "full");
+            package.SetAttribute("content_id", content_id);
+            package.SetAttribute("passcode", passcode);
+            package.SetAttribute("storage_type", (category == "gp" ? "digital25" : "digital50"));
+            package.SetAttribute("app_type", "full");
             if(category == "gp")
                 package.SetAttribute("app_path", $"{(pkg_source == "" ? $"{content_id}-A{app_ver.Replace(".", "")}-V{version.Replace(".", "")}.pkg" : pkg_source)}");
 
             var chunk_info = gp4.CreateElement("chunk_info");
-                chunk_info.SetAttribute("chunk_count", $"{chunk_count}");
-                chunk_info.SetAttribute("scenario_count", $"{scenario_count}");
+            chunk_info.SetAttribute("chunk_count", $"{chunk_count}");
+            chunk_info.SetAttribute("scenario_count", $"{scenario_count}");
 
 
             var chunks = gp4.CreateElement("chunks");
@@ -668,7 +739,7 @@ namespace Gp4ProjectBuilder {
 
 
             var scenarios = gp4.CreateElement("scenarios");
-                scenarios.SetAttribute("default_id", $"{default_id}");
+            scenarios.SetAttribute("default_id", $"{default_id}");
 
             for(index = 0; index < scenario_count; index++) {
                 scenario = gp4.CreateElement("scenario");
@@ -687,10 +758,10 @@ namespace Gp4ProjectBuilder {
                 file = gp4.CreateElement("file");
                 file.SetAttribute("targ_path", (file_paths[index].Replace(gamedata_folder + "\\", string.Empty)).Replace('\\', '/'));
                 file.SetAttribute("orig_path", file_paths[index]);
-                if (!SkipCompression(file_paths[index]))
+                if(!SkipCompression(file_paths[index]))
                     file.SetAttribute("pfs_compression", "enable");
-                if (!SkipChunkAttribute(file_paths[index]))
-                    file.SetAttribute("chunks", $"0-{chunk_count-1}");
+                if(!SkipChunkAttribute(file_paths[index]))
+                    file.SetAttribute("chunks", $"0-{chunk_count - 1}");
                 files.AppendChild(file);
             Skip: { }
             }
@@ -700,12 +771,11 @@ namespace Gp4ProjectBuilder {
             //////////////////////\\\\\\\\\\\\\\\\\\\\\\
             ///--     rootdir Directory Nesting     --\\\
             //////////////////////\\\\\\\\\\\\\\\\\\\\\\
-
             index = 0;
             var rootdir = gp4.CreateElement("rootdir");
 
-            void AppendSubfolder(string _dir, XmlElement node) {
-                foreach(string folder in Directory.GetDirectories(_dir)) {
+            void AppendSubfolder(string dir, XmlElement node) {
+                foreach(string folder in Directory.GetDirectories(dir)) {
                     subdir = gp4.CreateElement("dir");
                     subdir.SetAttribute("targ_name", folder.Substring(folder.LastIndexOf('\\') + 1));
                     if(folder.Substring(folder.LastIndexOf('\\') + 1) != "about")
@@ -741,19 +811,18 @@ namespace Gp4ProjectBuilder {
 
             var NewTime = new TimeSpan(DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond);
             var stamp = gp4.CreateComment($"gengp4.exe Alternative. Time Taken For Build Process: {NewTime.Subtract(InternalTimeStamp)}");
-            
+
             gp4.AppendChild(stamp);
             gp4.Save($@"{gp4_output_directory}\{title_id}-{(category == "gd" ? "app" : "patch")}.gp4");
-            
+
             OutputWindow.AppendText($"\nFinished!\nFile Saved At {gp4_output_directory}\nTime Taken {NewTime.Subtract(InternalTimeStamp)}");
         }
         #endregion
 
-
-        #region ControlDeclarations
         ////////////////////\\\\\\\\\\\\\\\\\\\\
         ///--     Control Declarations     --\\\
         ////////////////////\\\\\\\\\\\\\\\\\\\\
+        #region ControlDeclarations
         private Button CreateBtn;
         private TextBox AppFolderPathTextBox;
         private Label Title;

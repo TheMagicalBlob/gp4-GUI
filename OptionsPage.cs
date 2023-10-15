@@ -1,33 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Serialization;
-using System.Reflection;
-using System.Xml.Linq;
 
 namespace Gp4ProjectBuilder {
 
     public partial class OptionsPage : Form {
+
         public OptionsPage() {
             InitializeComponent();
             MainForm.BorderFunc(this);
-            MainForm.OptionsAreOpen = true;
+            MainForm.options_page_is_open = true;
             Location = new Point(MainForm.LastPos.X + 30, MainForm.LastPos.Y + 60);
             LoadOptions();
         }
 
-        #region Designer Managed Functions
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         ///--     Designer Managed Functions     --\\\
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
+        #region Designer Managed Functions
+        #pragma warning disable CS0168 // var not used
         private IContainer components = null;
         protected override void Dispose(bool disposing) {
             if(disposing) components?.Dispose();
@@ -38,10 +31,13 @@ namespace Gp4ProjectBuilder {
             this.CustomGP4PathTextBox = new System.Windows.Forms.TextBox();
             this.Title = new System.Windows.Forms.Label();
             this.ExitBtn = new System.Windows.Forms.Button();
-            this.IgnoreOutputBox = new System.Windows.Forms.CheckBox();
-            this.CustomPKGPathTextBox = new System.Windows.Forms.TextBox();
-            this.IgnoreFilterTextBox = new System.Windows.Forms.TextBox();
+            this.LimitedOutputBox = new System.Windows.Forms.CheckBox();
+            this.SourcePkgPathTextBox = new System.Windows.Forms.TextBox();
+            this.FilterTextBox = new System.Windows.Forms.TextBox();
             this.CustomPasscodeTextBox = new System.Windows.Forms.TextBox();
+            this.OutputDirectoryBtn = new System.Windows.Forms.Button();
+            this.SourcePkgPathBtn = new System.Windows.Forms.Button();
+            this.FilterBrowseBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // KeystoneToggleBox
@@ -60,7 +56,7 @@ namespace Gp4ProjectBuilder {
             this.CustomGP4PathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
             this.CustomGP4PathTextBox.Location = new System.Drawing.Point(6, 30);
             this.CustomGP4PathTextBox.Name = "CustomGP4PathTextBox";
-            this.CustomGP4PathTextBox.Size = new System.Drawing.Size(376, 21);
+            this.CustomGP4PathTextBox.Size = new System.Drawing.Size(317, 21);
             this.CustomGP4PathTextBox.TabIndex = 1;
             this.CustomGP4PathTextBox.Text = "Add A Custom .gp4 Output Directory Here...";
             this.CustomGP4PathTextBox.TextChanged += new System.EventHandler(this.CustomGP4PathTextBox_TextChanged);
@@ -77,44 +73,47 @@ namespace Gp4ProjectBuilder {
             // 
             // ExitBtn
             // 
+            this.ExitBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.ExitBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.ExitBtn.Location = new System.Drawing.Point(359, 4);
             this.ExitBtn.Name = "ExitBtn";
             this.ExitBtn.Size = new System.Drawing.Size(22, 22);
             this.ExitBtn.TabIndex = 7;
             this.ExitBtn.Text = "X";
-            this.ExitBtn.UseVisualStyleBackColor = true;
+            this.ExitBtn.UseVisualStyleBackColor = false;
             this.ExitBtn.Click += new System.EventHandler(this.ExitBtn_Click);
             // 
-            // IgnoreOutputBox
+            // LimitedOutputBox
             // 
-            this.IgnoreOutputBox.AutoSize = true;
-            this.IgnoreOutputBox.Location = new System.Drawing.Point(7, 107);
-            this.IgnoreOutputBox.Name = "IgnoreOutputBox";
-            this.IgnoreOutputBox.Size = new System.Drawing.Size(196, 17);
-            this.IgnoreOutputBox.TabIndex = 6;
-            this.IgnoreOutputBox.Text = "Limit Log Output (Builds .gp4 Faster)";
-            this.IgnoreOutputBox.UseVisualStyleBackColor = true;
+            this.LimitedOutputBox.AutoSize = true;
+            this.LimitedOutputBox.Location = new System.Drawing.Point(7, 107);
+            this.LimitedOutputBox.Name = "LimitedOutputBox";
+            this.LimitedOutputBox.Size = new System.Drawing.Size(196, 17);
+            this.LimitedOutputBox.TabIndex = 6;
+            this.LimitedOutputBox.Text = "Limit Log Output (Builds .gp4 Faster)";
+            this.LimitedOutputBox.UseVisualStyleBackColor = true;
+            this.LimitedOutputBox.CheckedChanged += new System.EventHandler(this.LimitedOutputBox_CheckedChanged);
             // 
-            // CustomPKGPathTextBox
+            // SourcePkgPathTextBox
             // 
-            this.CustomPKGPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
-            this.CustomPKGPathTextBox.Location = new System.Drawing.Point(6, 56);
-            this.CustomPKGPathTextBox.Name = "CustomPKGPathTextBox";
-            this.CustomPKGPathTextBox.Size = new System.Drawing.Size(375, 21);
-            this.CustomPKGPathTextBox.TabIndex = 2;
-            this.CustomPKGPathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
-            this.CustomPKGPathTextBox.TextChanged += new System.EventHandler(this.CustomPKGPathTextBox_TextChanged);
+            this.SourcePkgPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
+            this.SourcePkgPathTextBox.Location = new System.Drawing.Point(6, 56);
+            this.SourcePkgPathTextBox.Name = "SourcePkgPathTextBox";
+            this.SourcePkgPathTextBox.Size = new System.Drawing.Size(317, 21);
+            this.SourcePkgPathTextBox.TabIndex = 2;
+            this.SourcePkgPathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
+            this.SourcePkgPathTextBox.TextChanged += new System.EventHandler(this.SourcePkgPathTextBox_TextChanged);
             // 
-            // IgnoreFilterTextBox
+            // FilterTextBox
             // 
-            this.IgnoreFilterTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Italic);
-            this.IgnoreFilterTextBox.Location = new System.Drawing.Point(7, 133);
-            this.IgnoreFilterTextBox.Name = "IgnoreFilterTextBox";
-            this.IgnoreFilterTextBox.Size = new System.Drawing.Size(375, 21);
-            this.IgnoreFilterTextBox.TabIndex = 3;
-            this.IgnoreFilterTextBox.Text = "Add Files/Folders You Want To Exclude, Seperated By Semicolons";
-            this.IgnoreFilterTextBox.TextChanged += new System.EventHandler(this.IgnoreFilterTextBox_TextChanged);
+            this.FilterTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Italic);
+            this.FilterTextBox.Location = new System.Drawing.Point(7, 133);
+            this.FilterTextBox.Name = "FilterTextBox";
+            this.FilterTextBox.Size = new System.Drawing.Size(316, 21);
+            this.FilterTextBox.TabIndex = 3;
+            this.FilterTextBox.Text = "Add Files/Folders You Want To Exclude, Seperated By Semicolons";
+            this.FilterTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             // 
             // CustomPasscodeTextBox
             // 
@@ -122,10 +121,49 @@ namespace Gp4ProjectBuilder {
             this.CustomPasscodeTextBox.Location = new System.Drawing.Point(6, 158);
             this.CustomPasscodeTextBox.MaxLength = 32;
             this.CustomPasscodeTextBox.Name = "CustomPasscodeTextBox";
-            this.CustomPasscodeTextBox.Size = new System.Drawing.Size(375, 21);
+            this.CustomPasscodeTextBox.Size = new System.Drawing.Size(317, 21);
             this.CustomPasscodeTextBox.TabIndex = 4;
             this.CustomPasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
             this.CustomPasscodeTextBox.TextChanged += new System.EventHandler(this.CustomPasscodeTextBox_TextChanged);
+            // 
+            // OutputDirectoryBtn
+            // 
+            this.OutputDirectoryBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.OutputDirectoryBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.OutputDirectoryBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.OutputDirectoryBtn.Location = new System.Drawing.Point(325, 30);
+            this.OutputDirectoryBtn.Name = "OutputDirectoryBtn";
+            this.OutputDirectoryBtn.Size = new System.Drawing.Size(60, 22);
+            this.OutputDirectoryBtn.TabIndex = 8;
+            this.OutputDirectoryBtn.Text = "Browse...";
+            this.OutputDirectoryBtn.UseVisualStyleBackColor = false;
+            this.OutputDirectoryBtn.Click += new System.EventHandler(this.OutputDirectoryBtn_Click);
+            // 
+            // SourcePkgPathBtn
+            // 
+            this.SourcePkgPathBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.SourcePkgPathBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.SourcePkgPathBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.SourcePkgPathBtn.Location = new System.Drawing.Point(325, 55);
+            this.SourcePkgPathBtn.Name = "SourcePkgPathBtn";
+            this.SourcePkgPathBtn.Size = new System.Drawing.Size(60, 22);
+            this.SourcePkgPathBtn.TabIndex = 9;
+            this.SourcePkgPathBtn.Text = "Browse...";
+            this.SourcePkgPathBtn.UseVisualStyleBackColor = false;
+            this.SourcePkgPathBtn.Click += new System.EventHandler(this.SourcePkgPathBtn_Click);
+            // 
+            // FilterBrowseBtn
+            // 
+            this.FilterBrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.FilterBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.FilterBrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.FilterBrowseBtn.Location = new System.Drawing.Point(325, 132);
+            this.FilterBrowseBtn.Name = "FilterBrowseBtn";
+            this.FilterBrowseBtn.Size = new System.Drawing.Size(60, 22);
+            this.FilterBrowseBtn.TabIndex = 10;
+            this.FilterBrowseBtn.Text = "Browse...";
+            this.FilterBrowseBtn.UseVisualStyleBackColor = false;
+            this.FilterBrowseBtn.Click += new System.EventHandler(this.FilterBrowseBtn_Click);
             // 
             // OptionsPage
             // 
@@ -133,10 +171,13 @@ namespace Gp4ProjectBuilder {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
             this.ClientSize = new System.Drawing.Size(387, 195);
+            this.Controls.Add(this.FilterBrowseBtn);
+            this.Controls.Add(this.SourcePkgPathBtn);
+            this.Controls.Add(this.OutputDirectoryBtn);
             this.Controls.Add(this.CustomPasscodeTextBox);
-            this.Controls.Add(this.IgnoreFilterTextBox);
-            this.Controls.Add(this.CustomPKGPathTextBox);
-            this.Controls.Add(this.IgnoreOutputBox);
+            this.Controls.Add(this.FilterTextBox);
+            this.Controls.Add(this.SourcePkgPathTextBox);
+            this.Controls.Add(this.LimitedOutputBox);
             this.Controls.Add(this.ExitBtn);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.CustomGP4PathTextBox);
@@ -154,45 +195,47 @@ namespace Gp4ProjectBuilder {
 
 
         private void ExitBtn_Click(object sender, EventArgs e) {
-            MainForm.OptionsAreOpen = false;
+            MainForm.options_page_is_open = false;
             this.Dispose();
         }
         private void LoadOptions() {
             if(MainForm.gp4_output_directory != "")
                 CustomGP4PathTextBox.Text = MainForm.gp4_output_directory;
             if(MainForm.pkg_source != "")
-                CustomPKGPathTextBox.Text = MainForm.pkg_source;
+                SourcePkgPathTextBox.Text = MainForm.pkg_source;
 
             if(MainForm.filter_array != null) {
-                IgnoreFilterTextBox.Text = string.Empty;
+                FilterTextBox.Text = string.Empty;
                 foreach(string file in MainForm.filter_array)
-                IgnoreFilterTextBox.Text += $"{file},";
-                IgnoreFilterTextBox.Text = IgnoreFilterTextBox.Text.TrimEnd(',');
+                FilterTextBox.Text += $"{file},";
+                FilterTextBox.Text = FilterTextBox.Text.TrimEnd(',');
             }
 
+            KeystoneToggleBox.Checked = MainForm.ignore_keystone;
 
             if(MainForm.passcode != "00000000000000000000000000000000")
                 CustomPasscodeTextBox.Text = MainForm.passcode;
 
 
             // Designer Will Delete These From InitializeComponent If Added Manually
-            CustomPKGPathTextBox.MouseClick += MainForm.TextBoxReady;
-            CustomPKGPathTextBox.LostFocus += MainForm.TextBoxReset;
+            SourcePkgPathTextBox.MouseClick += MainForm.TextBoxReady;
+            SourcePkgPathTextBox.LostFocus += MainForm.TextBoxReset;
             CustomGP4PathTextBox.MouseClick += MainForm.TextBoxReady;
             CustomGP4PathTextBox.LostFocus += MainForm.TextBoxReset;
             CustomPasscodeTextBox.MouseClick += MainForm.TextBoxReady;
             CustomPasscodeTextBox.LostFocus += MainForm.TextBoxReset;
-            IgnoreFilterTextBox.MouseClick += MainForm.TextBoxReady;
-            IgnoreFilterTextBox.LostFocus += MainForm.TextBoxReset;
+            FilterTextBox.MouseClick += MainForm.TextBoxReady;
+            FilterTextBox.LostFocus += MainForm.TextBoxReset;
         }
 
 
-        #region Options Related Functions
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
         ///--     Options Related Functions     --\\\
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
+        #region Options Related Functions
         private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => MainForm.ignore_keystone = KeystoneToggleBox.Checked;
-
+        private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => MainForm.limit_output = LimitedOutputBox.Checked;
+        
         private void CustomGP4PathTextBox_TextChanged(object sender, EventArgs e) {
             if(((TextBox)sender).Text == "") return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
@@ -201,36 +244,56 @@ namespace Gp4ProjectBuilder {
             if(CustomGP4PathTextBox.Text != "" && CustomGP4PathTextBox.Text != MainForm.default_strings[1])
                 MainForm.text_box_changed[1] = true;
         }
-        private void CustomPKGPathTextBox_TextChanged(object sender, EventArgs e) {
+        private void OutputDirectoryBtn_Click(object sender, EventArgs e) {
+            FolderBrowserDialog Browser = new FolderBrowserDialog();
+
+            if(Browser.ShowDialog() == DialogResult.OK)
+                CustomGP4PathTextBox.Text = Browser.SelectedPath;
+        }
+
+        private void SourcePkgPathTextBox_TextChanged(object sender, EventArgs e) {
             if(((TextBox)sender).Text == "") return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
-            MainForm.pkg_source = CustomPKGPathTextBox.Text.Replace("\"", "");
-            if(CustomPKGPathTextBox.Text != "" && CustomPKGPathTextBox.Text != MainForm.default_strings[2])
+            MainForm.pkg_source = SourcePkgPathTextBox.Text.Replace("\"", "");
+            if(SourcePkgPathTextBox.Text != "" && SourcePkgPathTextBox.Text != MainForm.default_strings[2])
                 MainForm.text_box_changed[2] = true;
         }
-        private void IgnoreFilterTextBox_TextChanged(object sender, EventArgs e) {
-            if(((TextBox)sender).Text == "" || (IgnoreFilterTextBox.Text == MainForm.default_strings[3])) return;
+        private void SourcePkgPathBtn_Click(object sender, EventArgs e) {
+            FolderBrowserDialog Browser = new FolderBrowserDialog();
+
+            if(Browser.ShowDialog() == DialogResult.OK)
+                SourcePkgPathTextBox.Text = Browser.SelectedPath;
+        }
+        private void FilterTextBox_TextChanged(object sender, EventArgs e) { // tst : eboot.bin, keystone, discname.txt; param.sfo
+            if(MainForm.text_box_changed[3] == true && ((TextBox)sender).Text == "") {
+                //MainForm.filter_array = null;
+                return;
+            }
+
+            if(((TextBox)sender).Text == "" || (FilterTextBox.Text == MainForm.default_strings[3])) return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
+            
 
-            StringBuilder Builder;
             int filter_strings_length = 0, char_index = 0;
-            MainForm.buffer = Encoding.UTF8.GetBytes((IgnoreFilterTextBox.Text + ';').ToCharArray());
+            StringBuilder Builder;
 
-            foreach(char c in (IgnoreFilterTextBox.Text + ';').ToCharArray())
-            if(c == ';' || c == ',') filter_strings_length++;
+            foreach(char c in (FilterTextBox.Text + ';').ToCharArray())
+                if(c == ';' || c == ',')
+                    filter_strings_length++;
 
             MainForm.filter_array = new string[filter_strings_length];
+            MainForm.buffer = Encoding.UTF8.GetBytes((FilterTextBox.Text + ';').ToCharArray());
 
             try {
                 for(var array_index = 0; array_index < MainForm.filter_array.Length; array_index++) {
                     Builder = new StringBuilder();
 
                     while(MainForm.buffer[char_index] != 0x3B && MainForm.buffer[char_index] != 0x2C)
-                    Builder.Append(Encoding.UTF8.GetString(new byte[] { MainForm.buffer[char_index++] })); // Just Take A Byte, You Fussy Prick
+                        Builder.Append(Encoding.UTF8.GetString(new byte[] { MainForm.buffer[char_index++] }));
 
                     char_index++;
-                    MainForm.filter_array[array_index] = Builder.ToString();
+                    MainForm.filter_array[array_index] = Builder.ToString().Trim(' ');
                     MainForm.text_box_changed[3] = true;
                 }
             }
@@ -239,6 +302,17 @@ namespace Gp4ProjectBuilder {
                 Console.WriteLine($"\n{ex.StackTrace}");
 #endif
             }
+        }
+        private void FilterBrowseBtn_Click(object sender, EventArgs e) {
+            OpenFileDialog Browser = new OpenFileDialog();
+            Browser.Multiselect = true;
+
+            if(Browser.ShowDialog() == DialogResult.OK) {
+                FilterTextBox.Clear();
+                foreach(string file in Browser.FileNames)
+                    FilterTextBox.Text += $"{file}, ";
+            }
+            Browser.Dispose();
         }
 
         private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) {
@@ -255,19 +329,21 @@ namespace Gp4ProjectBuilder {
 
 
 
-
-        #region ControlDeclarations
         ////////////////////\\\\\\\\\\\\\\\\\\\\
         ///--     Control Declarations     --\\\
         ////////////////////\\\\\\\\\\\\\\\\\\\\
+        #region ControlDeclarations
         private CheckBox KeystoneToggleBox;
         private TextBox CustomGP4PathTextBox;
         private Label Title;
         private Button ExitBtn;
-        private CheckBox IgnoreOutputBox;
-        private TextBox CustomPKGPathTextBox;
-        private TextBox IgnoreFilterTextBox;
+        private CheckBox LimitedOutputBox;
+        private TextBox SourcePkgPathTextBox;
+        private TextBox FilterTextBox;
         private TextBox CustomPasscodeTextBox;
+        private Button OutputDirectoryBtn;
+        private Button SourcePkgPathBtn;
+        private Button FilterBrowseBtn;
         #endregion
     }
 }
