@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.12.42
+    public partial class MainForm : Form { // ver 1.12.43
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -751,7 +751,7 @@ namespace Gp4ProjectBuilder {
 
 
             var files = gp4.CreateElement("files");
-            for(index = 0; index < file_paths.Length - 1; index++) {
+            for(index = 0; index < file_paths.Length; index++) {
                 if(FileShouldBeExcluded(file_paths[index])) goto Skip;
                 file = gp4.CreateElement("file");
                 file.SetAttribute("targ_path", (file_paths[index].Replace(gamedata_folder + "\\", string.Empty)).Replace('\\', '/'));
