@@ -204,9 +204,9 @@ namespace Gp4ProjectBuilder {
             if(MainForm.pkg_source != "")
                 SourcePkgPathTextBox.Text = MainForm.pkg_source;
 
-            if(MainForm.filter_array != null) {
+            if(MainForm.user_blacklist != null) {
                 FilterTextBox.Text = string.Empty;
-                foreach(string file in MainForm.filter_array)
+                foreach(string file in MainForm.user_blacklist)
                 FilterTextBox.Text += $"{file},";
                 FilterTextBox.Text = FilterTextBox.Text.TrimEnd(',');
             }
@@ -282,18 +282,18 @@ namespace Gp4ProjectBuilder {
                 if(c == ';' || c == ',')
                     filter_strings_length++;
 
-            MainForm.filter_array = new string[filter_strings_length];
+            MainForm.user_blacklist = new string[filter_strings_length];
             MainForm.buffer = Encoding.UTF8.GetBytes((FilterTextBox.Text + ';').ToCharArray());
 
             try {
-                for(var array_index = 0; array_index < MainForm.filter_array.Length; array_index++) {
+                for(var array_index = 0; array_index < MainForm.user_blacklist.Length; array_index++) {
                     Builder = new StringBuilder();
 
                     while(MainForm.buffer[char_index] != 0x3B && MainForm.buffer[char_index] != 0x2C)
                         Builder.Append(Encoding.UTF8.GetString(new byte[] { MainForm.buffer[char_index++] }));
 
                     char_index++;
-                    MainForm.filter_array[array_index] = Builder.ToString().Trim(' ');
+                    MainForm.user_blacklist[array_index] = Builder.ToString().Trim(' ');
                     MainForm.text_box_changed[3] = true;
                 }
             }

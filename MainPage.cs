@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.12.41
+    public partial class MainForm : Form { // ver 1.12.42
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -275,7 +275,7 @@ namespace Gp4ProjectBuilder {
             gp4_output_directory = @"",
             pkg_source = ""
         ;
-        public static string[] filter_array;
+        public static string[] user_blacklist;
         #endregion
 
 
@@ -357,8 +357,8 @@ namespace Gp4ProjectBuilder {
         }
         private void CreateBtn_Click(object sender, EventArgs e) => Build();
         private void debug_Click(object sender, EventArgs e) {
-            if (filter_array != null)
-            foreach(var f in filter_array) {
+            if (user_blacklist != null)
+            foreach(var f in user_blacklist) {
                 Out($"filter:{f}");
             }
         }
@@ -372,7 +372,184 @@ namespace Gp4ProjectBuilder {
         #region GP4 Related Functions
         private void Out(object s) { if (!DisableLogBox.Checked) OutputWindow.AppendText("\n" + s); }
 
-        private bool PrebuildChecks() {
+        //////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+        ///--    Parse playgo-chunks.dat And Param.sfo To Get Most Variables    --\\\
+        //////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+        void ParsePlaygoChunks() {
+            using(var playgo_chunks_dat = File.OpenRead($@"{gamedata_folder}\sce_sys\playgo-chunk.dat")) {
+                // Read Chunk Count
+                playgo_chunks_dat.Position = 0x0A;
+                chunk_count = (byte)playgo_chunks_dat.ReadByte();
+                chunk_labels = new string[chunk_count];
+
+                // Read Scenario Count
+                playgo_chunks_dat.Position = 0x0E;
+                scenario_count = (byte)playgo_chunks_dat.ReadByte();
+                scenario_types = new int[scenario_count];
+                scenario_labels = new string[scenario_count];
+                initial_chunk_count = new int[scenario_count];
+                scenario_chunk_range = new int[scenario_count];
+
+                // Read Default Scenario Id
+                playgo_chunks_dat.Position = 0x14;
+                default_id = (byte)playgo_chunks_dat.ReadByte();
+
+                // Read Content ID Here Instead Of The .sfo Because Meh, User Has Bigger Issues If Those Aren't the Same
+                buffer = new byte[36];
+                playgo_chunks_dat.Position = 0x40;
+                playgo_chunks_dat.Read(buffer, 0, 36);
+                content_id = Encoding.UTF8.GetString(buffer);
+
+                // Read Chunk Label Start Address From Pointer
+                buffer = new byte[4];
+                playgo_chunks_dat.Position = 0xD0;
+                playgo_chunks_dat.Read(buffer, 0, 4);
+                var chunk_label_pointer = BitConverter.ToInt32(buffer, 0);
+
+                // Read Length Of Chunk Label Byte Array
+                playgo_chunks_dat.Position = 0xD4;
+                playgo_chunks_dat.Read(buffer, 0, 4);
+                var chunk_label_array_length = BitConverter.ToInt32(buffer, 0);
+
+                // Load Scenario(s)
+                playgo_chunks_dat.Position = 0xE0;
+                playgo_chunks_dat.Read(buffer, 0, 4);
+                var scenarioPointer = BitConverter.ToInt32(buffer, 0);
+                for(index = 0; index < scenario_count; index++) {
+                    // Read Scenario Type
+                    playgo_chunks_dat.Position = scenarioPointer;
+                    scenario_types[index] = (byte)playgo_chunks_dat.ReadByte();
+
+                    // Read Scenario initial_chunk_count
+                    playgo_chunks_dat.Position = (scenarioPointer + 0x14);
+                    playgo_chunks_dat.Read(buffer, 2, 2);
+                    initial_chunk_count[index] = BitConverter.ToInt16(buffer, 2);
+                    playgo_chunks_dat.Read(buffer, 2, 2);
+                    scenario_chunk_range[index] = BitConverter.ToInt16(buffer, 2);
+                    scenarioPointer += 0x20;
+                }
+
+                // Load Scenario Label Array Byte Length
+                buffer = new byte[2];
+                playgo_chunks_dat.Position = 0xF4;
+                playgo_chunks_dat.Read(buffer, 0, 2);
+                var scenario_label_array_length = BitConverter.ToInt16(buffer, 0);
+
+                // Load Scenario Label Pointer
+                playgo_chunks_dat.Position = 0xF0;
+                buffer = new byte[4];
+                playgo_chunks_dat.Read(buffer, 0, 4);
+                var scenario_label_array_pointer = BitConverter.ToInt32(buffer, 0);
+
+                // Load Scenario Labels
+                playgo_chunks_dat.Position = scenario_label_array_pointer;
+                buffer = new byte[scenario_label_array_length];
+                playgo_chunks_dat.Read(buffer, 0, buffer.Length);
+                ConvertBufferToStringArray(scenario_labels);
+
+                // Load Chunk Labels
+                buffer = new byte[chunk_label_array_length];
+                playgo_chunks_dat.Position = chunk_label_pointer;
+                playgo_chunks_dat.Read(buffer, 0, buffer.Length);
+                ConvertBufferToStringArray(chunk_labels);
+            }
+        }
+
+
+        ////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+        ///--    Parse param.sfo For Various Parameters    --\\\
+        ////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+        void ParseSFO() {
+            using(var param_sfo = File.OpenRead($@"{gamedata_folder}\sce_sys\param.sfo")) {
+                // Read Pointer For Array Of Parameter Names
+                param_sfo.Position = 0x8;
+                buffer = new byte[4];
+                param_sfo.Read(buffer, 0, 4);
+                var ParamNameArrayPointer = BitConverter.ToInt32(buffer, 0);
+
+                // Read Base Pointer For .pkg Parameters
+                param_sfo.Position = 0x0C;
+                param_sfo.Read(buffer, 0, 4);
+                var ParamVariablesPointer = BitConverter.ToInt32(buffer, 0);
+
+                // Read Parameter Name Array Length And Initialize Offset Array
+                param_sfo.Position = 0x10;
+                param_sfo.Read(buffer, 0, 4);
+                var ParamNameArrayLength = BitConverter.ToInt32(buffer, 0);
+                int[] ParameterOffsets = new int[ParamNameArrayLength];
+
+                // Load Parameter Names
+                buffer = new byte[ParamVariablesPointer - ParamNameArrayPointer];
+                parameter_labels = new string[ParamNameArrayLength];
+                param_sfo.Position = ParamNameArrayPointer;
+                param_sfo.Read(buffer, 0, buffer.Length);
+                ConvertBufferToStringArray(parameter_labels);
+
+                // Load Parameter Offsets
+                param_sfo.Position = 0x20;
+                buffer = new byte[4];
+                for(index = 0; index < ParamNameArrayLength; param_sfo.Position += (0x10 - buffer.Length)) {
+                    param_sfo.Read(buffer, 0, 4);
+                    ParameterOffsets[index] = ParamVariablesPointer + BitConverter.ToInt32(buffer, 0);
+                    index++;
+                }
+
+                // Load The Rest Of The Required .pkg Variables From param.sfo
+                for(index = 0; index < ParamNameArrayLength; index++)
+                    if(required_sfo_variables.Contains(parameter_labels[index])) { // Ignore Variables Not Needed For .gp4 Project Creation
+
+                        param_sfo.Position = ParameterOffsets[index];
+                        buffer = new byte[4];
+
+                        switch(parameter_labels[index]) { // I'm Too Tired to think of a more elegant solution right now. If it works, it works
+
+                            case "APP_VER":
+                                buffer = new byte[5];
+                                param_sfo.Read(buffer, 0, 5);
+                                app_ver = Encoding.UTF8.GetString(buffer);
+                                break;
+                            case "CATEGORY": // gd / gp
+                                param_sfo.Read(buffer, 0, 2);
+                                category = Encoding.UTF8.GetString(buffer, 0, 2);
+                                break;
+                            case "CONTENT_ID":
+                                buffer = new byte[36];
+                                param_sfo.Read(buffer, 0, 36);
+                                content_id = Encoding.UTF8.GetString(buffer);
+                                break;
+                            case "TITLE_ID":
+                                buffer = new byte[9];
+                                param_sfo.Read(buffer, 0, 9);
+                                title_id = Encoding.UTF8.GetString(buffer);
+                                break;
+                            case "VERSION": // Remaster
+                                buffer = new byte[5];
+                                param_sfo.Read(buffer, 0, 5);
+                                version = Encoding.UTF8.GetString(buffer);
+                                break;
+                        }
+                    }
+            }
+        }
+
+        /// <summary>
+        /// Returns A String Array Containing The Paths For Every File In The<br/>
+        /// Selected Gamedata Folder
+        /// </summary>
+        private string[] GetProjectFilePaths() {
+
+            // Read All Files In Each Folder And Subfolder
+            DirectoryInfo directoryInfo = new DirectoryInfo(gamedata_folder);
+            FileInfo[] file_info = directoryInfo.GetFiles(".", SearchOption.AllDirectories);
+
+            string[] file_paths = new string[file_info.Length];
+            for(index = 0; index < file_info.Length; index++)
+                file_paths[index] = file_info[index].FullName;
+
+            return file_paths;
+        }
+
+        private bool CheckGP4Settings() {
             if(passcode.Length != 32) {
                 Out("Incorrect Passcode Length, Must Be 32 Characters");
                 return true;
@@ -394,6 +571,8 @@ namespace Gp4ProjectBuilder {
 
         private bool FileShouldBeExcluded(string filepath) {
 
+            if(filepath.Contains("libc")) Out("Found It");
+;
             string filename = string.Empty;
             if(filepath.Contains('.'))
             filename = filepath.Remove(filepath.LastIndexOf(".")).Substring(filepath.LastIndexOf('\\') + 1);
@@ -401,7 +580,7 @@ namespace Gp4ProjectBuilder {
             string[] blacklist = new string[] {
                   // Drunk Canadian Guy
                     "right.sprx",
-                    $"{(ignore_keystone ? @"sce_sys\keystone" : "@@")}",
+                    $"{(ignore_keystone ? @"sce_sys\keystone" : "@!@!@!@!@!@")}",
                     "sce_discmap.plt",
                     @"sce_sys\playgo-chunk",
                     @"sce_sys\psreserved.dat",
@@ -434,8 +613,8 @@ namespace Gp4ProjectBuilder {
                     #endif
                     return true;
                 }
-            if(filter_array != null)
-                foreach(var blacklisted_file_or_folder in filter_array) {
+            if(user_blacklist != null)
+                foreach(var blacklisted_file_or_folder in user_blacklist) {
                     if(blacklisted_file_or_folder == "") return false; // Lazy Fix For Null String in filter
                     if(filepath.Contains(blacklisted_file_or_folder)) {
                         #if DEBUG
@@ -478,7 +657,7 @@ namespace Gp4ProjectBuilder {
             return false;
         }
 
-        private void LoadParameterLabels(string[] StringArray) {
+        private void ConvertBufferToStringArray(string[] StringArray) {
             int byteIndex = 0;
             StringBuilder Builder;
 
@@ -488,15 +667,13 @@ namespace Gp4ProjectBuilder {
                 while(buffer[byteIndex] != 0)
                     Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[byteIndex++] })); // Just Take A Byte, You Fussy Prick
 
-                byteIndex++; //!
+                byteIndex++;
                 StringArray[index] = Builder.ToString();
             }
         }
 
-        // TODO: 
-        // - figure out pfs compression / chunk bs for certain file formats
         private void Build() {
-            if(PrebuildChecks()) return;
+            if(CheckGP4Settings()) return;
             OutputWindow.Clear();
             OutputWindow.AppendText("Starting .gp4 Creation");
 
@@ -508,173 +685,11 @@ namespace Gp4ProjectBuilder {
             gp4_declaration = gp4.CreateXmlDeclaration("1.1", "utf-8", "yes");
 
 
-            //////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-            ///--    Parse playgo-chunks.dat And Param.sfo To Get Most Variables    --\\\
-            //////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-            using(var playgo = File.OpenRead($@"{gamedata_folder}\sce_sys\playgo-chunk.dat")) {
-                // Read Chunk Count
-                playgo.Position = 0x0A;
-                chunk_count = (byte)playgo.ReadByte();
-                chunk_labels = new string[chunk_count];
+            ParsePlaygoChunks();
 
-                // Read Scenario Count
-                playgo.Position = 0x0E;
-                scenario_count = (byte)playgo.ReadByte();
-                scenario_types = new int[scenario_count];
-                scenario_labels = new string[scenario_count];
-                initial_chunk_count = new int[scenario_count];
-                scenario_chunk_range = new int[scenario_count];
+            ParseSFO();
 
-                // Read Default Scenario Id
-                playgo.Position = 0x14;
-                default_id = (byte)playgo.ReadByte();
-
-                // Read Content ID Here Instead Of The .sfo Because Meh, User Has Bigger Issues If Those Aren't the Same
-                buffer = new byte[36];
-                playgo.Position = 0x40;
-                playgo.Read(buffer, 0, 36);
-                content_id = Encoding.UTF8.GetString(buffer);
-
-                // Read Chunk Label Start Address From Pointer
-                buffer = new byte[4];
-                playgo.Position = 0xD0;
-                playgo.Read(buffer, 0, 4);
-                var chunk_label_pointer = BitConverter.ToInt32(buffer, 0);
-
-                // Read Length Of Chunk Label Byte Array
-                playgo.Position = 0xD4;
-                playgo.Read(buffer, 0, 4);
-                var chunk_label_array_length = BitConverter.ToInt32(buffer, 0);
-
-                // Load Scenario(s)
-                playgo.Position = 0xE0;
-                playgo.Read(buffer, 0, 4);
-                var scenarioPointer = BitConverter.ToInt32(buffer, 0);
-                for(index = 0; index < scenario_count; index++) {
-                    // Read Scenario Type
-                    playgo.Position = scenarioPointer;
-                    scenario_types[index] = (byte)playgo.ReadByte();
-
-                    // Read Scenario initial_chunk_count
-                    playgo.Position = (scenarioPointer + 0x14);
-                    playgo.Read(buffer, 2, 2);
-                    initial_chunk_count[index] = BitConverter.ToInt16(buffer, 2);
-                    playgo.Read(buffer, 2, 2);
-                    scenario_chunk_range[index] = BitConverter.ToInt16(buffer, 2);
-                    scenarioPointer += 0x20;
-                }
-
-                // Load Scenario Label Array Byte Length
-                buffer = new byte[2];
-                playgo.Position = 0xF4;
-                playgo.Read(buffer, 0, 2);
-                var scenario_label_array_length = BitConverter.ToInt16(buffer, 0);
-
-                // Load Scenario Label Pointer
-                playgo.Position = 0xF0;
-                buffer = new byte[4];
-                playgo.Read(buffer, 0, 4);
-                var scenario_label_array_pointer = BitConverter.ToInt32(buffer, 0);
-
-                // Load Scenario Labels
-                playgo.Position = scenario_label_array_pointer;
-                buffer = new byte[scenario_label_array_length];
-                playgo.Read(buffer, 0, buffer.Length);
-                LoadParameterLabels(scenario_labels);
-
-                // Load Chunk Labels
-                buffer = new byte[chunk_label_array_length];
-                playgo.Position = chunk_label_pointer;
-                playgo.Read(buffer, 0, buffer.Length);
-                LoadParameterLabels(chunk_labels);
-            }
-
-
-
-            ////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-            ///--    Parse param.sfo For Various Parameters    --\\\
-            ////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-            using(var sfo = File.OpenRead($@"{gamedata_folder}\sce_sys\param.sfo")) {
-                // Read Pointer For Array Of Parameter Names
-                sfo.Position = 0x8;
-                buffer = new byte[4];
-                sfo.Read(buffer, 0, 4);
-                var ParamNameArrayPointer = BitConverter.ToInt32(buffer, 0);
-
-                // Read Base Pointer For .pkg Parameters
-                sfo.Position = 0x0C;
-                sfo.Read(buffer, 0, 4);
-                var ParamVariablesPointer = BitConverter.ToInt32(buffer, 0);
-
-                // Read Parameter Name Array Length And Initialize Offset Array
-                sfo.Position = 0x10;
-                sfo.Read(buffer, 0, 4);
-                var ParamNameArrayLength = BitConverter.ToInt32(buffer, 0);
-                int[] ParameterOffsets = new int[ParamNameArrayLength];
-
-                // Load Parameter Names
-                buffer = new byte[ParamVariablesPointer - ParamNameArrayPointer];
-                parameter_labels = new string[ParamNameArrayLength];
-                sfo.Position = ParamNameArrayPointer;
-                sfo.Read(buffer, 0, buffer.Length);
-                LoadParameterLabels(parameter_labels);
-
-                // Load Parameter Offsets
-                sfo.Position = 0x20;
-                buffer = new byte[4];
-                for(index = 0; index < ParamNameArrayLength; sfo.Position += (0x10 - buffer.Length)) {
-                    sfo.Read(buffer, 0, 4);
-                    ParameterOffsets[index] = ParamVariablesPointer + BitConverter.ToInt32(buffer, 0);
-                    index++;
-                }
-
-                // Load The Rest Of The Required .pkg Variables From param.sfo
-                for(index = 0; index < ParamNameArrayLength; index++)
-                    if(required_sfo_variables.Contains(parameter_labels[index])) { // Ignore Variables Not Needed For .gp4 Project Creation
-
-                        sfo.Position = ParameterOffsets[index];
-                        buffer = new byte[4];
-
-                        switch(parameter_labels[index]) { // I'm Too Tired to think of a more elegant solution right now. If it works, it works
-
-                            case "APP_VER":
-                                buffer = new byte[5];
-                                sfo.Read(buffer, 0, 5);
-                                app_ver = Encoding.UTF8.GetString(buffer);
-                                break;
-                            case "CATEGORY": // gd / gp
-                                sfo.Read(buffer, 0, 2);
-                                category = Encoding.UTF8.GetString(buffer, 0, 2);
-                                break;
-                            case "CONTENT_ID":
-                                buffer = new byte[36];
-                                sfo.Read(buffer, 0, 36);
-                                content_id = Encoding.UTF8.GetString(buffer);
-                                break;
-                            case "TITLE_ID":
-                                buffer = new byte[9];
-                                sfo.Read(buffer, 0, 9);
-                                title_id = Encoding.UTF8.GetString(buffer);
-                                break;
-                            case "VERSION": // Remaster
-                                buffer = new byte[5];
-                                sfo.Read(buffer, 0, 5);
-                                version = Encoding.UTF8.GetString(buffer);
-                                break;
-                        }
-                    }
-            }
-
-
-            ////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\
-            ///--     Read Project Files And Directories     --\\\
-            ////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\
-            DirectoryInfo directoryInfo = new DirectoryInfo(gamedata_folder);
-            FileInfo[] file_info = directoryInfo.GetFiles(".", SearchOption.AllDirectories);
-
-            file_paths = new string[file_info.Length];
-            for(index = 0; index < file_info.Length - 1; index++)
-                file_paths[index] = file_info[index].FullName;
+            file_paths = GetProjectFilePaths();
 
 
             ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
