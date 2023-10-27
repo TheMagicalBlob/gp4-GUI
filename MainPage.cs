@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.12.43
+    public partial class MainForm : Form { // ver 1.13.45
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -582,6 +582,7 @@ namespace Gp4ProjectBuilder {
                     "right.sprx",
                     $"{(ignore_keystone ? @"sce_sys\keystone" : "@!@!@!@!@!@")}",
                     "sce_discmap.plt",
+                    "sce_discmap_patch.plt",
                     @"sce_sys\playgo-chunk",
                     @"sce_sys\psreserved.dat",
                     $@"sce_sys\{filename}.dds",
@@ -716,7 +717,7 @@ namespace Gp4ProjectBuilder {
             package.SetAttribute("storage_type", (category == "gp" ? "digital25" : "digital50"));
             package.SetAttribute("app_type", "full");
             if(category == "gp")
-                package.SetAttribute("app_path", $"{(pkg_source == "" ? $"{content_id}-A{app_ver.Replace(".", "")}-V{version.Replace(".", "")}.pkg" : pkg_source)}");
+                package.SetAttribute("app_path", $"{(pkg_source == "" ? $"{content_id}-A0100-V{version.Replace(".", "")}.pkg" : pkg_source)}");
 
             var chunk_info = gp4.CreateElement("chunk_info");
             chunk_info.SetAttribute("chunk_count", $"{chunk_count}");

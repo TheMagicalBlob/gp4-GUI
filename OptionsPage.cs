@@ -260,10 +260,11 @@ namespace Gp4ProjectBuilder {
                 MainForm.text_box_changed[2] = true;
         }
         private void SourcePkgPathBtn_Click(object sender, EventArgs e) {
-            FolderBrowserDialog Browser = new FolderBrowserDialog();
+            OpenFileDialog Browser = new OpenFileDialog();
 
             if(Browser.ShowDialog() == DialogResult.OK)
-                SourcePkgPathTextBox.Text = Browser.SelectedPath;
+                SourcePkgPathBtn.Text = Browser.FileName;
+            Browser.Dispose();
         }
         private void FilterTextBox_TextChanged(object sender, EventArgs e) { // tst : eboot.bin, keystone, discname.txt; param.sfo
             if(MainForm.text_box_changed[3] == true && ((TextBox)sender).Text == "") {
