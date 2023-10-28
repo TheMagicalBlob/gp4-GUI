@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.13.45
+    public partial class MainForm : Form { // ver 1.13.46
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);

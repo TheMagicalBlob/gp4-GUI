@@ -263,7 +263,7 @@ namespace Gp4ProjectBuilder {
             OpenFileDialog Browser = new OpenFileDialog();
 
             if(Browser.ShowDialog() == DialogResult.OK)
-                SourcePkgPathBtn.Text = Browser.FileName;
+                SourcePkgPathTextBox.Text = Browser.FileName;
             Browser.Dispose();
         }
         private void FilterTextBox_TextChanged(object sender, EventArgs e) { // tst : eboot.bin, keystone, discname.txt; param.sfo
