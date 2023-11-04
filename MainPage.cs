@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.13.46
+    public partial class MainForm : Form { // ver 1.14.46
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -394,7 +394,7 @@ namespace Gp4ProjectBuilder {
                 playgo_chunks_dat.Position = 0x14;
                 default_id = (byte)playgo_chunks_dat.ReadByte();
 
-                // Read Content ID Here Instead Of The .sfo Because Meh, User Has Bigger Issues If Those Aren't the Same
+                // Read Content ID Here Instead Of The .sfo Because Meh, User Has Bigger Issues If Those Aren't Identical
                 buffer = new byte[36];
                 playgo_chunks_dat.Position = 0x40;
                 playgo_chunks_dat.Read(buffer, 0, 36);
@@ -687,8 +687,12 @@ namespace Gp4ProjectBuilder {
 
 
             ParsePlaygoChunks();
-
+            var check = content_id;
             ParseSFO();
+
+            if(check != content_id) {
+                Out($"Content Id Mismatch In Param.sfo vs playgo-chunks.dat\nsfo: {content_id}\n.dat:{check}");
+            }
 
             file_paths = GetProjectFilePaths();
 
@@ -746,7 +750,9 @@ namespace Gp4ProjectBuilder {
                 scenario.SetAttribute("type", $"{(scenario_types[index] == 1 ? "sp" : "mp")}");
                 scenario.SetAttribute("initial_chunk_count", $"{initial_chunk_count[index]}");
                 scenario.SetAttribute("label", $"{scenario_labels[index]}");
-                scenario.InnerText = $"0-{scenario_chunk_range[index] - 1}";
+                if(scenario_chunk_range[index] - 1 != 0)
+                    scenario.InnerText = $"0-{scenario_chunk_range[index] - 1}";
+                else scenario.InnerText = "0";
                 scenarios.AppendChild(scenario);
             }
 
@@ -759,7 +765,7 @@ namespace Gp4ProjectBuilder {
                 file.SetAttribute("orig_path", file_paths[index]);
                 if(!SkipCompression(file_paths[index]))
                     file.SetAttribute("pfs_compression", "enable");
-                if(!SkipChunkAttribute(file_paths[index]))
+                if(!SkipChunkAttribute(file_paths[index]) && chunk_count - 1 != 0)
                     file.SetAttribute("chunks", $"0-{chunk_count - 1}");
                 files.AppendChild(file);
             Skip: { }
