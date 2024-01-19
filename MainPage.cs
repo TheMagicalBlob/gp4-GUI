@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.14.46
+    public partial class MainForm : Form { // ver 1.15.47
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -570,12 +570,14 @@ namespace Gp4ProjectBuilder {
         }
 
         private bool FileShouldBeExcluded(string filepath) {
-
-            if(filepath.Contains("libc")) Out("Found It");
-;
             string filename = string.Empty;
-            if(filepath.Contains('.'))
-            filename = filepath.Remove(filepath.LastIndexOf(".")).Substring(filepath.LastIndexOf('\\') + 1);
+                                      // \/ Ensure The Period Isn't Part Of The Selected Folder. Will Fix It Properly Eventually
+            if(filepath.Contains('.') && filepath.LastIndexOf('.') != gamedata_folder.LastIndexOf('.'))
+
+                try { filename = filepath.Remove(filepath.LastIndexOf(".")).Substring(filepath.LastIndexOf('\\') + 1); }
+
+                catch (Exception e) { Out($"Invalid File Name, Skipping Filter Check.\n(Likely A Period In A Subfolder Name)\nPath in Question: {filepath}"); }
+
 
             string[] blacklist = new string[] {
                   // Drunk Canadian Guy
