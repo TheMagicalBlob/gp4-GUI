@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Gp4ProjectBuilder {
 
-    public partial class MainForm : Form { // ver 1.15.47
+    public partial class MainForm : Form { // ver 1.15.47+
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -20,6 +20,8 @@ namespace Gp4ProjectBuilder {
             AppFolderPathTextBox.MouseClick += TextBoxReady;
             AppFolderPathTextBox.LostFocus += TextBoxReset;
         }
+
+        public const string Version = "ver 1.16.49 ";
 
 
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\

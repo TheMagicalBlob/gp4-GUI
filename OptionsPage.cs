@@ -14,13 +14,15 @@ namespace Gp4ProjectBuilder {
             MainForm.options_page_is_open = true;
             Location = new Point(MainForm.LastPos.X + 30, MainForm.LastPos.Y + 60);
             LoadOptions();
+
+            TinyVersionLabel.Text = MainForm.Version;
         }
 
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         ///--     Designer Managed Functions     --\\\
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         #region Designer Managed Functions
-        #pragma warning disable CS0168 // var not used
+#pragma warning disable CS0168 // var not used
         private IContainer components = null;
         protected override void Dispose(bool disposing) {
             if(disposing) components?.Dispose();
@@ -38,6 +40,7 @@ namespace Gp4ProjectBuilder {
             this.OutputDirectoryBtn = new System.Windows.Forms.Button();
             this.SourcePkgPathBtn = new System.Windows.Forms.Button();
             this.FilterBrowseBtn = new System.Windows.Forms.Button();
+            this.TinyVersionLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // KeystoneToggleBox
@@ -165,12 +168,23 @@ namespace Gp4ProjectBuilder {
             this.FilterBrowseBtn.UseVisualStyleBackColor = false;
             this.FilterBrowseBtn.Click += new System.EventHandler(this.FilterBrowseBtn_Click);
             // 
+            // TinyVersionLabel
+            // 
+            this.TinyVersionLabel.AutoSize = true;
+            this.TinyVersionLabel.Font = new System.Drawing.Font("Cambria", 7F);
+            this.TinyVersionLabel.Location = new System.Drawing.Point(1, 1);
+            this.TinyVersionLabel.Name = "TinyVersionLabel";
+            this.TinyVersionLabel.Size = new System.Drawing.Size(57, 12);
+            this.TinyVersionLabel.TabIndex = 11;
+            this.TinyVersionLabel.Text = "placeholder";
+            // 
             // OptionsPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
             this.ClientSize = new System.Drawing.Size(387, 195);
+            this.Controls.Add(this.TinyVersionLabel);
             this.Controls.Add(this.FilterBrowseBtn);
             this.Controls.Add(this.SourcePkgPathBtn);
             this.Controls.Add(this.OutputDirectoryBtn);
@@ -326,7 +340,7 @@ namespace Gp4ProjectBuilder {
 
             MainForm.passcode = CustomPasscodeTextBox.Text;
         }
-#endregion
+        #endregion
 
 
 
@@ -334,17 +348,18 @@ namespace Gp4ProjectBuilder {
         ///--     Control Declarations     --\\\
         ////////////////////\\\\\\\\\\\\\\\\\\\\
         #region ControlDeclarations
-        private CheckBox KeystoneToggleBox;
-        private TextBox CustomGP4PathTextBox;
+        private Label TinyVersionLabel;
         private Label Title;
         private Button ExitBtn;
-        private CheckBox LimitedOutputBox;
-        private TextBox SourcePkgPathTextBox;
-        private TextBox FilterTextBox;
-        private TextBox CustomPasscodeTextBox;
         private Button OutputDirectoryBtn;
         private Button SourcePkgPathBtn;
         private Button FilterBrowseBtn;
+        private CheckBox KeystoneToggleBox;
+        private CheckBox LimitedOutputBox;
+        private TextBox CustomGP4PathTextBox;
+        private TextBox SourcePkgPathTextBox;
+        private TextBox FilterTextBox;
+        private TextBox CustomPasscodeTextBox;
         #endregion
     }
 }
