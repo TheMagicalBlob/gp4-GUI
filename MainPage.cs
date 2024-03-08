@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.Xml;
 
 
-namespace Gp4ProjectBuilder {
+namespace GP4_GUI {
 
     public partial class MainForm : Form { // ver 1.15.47+
         public MainForm() {
@@ -57,7 +57,7 @@ namespace Gp4ProjectBuilder {
             this.CreateBtn.TabIndex = 0;
             this.CreateBtn.Text = "Build .gp4";
             this.CreateBtn.UseVisualStyleBackColor = false;
-            this.CreateBtn.Click += new System.EventHandler(this.CreateBtn_Click);
+            this.CreateBtn.Click += new System.EventHandler(this.BuildProjectFile);
             // 
             // AppFolderPathTextBox
             // 
@@ -357,7 +357,6 @@ namespace Gp4ProjectBuilder {
             if(Browser.ShowDialog() == DialogResult.OK)
                 AppFolderPathTextBox.Text = Browser.SelectedPath;
         }
-        private void CreateBtn_Click(object sender, EventArgs e) => Build();
         private void debug_Click(object sender, EventArgs e) {
             if (user_blacklist != null)
             foreach(var f in user_blacklist) {
@@ -677,8 +676,9 @@ namespace Gp4ProjectBuilder {
             }
         }
 
-        private void Build() {
+        private void BuildProjectFile(object sender, EventArgs e) {
             if(CheckGP4Settings()) return;
+
             OutputWindow.Clear();
             OutputWindow.AppendText("Starting .gp4 Creation");
 

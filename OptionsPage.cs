@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Gp4ProjectBuilder {
+namespace GP4_GUI {
 
     public partial class OptionsPage : Form {
 
@@ -12,10 +12,11 @@ namespace Gp4ProjectBuilder {
             InitializeComponent();
             MainForm.BorderFunc(this);
             MainForm.options_page_is_open = true;
-            Location = new Point(MainForm.LastPos.X + 30, MainForm.LastPos.Y + 60);
-            LoadOptions();
 
+            Location = new Point(MainForm.LastPos.X + 30, MainForm.LastPos.Y + 60);
             TinyVersionLabel.Text = MainForm.Version;
+         
+            LoadOptions();
         }
 
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\

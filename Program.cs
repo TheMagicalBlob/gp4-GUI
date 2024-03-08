@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Gp4ProjectBuilder {
+namespace GP4_GUI {
     internal static class Program {
         /// <summary>
         /// The main entry point for the application.

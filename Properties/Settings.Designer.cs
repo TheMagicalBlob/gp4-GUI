@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Gp4ProjectBuilder.Properties {
+namespace GP4_GUI.Properties {
 
 
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
