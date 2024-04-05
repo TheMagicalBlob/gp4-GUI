@@ -740,6 +740,20 @@ namespace GP4_GUI {
         }
 
         private void sfoDebugBtn_Click(object sender, EventArgs e) {
+            //! \/
+            /*
+            int a, b, c;
+            a = b = c = 9;
+            // egg
+            c = b = 6;
+            Debug.WriteLine(a + "\n"); // Expected a to still be 9, indeed is
+
+            int[] aa, bb, cc;
+            aa = bb = cc = new int[] { 3, 9, 11 };
+            // egg
+            cc[2] = bb[2] = 6;
+            Debug.WriteLine(aa[2]); // Expected aa[2] to still be 9, but it's also 6
+            */
             using(var sfo = File.OpenRead(@"D:\PS4\CUSA20240-Proto-bootloader\sce_sys\param - OG.sfo")) {
                 buffer = new byte[4];
                 object[] Parameters;
@@ -764,7 +778,7 @@ namespace GP4_GUI {
                 sfo.Read(buffer, 0, 4);
                 var ParameterCount = BitConverter.ToInt32(buffer, 0);
 
-                // Initialize Offset Array
+                // Initialize Arrays
                 Parameters   = new object[ParameterCount];
                 ParamLabels  = new string[ParameterCount];
                 DataTypes    = new int[ParameterCount];
@@ -779,10 +793,7 @@ namespace GP4_GUI {
                     sfo.Read(buffer, 0, 3);
                     LabelOffsets[i] = BitConverter.ToInt16(buffer, 0);
                     
-                    DataTypes[i] = sfo.ReadByte();
-
-                    if(DataTypes[i] == 2 || DataTypes[i] == 4) {
-                        sfo.Flush();
+                    if((DataTypes[i] = sfo.ReadByte()) == 2 || DataTypes[i] == 4) {
 
                         sfo.Read(buffer, 0, 4);
                         ParamLengths[i] = BitConverter.ToInt32(buffer, 0);
@@ -795,7 +806,6 @@ namespace GP4_GUI {
 
 
 
-                DLog($"Loading Parameter Labels & Offsets From: {sfo.Position}");
                 List<string> Labels = new List<string>();
 
                 // Load Parameter Labels
@@ -803,7 +813,6 @@ namespace GP4_GUI {
                     var ByteList = new List<byte>();
 
                     for(; (ByteList.Count == 0 || ByteList.Last() != 0); ByteList.Add((byte)sfo.ReadByte()));
-                    //ByteList.RemoveAt(ByteList.Count - 1); not really needed
 
                     Labels.Add(Encoding.UTF8.GetString(ByteList.ToArray()));
                 }
@@ -816,17 +825,15 @@ namespace GP4_GUI {
 
                     if(DataTypes[i] == 2) {
                         Parameters[i] = Encoding.UTF8.GetString(buffer);
-                        Debug.WriteLine($"\nsLabel: {Labels[i]}");
-                        Debug.WriteLine($"\n|sParam: {(string)Parameters[i]}");
+                        DLog($"\nLabel: {Labels[i]}");
+                        DLog($"\nParam: {(((string)Parameters[i])[0] == 0 ? "Empty String" : (string)Parameters[i])}");
                     }
 
                     else if(DataTypes[i] == 4) {
                         Parameters[i] = BitConverter.ToInt32(buffer, 0);
-                        Debug.WriteLine($"\niLabel: {Labels[i]}");
-                        Debug.WriteLine($"\n|iParam: {(int)Parameters[i]}");
+                        DLog($"\nLabel: {Labels[i]}");
+                        DLog($"\nParam: {(int)Parameters[i]}");
                     }
-
-                    else Debug.WriteLine($"INvalid DataType: {DataTypes[i]}");
                 }
             }
         }
