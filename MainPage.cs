@@ -420,7 +420,7 @@ namespace GP4_GUI {
             this.sfoDebugBtn.TabIndex = 16;
             this.sfoDebugBtn.Text = "Parse .sfo";
             this.sfoDebugBtn.UseVisualStyleBackColor = false;
-            this.sfoDebugBtn.Click += new System.EventHandler(this.sfoDebugBtn_Click);
+            this.sfoDebugBtn.Click += new System.EventHandler(this.sfoDebugTest1Btn_Click);
             // 
             // MainForm
             // 
@@ -650,15 +650,18 @@ namespace GP4_GUI {
             if (!DisableLogBox.Checked)
                 OutputWindow.AppendText("\n" + s);
         }
-        private static void DLog(object o) {
-            try { Debug.WriteLine($"{o}"); }
-            catch(Exception) { }
+
+        private static void DLog(object o = null) {
+            if(o == null) o = "\n";
 
             if(!Console.IsOutputRedirected)
-                try { Console.WriteLine($"{o}"); }
+                try { Debug.WriteLine(o.ToString()); }
+                catch(Exception) { }
+
+                try { Console.WriteLine(o.ToString()); }
                 catch(Exception) { }
         }
-        
+
         void ParsePlaygoChunks() {
             using(var playgo_chunks_dat = File.OpenRead($@"{gamedata_folder}\sce_sys\playgo-chunk.dat")) {
                 // Read Chunk Count
@@ -739,7 +742,10 @@ namespace GP4_GUI {
             }
         }
 
-        private void sfoDebugBtn_Click(object sender, EventArgs e) {
+        /// <summary>
+        /// First .sfo Parse Method
+        /// </summary>
+        private void sfoDebugTest1Btn_Click(object sender, EventArgs e) {
             //! \/
             /*
             int a, b, c;
@@ -754,8 +760,9 @@ namespace GP4_GUI {
             cc[2] = bb[2] = 6;
             Debug.WriteLine(aa[2]); // Expected aa[2] to still be 9, but it's also 6
             */
-            using(var sfo = File.OpenRead(@"D:\PS4\CUSA20240-Proto-bootloader\sce_sys\param - OG.sfo")) {
+            using(var sfo = File.OpenRead(@"D:\PS4\CUSA10249-patch\sce_sys\param.sfo")) {
                 buffer = new byte[4];
+
                 object[] Parameters;
                 string[] ParamLabels;
                 Int16[]  LabelOffsets;
@@ -813,6 +820,7 @@ namespace GP4_GUI {
                     var ByteList = new List<byte>();
 
                     for(; (ByteList.Count == 0 || ByteList.Last() != 0); ByteList.Add((byte)sfo.ReadByte()));
+                    ByteList.RemoveAt(ByteList.Count - 1);
 
                     Labels.Add(Encoding.UTF8.GetString(ByteList.ToArray()));
                 }
@@ -820,19 +828,28 @@ namespace GP4_GUI {
 
                 for(int i = 0; i < ParameterCount; ParamVariablesPointer += ParamOffsets[i++]) {
                     sfo.Position = ParamVariablesPointer;
+
                     buffer = new byte[ParamLengths[i]];
                     sfo.Read(buffer, 0, ParamLengths[i]);
 
+                    DLog($"\nLabel: {Labels[i]}");
+
+                    // String
                     if(DataTypes[i] == 2) {
-                        Parameters[i] = Encoding.UTF8.GetString(buffer);
-                        DLog($"\nLabel: {Labels[i]}");
-                        DLog($"\nParam: {(((string)Parameters[i])[0] == 0 ? "Empty String" : (string)Parameters[i])}");
+                        if(ParamLengths[i] > 1 && buffer[ParamLengths[i] - 1] == 0)
+                            Parameters[i] = Encoding.UTF8.GetString(buffer, 0, buffer.Length - 1);
+
+                        else
+                            Parameters[i] = Encoding.UTF8.GetString(buffer);
+
+
+                        DLog($"Param: {(((string)Parameters[i])[0] == 0 ? "Empty String" : (string)Parameters[i])}");
                     }
 
+                    // Int32
                     else if(DataTypes[i] == 4) {
                         Parameters[i] = BitConverter.ToInt32(buffer, 0);
-                        DLog($"\nLabel: {Labels[i]}");
-                        DLog($"\nParam: {(int)Parameters[i]}");
+                        DLog($"Param: {(int)Parameters[i]}");
                     }
                 }
             }
