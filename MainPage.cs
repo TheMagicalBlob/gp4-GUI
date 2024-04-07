@@ -675,6 +675,7 @@ namespace GP4_GUI {
 
             // E.G. CUSA10249-patch_1.09.gp4
             var LogFilePath = $@"\{title_id}-{(category == "gp" ? "patch" : "app")}_{app_ver}.gp4";
+            DLog($"Output Path: {LogFilePath}");
 
             using(var f = File.CreateText(Directory.GetCurrentDirectory() + LogFilePath)) {
                 for(int i = 0; i < SfoParamLabels.Length; i++) {
@@ -686,7 +687,45 @@ namespace GP4_GUI {
         }
 
         private static object[] SfoParams;
-        private static string[] SfoParamLabels;
+        private static string[]
+            SfoParamLabels,
+            RequiredSfoVariables = new string[] {
+                "APP_TYPE",
+                "APP_VER",
+                "ATTRIBUTE",
+                "ATTRIBUTE2",
+                "CATEGORY",
+                "CONTENT_ID",
+                "DEV_FLAG",
+                "DOWNLOAD_DATA_SIZE",
+                "FORMAT",
+                "PARENTAL_LEVEL",
+                "PUBTOOLINFO",
+                "PUBTOOLMINVER",
+                "PUBTOOLVER",
+                "REMOTE_PLAY_KEY_ASSIGN",
+                "SERVICE_ID_ADDCONT_ADD_1",
+                "SERVICE_ID_ADDCONT_ADD_2",
+                "SERVICE_ID_ADDCONT_ADD_3",
+                "SERVICE_ID_ADDCONT_ADD_4",
+                "SERVICE_ID_ADDCONT_ADD_5",
+                "SERVICE_ID_ADDCONT_ADD_6",
+                "SERVICE_ID_ADDCONT_ADD_7",
+                "SYSTEM_VER",
+                "TARGET_APP_VER",
+                "TITLE",
+                "TITLE_00",
+                "TITLE_03",
+                "TITLE_05",
+                "TITLE_07",
+                "TITLE_08",
+                "TITLE_17",
+                "TITLE_20",
+                "TITLE_ID",
+                "USER_DEFINED_PARAM_1",
+                "VERSION"
+            }
+        ;
         private void sfoDebugTest1Btn_Click(object sender, EventArgs e) {
 
             // Verify .sfo Path Or Search For One In The Current Directory
@@ -705,7 +744,6 @@ namespace GP4_GUI {
                 byte[] buff = new byte[4];
                 StringBuilder Builder;
                 int ind, byteIndex = 0;
-
 
 
                 sfo.Position = 0x8;
@@ -739,6 +777,7 @@ namespace GP4_GUI {
                 }
 
                 buff = new byte[4];
+                sfo.Position = 0x20;
                 for(ind = 0; ind < ParamCount; sfo.Position += 0x10 - buff.Length) {
                     sfo.Read(buff, 0, 4);
                     ParamAddressesIIRC[ind] = ParamPtr + BitConverter.ToInt32(buff, 0);
@@ -746,21 +785,42 @@ namespace GP4_GUI {
                 }
 
                 for(ind = 0; ind < ParamCount; ind++) {
-                    if(SfoParamLabels[ind] != "CONTENT_ID")
+
+                    if(!RequiredSfoVariables.Contains(SfoParamLabels[ind]))
                         continue;
 
-                    buff = new byte[36];
-                    sfo.Position = ParamAddressesIIRC[ind];
-                    sfo.Read(buff, 0, 36);
-
-                    content_id = Encoding.UTF8.GetString(buff);
+                    switch(SfoParamLabels[ind]) {
+                        case "APP_VER":
+                            buffer = new byte[5];
+                            sfo.Read(buffer, 0, 5);
+                            SfoParams[ind] = app_ver = Encoding.UTF8.GetString(buffer);
+                            break;
+                        case "CATEGORY": // gd / gp
+                            sfo.Read(buffer, 0, 2);
+                            SfoParams[ind] = category = Encoding.UTF8.GetString(buffer, 0, 2);
+                            break;
+                        case "CONTENT_ID":
+                            buffer = new byte[36];
+                            sfo.Read(buffer, 0, 36);
+                            SfoParams[ind] = content_id = Encoding.UTF8.GetString(buffer);
+                            break;
+                        case "TITLE_ID":
+                            buffer = new byte[9];
+                            sfo.Read(buffer, 0, 9);
+                            SfoParams[ind] = title_id = Encoding.UTF8.GetString(buffer);
+                            break;
+                        case "VERSION": // Remaster
+                            buffer = new byte[5];
+                            sfo.Read(buffer, 0, 5);
+                            SfoParams[ind] = version = Encoding.UTF8.GetString(buffer);
+                            break;
+                    }
 
                     DLog("\n-------------------");
                     DLog(SfoParamLabels[ind]);
                     DLog(SfoParams[ind]);
                     DLog("\n-------------------");
                 }
-
                 timing = DateTime.Now.Millisecond - timing;
                 DLog($"\nLegacy Test Timing (milliseconds): {timing}");
                 DLog($"Dumping...\n");
