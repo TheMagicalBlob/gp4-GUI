@@ -34,7 +34,6 @@ namespace GP4_GUI {
             this.CustomGP4PathTextBox = new System.Windows.Forms.TextBox();
             this.Title = new System.Windows.Forms.Label();
             this.ExitBtn = new System.Windows.Forms.Button();
-            this.LimitedOutputBox = new System.Windows.Forms.CheckBox();
             this.SourcePkgPathTextBox = new System.Windows.Forms.TextBox();
             this.FilterTextBox = new System.Windows.Forms.TextBox();
             this.CustomPasscodeTextBox = new System.Windows.Forms.TextBox();
@@ -47,7 +46,7 @@ namespace GP4_GUI {
             // KeystoneToggleBox
             // 
             this.KeystoneToggleBox.AutoSize = true;
-            this.KeystoneToggleBox.Location = new System.Drawing.Point(8, 85);
+            this.KeystoneToggleBox.Location = new System.Drawing.Point(8, 96);
             this.KeystoneToggleBox.Name = "KeystoneToggleBox";
             this.KeystoneToggleBox.Size = new System.Drawing.Size(103, 17);
             this.KeystoneToggleBox.TabIndex = 5;
@@ -80,7 +79,7 @@ namespace GP4_GUI {
             this.ExitBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.ExitBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.ExitBtn.Location = new System.Drawing.Point(359, 4);
+            this.ExitBtn.Location = new System.Drawing.Point(363, 2);
             this.ExitBtn.Name = "ExitBtn";
             this.ExitBtn.Size = new System.Drawing.Size(22, 22);
             this.ExitBtn.TabIndex = 7;
@@ -88,21 +87,10 @@ namespace GP4_GUI {
             this.ExitBtn.UseVisualStyleBackColor = false;
             this.ExitBtn.Click += new System.EventHandler(this.ExitBtn_Click);
             // 
-            // LimitedOutputBox
-            // 
-            this.LimitedOutputBox.AutoSize = true;
-            this.LimitedOutputBox.Location = new System.Drawing.Point(7, 107);
-            this.LimitedOutputBox.Name = "LimitedOutputBox";
-            this.LimitedOutputBox.Size = new System.Drawing.Size(196, 17);
-            this.LimitedOutputBox.TabIndex = 6;
-            this.LimitedOutputBox.Text = "Limit Log Output (Builds .gp4 Faster)";
-            this.LimitedOutputBox.UseVisualStyleBackColor = true;
-            this.LimitedOutputBox.CheckedChanged += new System.EventHandler(this.LimitedOutputBox_CheckedChanged);
-            // 
             // SourcePkgPathTextBox
             // 
             this.SourcePkgPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
-            this.SourcePkgPathTextBox.Location = new System.Drawing.Point(6, 56);
+            this.SourcePkgPathTextBox.Location = new System.Drawing.Point(6, 62);
             this.SourcePkgPathTextBox.Name = "SourcePkgPathTextBox";
             this.SourcePkgPathTextBox.Size = new System.Drawing.Size(317, 21);
             this.SourcePkgPathTextBox.TabIndex = 2;
@@ -112,7 +100,7 @@ namespace GP4_GUI {
             // FilterTextBox
             // 
             this.FilterTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Italic);
-            this.FilterTextBox.Location = new System.Drawing.Point(7, 133);
+            this.FilterTextBox.Location = new System.Drawing.Point(7, 127);
             this.FilterTextBox.Name = "FilterTextBox";
             this.FilterTextBox.Size = new System.Drawing.Size(316, 21);
             this.FilterTextBox.TabIndex = 3;
@@ -148,7 +136,7 @@ namespace GP4_GUI {
             this.SourcePkgPathBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.SourcePkgPathBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.SourcePkgPathBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.SourcePkgPathBtn.Location = new System.Drawing.Point(325, 55);
+            this.SourcePkgPathBtn.Location = new System.Drawing.Point(325, 61);
             this.SourcePkgPathBtn.Name = "SourcePkgPathBtn";
             this.SourcePkgPathBtn.Size = new System.Drawing.Size(60, 22);
             this.SourcePkgPathBtn.TabIndex = 9;
@@ -161,7 +149,7 @@ namespace GP4_GUI {
             this.FilterBrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.FilterBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.FilterBrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.FilterBrowseBtn.Location = new System.Drawing.Point(325, 132);
+            this.FilterBrowseBtn.Location = new System.Drawing.Point(325, 126);
             this.FilterBrowseBtn.Name = "FilterBrowseBtn";
             this.FilterBrowseBtn.Size = new System.Drawing.Size(60, 22);
             this.FilterBrowseBtn.TabIndex = 10;
@@ -175,16 +163,16 @@ namespace GP4_GUI {
             this.TinyVersionLabel.Font = new System.Drawing.Font("Cambria", 7F);
             this.TinyVersionLabel.Location = new System.Drawing.Point(1, 1);
             this.TinyVersionLabel.Name = "TinyVersionLabel";
-            this.TinyVersionLabel.Size = new System.Drawing.Size(57, 12);
+            this.TinyVersionLabel.Size = new System.Drawing.Size(91, 12);
             this.TinyVersionLabel.TabIndex = 11;
-            this.TinyVersionLabel.Text = "placeholder";
+            this.TinyVersionLabel.Text = "version placeholder";
             // 
             // OptionsPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
-            this.ClientSize = new System.Drawing.Size(387, 195);
+            this.ClientSize = new System.Drawing.Size(387, 192);
             this.Controls.Add(this.TinyVersionLabel);
             this.Controls.Add(this.FilterBrowseBtn);
             this.Controls.Add(this.SourcePkgPathBtn);
@@ -192,7 +180,6 @@ namespace GP4_GUI {
             this.Controls.Add(this.CustomPasscodeTextBox);
             this.Controls.Add(this.FilterTextBox);
             this.Controls.Add(this.SourcePkgPathTextBox);
-            this.Controls.Add(this.LimitedOutputBox);
             this.Controls.Add(this.ExitBtn);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.CustomGP4PathTextBox);
@@ -249,7 +236,6 @@ namespace GP4_GUI {
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
         #region Options Related Functions
         private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => MainForm.ignore_keystone = KeystoneToggleBox.Checked;
-        private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => MainForm.limit_output = LimitedOutputBox.Checked;
         
         private void CustomGP4PathTextBox_TextChanged(object sender, EventArgs e) {
             if(((TextBox)sender).Text == "") return;
@@ -356,7 +342,6 @@ namespace GP4_GUI {
         private Button SourcePkgPathBtn;
         private Button FilterBrowseBtn;
         private CheckBox KeystoneToggleBox;
-        private CheckBox LimitedOutputBox;
         private TextBox CustomGP4PathTextBox;
         private TextBox SourcePkgPathTextBox;
         private TextBox FilterTextBox;

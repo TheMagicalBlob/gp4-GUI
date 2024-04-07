@@ -21,7 +21,7 @@ namespace GP4_GUI {
             AppFolderPathTextBox.LostFocus += TextBoxReset;
         }
 
-        public const string Version = "ver 1.16.49 ";
+        public const string Version = "ver 1.17.52 ";
 
 
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
@@ -44,6 +44,7 @@ namespace GP4_GUI {
             this.BrowseBtn = new System.Windows.Forms.Button();
             this.DisableLogBox = new System.Windows.Forms.CheckBox();
             this.OptionsBtn = new System.Windows.Forms.Button();
+            this.VerboseOutputBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // CreateBtn
@@ -86,7 +87,7 @@ namespace GP4_GUI {
             this.MinimizeBtn.Font = new System.Drawing.Font("MS Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.MinimizeBtn.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.MinimizeBtn.Location = new System.Drawing.Point(401, 6);
+            this.MinimizeBtn.Location = new System.Drawing.Point(406, 2);
             this.MinimizeBtn.Name = "MinimizeBtn";
             this.MinimizeBtn.Size = new System.Drawing.Size(22, 22);
             this.MinimizeBtn.TabIndex = 4;
@@ -99,7 +100,7 @@ namespace GP4_GUI {
             this.ExitBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.ExitBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.ExitBtn.Location = new System.Drawing.Point(423, 6);
+            this.ExitBtn.Location = new System.Drawing.Point(428, 2);
             this.ExitBtn.Name = "ExitBtn";
             this.ExitBtn.Size = new System.Drawing.Size(22, 22);
             this.ExitBtn.TabIndex = 5;
@@ -140,6 +141,7 @@ namespace GP4_GUI {
             this.DisableLogBox.TabIndex = 8;
             this.DisableLogBox.Text = "Disable Log";
             this.DisableLogBox.UseVisualStyleBackColor = true;
+            this.DisableLogBox.CheckedChanged += new System.EventHandler(this.DisableLogBox_CheckedChanged);
             // 
             // OptionsBtn
             // 
@@ -154,12 +156,24 @@ namespace GP4_GUI {
             this.OptionsBtn.UseVisualStyleBackColor = false;
             this.OptionsBtn.Click += new System.EventHandler(this.OptionsBtn_Click);
             // 
+            // VerboseOutputBox
+            // 
+            this.VerboseOutputBox.AutoSize = true;
+            this.VerboseOutputBox.Location = new System.Drawing.Point(8, 77);
+            this.VerboseOutputBox.Name = "VerboseOutputBox";
+            this.VerboseOutputBox.Size = new System.Drawing.Size(121, 17);
+            this.VerboseOutputBox.TabIndex = 10;
+            this.VerboseOutputBox.Text = "Verbose Log Output";
+            this.VerboseOutputBox.UseVisualStyleBackColor = true;
+            this.VerboseOutputBox.CheckedChanged += new System.EventHandler(this.VerboseOutputBox_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
+            this.Controls.Add(this.VerboseOutputBox);
             this.Controls.Add(this.OptionsBtn);
             this.Controls.Add(this.DisableLogBox);
             this.Controls.Add(this.BrowseBtn);
@@ -185,7 +199,7 @@ namespace GP4_GUI {
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
         #region Basic Form Init Functions
         public static void BorderFunc(Form form) {
-            MainBox = new GroupBox();
+            var MainBox = new GroupBox();
             MainBox.Location = new Point(0, -6);
             MainBox.Name = "MainBox";
             MainBox.Size = new Size(form.Size.Width, form.Size.Height + 7);
@@ -233,15 +247,15 @@ namespace GP4_GUI {
         public static void ExitBtnML(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0);
 
         public static void MouseUpFunc(object sender, MouseEventArgs e) {
-            mouse_is_down = 0;
+            MouseIsDown = 0;
             Options?.BringToFront();
         }
         public static void MouseDownFunc(object sender, MouseEventArgs e) {
             MouseDif = new Point(MousePosition.X - ActiveForm.Location.X, MousePosition.Y - ActiveForm.Location.Y);
-            mouse_is_down = 1;
+            MouseIsDown = 1;
         }
         public static void MoveForm(object sender, MouseEventArgs e) {
-            if(mouse_is_down != 0) {
+            if(MouseIsDown != 0) {
                 ActiveForm.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
                 ActiveForm.Update();
                 if(Options == null) return;
@@ -282,8 +296,8 @@ namespace GP4_GUI {
 
 
         #region Main Application Variables
-        public static int mouse_is_down = 0;
-        public static bool options_page_is_open, limit_output;
+        private static int MouseIsDown = 0;
+        public static bool options_page_is_open;
         public static bool[] text_box_changed = new bool[5];
         public static string[] default_strings = new string[] {
             "Paste The Gamedata Folder Path Here, Or Use The Browse Button...",
@@ -293,7 +307,15 @@ namespace GP4_GUI {
             "Add Custom .pkg Passcode Here (Defaults To All Zeros)"
         };
         public static Point MouseDif, LastPos;
-        static Form Options;
+
+        /// <summary> .gp4 Options Page </summary>
+        public static Form Options;
+
+        /// <summary>
+        /// Determines The Amount Of Information Outputted To The Output Window <br/>
+        /// 0: Main Messages Only | 1: Basic Information | 2: Verbose Information
+        /// </summary>
+        private int MessageVerbosity = 1;
         #endregion
         #endregion
 
@@ -357,12 +379,27 @@ namespace GP4_GUI {
             if(Browser.ShowDialog() == DialogResult.OK)
                 AppFolderPathTextBox.Text = Browser.SelectedPath;
         }
-        private void debug_Click(object sender, EventArgs e) {
-            if (user_blacklist != null)
-            foreach(var f in user_blacklist) {
-                Out($"filter:{f}");
+
+        private void DisableLogBox_CheckedChanged(object sender, EventArgs e) {
+            if(((CheckBox)sender).Checked) {
+                MessageVerbosity = 0;
+                VerboseOutputBox.Visible = false;
+                return;
             }
+
+
+            MessageVerbosity = 1 + (VerboseOutputBox.Checked ? 1 : 0);
+            VerboseOutputBox.Visible = true;
         }
+
+        private void button1_Click(object sender, EventArgs e) {
+            Out("Unc", 0);
+            Out("Basic", 1);
+            Out("Verbose", 2);
+        }
+
+        private void VerboseOutputBox_CheckedChanged(object sender, EventArgs e) => MessageVerbosity = ((CheckBox)sender).Checked ? 2 : 1;
+
         #endregion
 
 
@@ -371,7 +408,52 @@ namespace GP4_GUI {
         ///--     GP4 Related Functions     --\\\
         /////////////////////\\\\\\\\\\\\\\\\\\\\
         #region GP4 Related Functions
-        private void Out(object s) { if (!DisableLogBox.Checked) OutputWindow.AppendText("\n" + s); }
+        private void Out(object s, int MessageImportance = 0) {
+            if(MessageImportance <= MessageVerbosity)
+                OutputWindow.AppendText($"{s}\n");
+        }
+
+
+
+
+        ////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+        ///--    playgo-chunks.dat & Param.sfo Format Research (TheMagicalBlob)    --\\\
+        ////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+        /*
+             playgo-chunks.dat
+              0x00 - 0x8: Head
+              0x0A: Chunk Count
+              0x10: File End
+              0x0E: Scenario Count
+              0xE0: Scenario Data Section(s)
+              0x14: Default ID
+
+              0xD0: chunk label beggining
+              0xD4: Chunk Label Byte Array Length
+              0xD8: chunk label end (Padded)
+              0xE0: Senario 1 type (*0xE0 + 0x20 For Each Scenario After?)
+              0xF0: Scenario Labels
+              0xF4: Scenario Label Array Byte Length
+
+
+             param.sfo
+              (File Data)
+              0x00 - 0x8: Header (00-50-53-46-01-01-00-00 ||1104986460160(int32))
+              0x08 - Param Labels Base Ptr (Int32)
+              0x0C - Param Values Base Ptr (Int32)
+              0x10 - Param Count           (Int32)
+           
+              (Param Data)
+              0x14 - Offset Of Label (Int16)
+              0x16 - [0x4] Unknown Purpose (Byte)  (Breaks The .sfo If Changed, Though)
+              0x17 - Data Type [0: Rsv4, 2: UTF8, 4: Int32]
+              0x18 - Real Parameter Length (Int32) (Offset From Param To Next Null Byte)
+              0x1C - Effective Parameter Length (Int32) (Offset From Param To Next Value)
+              0x20 - Offset Of Parameter
+
+              0x24:  Offset Of Next Param (Repeat Previous 6 Reads)
+        */
+
 
         //////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
         ///--    Parse playgo-chunks.dat And Param.sfo To Get Most Variables    --\\\
@@ -396,7 +478,7 @@ namespace GP4_GUI {
                 default_id = (byte)playgo_chunks_dat.ReadByte();
 
                 // Read Content ID Here Instead Of The .sfo Because Meh, User Has Bigger Issues If Those Aren't Identical
-                buffer = new byte[36];
+                var buffer = new byte[36];
                 playgo_chunks_dat.Position = 0x40;
                 playgo_chunks_dat.Read(buffer, 0, 36);
                 content_id = Encoding.UTF8.GetString(buffer);
@@ -446,13 +528,13 @@ namespace GP4_GUI {
                 playgo_chunks_dat.Position = scenario_label_array_pointer;
                 buffer = new byte[scenario_label_array_length];
                 playgo_chunks_dat.Read(buffer, 0, buffer.Length);
-                ConvertBufferToStringArray(scenario_labels);
+                ConvertBufferToStringArray(scenario_labels, buffer);
 
                 // Load Chunk Labels
                 buffer = new byte[chunk_label_array_length];
                 playgo_chunks_dat.Position = chunk_label_pointer;
                 playgo_chunks_dat.Read(buffer, 0, buffer.Length);
-                ConvertBufferToStringArray(chunk_labels);
+                ConvertBufferToStringArray(chunk_labels, buffer);
             }
         }
 
@@ -462,74 +544,92 @@ namespace GP4_GUI {
         ////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\
         void ParseSFO() {
             using(var param_sfo = File.OpenRead($@"{gamedata_folder}\sce_sys\param.sfo")) {
-                // Read Pointer For Array Of Parameter Names
-                param_sfo.Position = 0x8;
+
+                // Check PSF File Magic
+                var buffer = new byte[8];
+                param_sfo.Read(buffer, 0, 8);
+                if(BitConverter.ToInt64(buffer, 0) != 1104986460160)
+                    throw new InvalidDataException($"File Magic For .sfo Wasn't Valid ([Expected: 00-50-53-46-01-01-00-00] != [Read: {BitConverter.ToString(buffer)}])");
+
+
+                // Read Parameter Label Base Pointer
                 buffer = new byte[4];
                 param_sfo.Read(buffer, 0, 4);
-                var ParamNameArrayPointer = BitConverter.ToInt32(buffer, 0);
+                var ParamLabelArrayPointer = BitConverter.ToInt32(buffer, 0);
 
-                // Read Base Pointer For .pkg Parameters
-                param_sfo.Position = 0x0C;
+                // Read Parameter Base Pointer
                 param_sfo.Read(buffer, 0, 4);
                 var ParamVariablesPointer = BitConverter.ToInt32(buffer, 0);
 
                 // Read Parameter Name Array Length And Initialize Offset Array
-                param_sfo.Position = 0x10;
                 param_sfo.Read(buffer, 0, 4);
-                var ParamNameArrayLength = BitConverter.ToInt32(buffer, 0);
-                int[] ParameterOffsets = new int[ParamNameArrayLength];
+                var ParamCount = BitConverter.ToInt32(buffer, 0);
+                int[] ParameterOffsets = new int[ParamCount];
 
-                // Load Parameter Names
-                buffer = new byte[ParamVariablesPointer - ParamNameArrayPointer];
-                parameter_labels = new string[ParamNameArrayLength];
-                param_sfo.Position = ParamNameArrayPointer;
+                // Load Parameter Labels
+                buffer = new byte[ParamVariablesPointer - ParamLabelArrayPointer];
+                param_sfo.Position = ParamLabelArrayPointer;
                 param_sfo.Read(buffer, 0, buffer.Length);
-                ConvertBufferToStringArray(parameter_labels);
+                var ParameterLabels = new string[ParamCount];
+                ConvertBufferToStringArray(ParameterLabels, buffer);
 
                 // Load Parameter Offsets
                 param_sfo.Position = 0x20;
                 buffer = new byte[4];
-                for(index = 0; index < ParamNameArrayLength; param_sfo.Position += (0x10 - buffer.Length)) {
+                for(var index = 0; index < ParamCount; param_sfo.Position += 0x0C) {
                     param_sfo.Read(buffer, 0, 4);
                     ParameterOffsets[index] = ParamVariablesPointer + BitConverter.ToInt32(buffer, 0);
                     index++;
                 }
 
                 // Load The Rest Of The Required .pkg Variables From param.sfo
-                for(index = 0; index < ParamNameArrayLength; index++)
-                    if(required_sfo_variables.Contains(parameter_labels[index])) { // Ignore Variables Not Needed For .gp4 Project Creation
+                for(var index = 0; index < ParamCount; index++) {
 
+                    OutputWindow.AppendText(ParameterLabels[index] + ':');
+
+                    // Ignore Variables Not Needed For .gp4 Project Creation
+                    if(required_sfo_variables.Contains(ParameterLabels[index])) {
+                        
                         param_sfo.Position = ParameterOffsets[index];
-                        buffer = new byte[4];
 
-                        switch(parameter_labels[index]) { // I'm Too Tired to think of a more elegant solution right now. If it works, it works
+                        // REPLACE ME WITH THE NEW, *FULL* PARSE CODE
+                        switch(ParameterLabels[index]) {
+                            default: OutputWindow.AppendText($"Required Parameter {ParameterLabels[index]} Not Accounted For\n");
+                                break;
 
                             case "APP_VER":
                                 buffer = new byte[5];
                                 param_sfo.Read(buffer, 0, 5);
-                                app_ver = Encoding.UTF8.GetString(buffer);
+                                OutputWindow.AppendText(app_ver = Encoding.UTF8.GetString(buffer));
                                 break;
+
                             case "CATEGORY": // gd / gp
                                 param_sfo.Read(buffer, 0, 2);
-                                category = Encoding.UTF8.GetString(buffer, 0, 2);
+                                OutputWindow.AppendText(category = Encoding.UTF8.GetString(buffer, 0, 2));
                                 break;
+
                             case "CONTENT_ID":
                                 buffer = new byte[36];
                                 param_sfo.Read(buffer, 0, 36);
-                                content_id = Encoding.UTF8.GetString(buffer);
+                                OutputWindow.AppendText(content_id = Encoding.UTF8.GetString(buffer));
                                 break;
+
                             case "TITLE_ID":
                                 buffer = new byte[9];
                                 param_sfo.Read(buffer, 0, 9);
-                                title_id = Encoding.UTF8.GetString(buffer);
+                                OutputWindow.AppendText(title_id = Encoding.UTF8.GetString(buffer));
                                 break;
+
                             case "VERSION": // Remaster
                                 buffer = new byte[5];
                                 param_sfo.Read(buffer, 0, 5);
-                                version = Encoding.UTF8.GetString(buffer);
+                                OutputWindow.AppendText(version = Encoding.UTF8.GetString(buffer));
                                 break;
                         }
                     }
+
+                    OutputWindow.AppendText("\n\n");
+                }
             }
         }
 
@@ -557,7 +657,7 @@ namespace GP4_GUI {
             }
             if(!Directory.Exists(gamedata_folder)) {
                 Out($"Could Not Find The Game Data Directory\n{gamedata_folder}");
-                Out(".gp4 Creation Aborted");
+                Out(".gp4 Creation Aborted", 1);
                 return true;
             }
             if(!Directory.Exists(gp4_output_directory)) {
@@ -577,7 +677,9 @@ namespace GP4_GUI {
 
                 try { filename = filepath.Remove(filepath.LastIndexOf(".")).Substring(filepath.LastIndexOf('\\') + 1); }
 
-                catch (Exception e) { Out($"Invalid File Name, Skipping Filter Check.\n(Likely A Period In A Subfolder Name)\nPath in Question: {filepath}"); }
+                catch (Exception e) {
+                    Out($"Invalid File Name, Skipping Filter Check.\n(Likely A Period In A Subfolder Name)\nPath in Question: {filepath}");
+                }
 
 
             string[] blacklist = new string[] {
@@ -661,7 +763,7 @@ namespace GP4_GUI {
             return false;
         }
 
-        private void ConvertBufferToStringArray(string[] StringArray) {
+        private void ConvertBufferToStringArray(string[] StringArray, byte[] buffer) {
             int byteIndex = 0;
             StringBuilder Builder;
 
@@ -840,7 +942,7 @@ namespace GP4_GUI {
         private Button BrowseBtn;
         private CheckBox DisableLogBox;
         private Button OptionsBtn;
-        private static GroupBox MainBox;
+        private CheckBox VerboseOutputBox;
         #endregion
     }
 }
