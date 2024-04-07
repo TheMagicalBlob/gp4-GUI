@@ -741,86 +741,198 @@ namespace GP4_GUI {
             // LEGACY Test Start
             var timing = DateTime.Now.Millisecond;
             using(var sfo = File.OpenRead(sfopath)) {
-                byte[] buff = new byte[4];
-                StringBuilder Builder;
-                int ind, byteIndex = 0;
+                // Check PSF File Magic
+                var buffer = new byte[8];
+                sfo.Read(buffer, 0, 8);
+                if(BitConverter.ToInt64(buffer, 0) != 1104986460160)
+                    throw new InvalidDataException($"File Magic For .sfo Wasn't Valid ([Expected: 00-50-53-46-01-01-00-00] != [Read: {BitConverter.ToString(buffer)}])");
 
 
-                sfo.Position = 0x8;
-                sfo.Read(buff, 0, 4);
-                var LabelPtr = BitConverter.ToInt32(buff, 0);
+                // Read Parameter Label Base Pointer
+                buffer = new byte[4];
+                sfo.Read(buffer, 0, 4);
+                var ParamLabelArrayPointer = BitConverter.ToInt32(buffer, 0);
 
-                sfo.Position = 0x0C;
-                sfo.Read(buff, 0, 4);
-                var ParamPtr = BitConverter.ToInt32(buff, 0);
+                // Read Parameter Base Pointer
+                sfo.Read(buffer, 0, 4);
+                var ParamVariablesPointer = BitConverter.ToInt32(buffer, 0);
 
-                sfo.Position = 0x10;
-                sfo.Read(buff, 0, 4);
-                var ParamCount = BitConverter.ToInt32(buff, 0);
+                // Read Parameter Name Array Length And Initialize Offset Array
+                sfo.Read(buffer, 0, 4);
+                var ParamCount = BitConverter.ToInt32(buffer, 0);
+                var ParamOffsets = new int[ParamCount];
+                SfoParams        = new object[ParamCount];
+                SfoParamLabels   = new string[ParamCount];
 
-                SfoParamLabels = new string[ParamCount];
-                SfoParams = new object[ParamCount];
-                var ParamAddressesIIRC = new int[ParamCount];
-                buff = new byte[ParamPtr - LabelPtr];
-                sfo.Position = LabelPtr;
-                sfo.Read(buff, 0, buff.Length);
+                // Load Parameter Labels
+                buffer = new byte[ParamVariablesPointer - ParamLabelArrayPointer];
+                sfo.Position = ParamLabelArrayPointer;
+                sfo.Read(buffer, 0, buffer.Length);
+                ConvertBufferToStringArray(SfoParamLabels, buffer);
 
-                for(ind = 0; ind < SfoParamLabels.Length; ind++) {
-                    Builder = new StringBuilder();
-
-                    while(buff[byteIndex] != 0)
-                        Builder.Append(Encoding.UTF8.GetString(new byte[] { buff[byteIndex++] })); // Just Take A Byte, You Fussy Prick
-
-                    byteIndex++;
-                    
-                    SfoParamLabels[ind] = Builder.ToString();
-                }
-
-                buff = new byte[4];
+                // Load Parameter Offsets
                 sfo.Position = 0x20;
-                for(ind = 0; ind < ParamCount; sfo.Position += 0x10 - buff.Length) {
-                    sfo.Read(buff, 0, 4);
-                    ParamAddressesIIRC[ind] = ParamPtr + BitConverter.ToInt32(buff, 0);
-                    ind++;
+                buffer = new byte[4];
+                for(var index = 0; index < ParamCount; sfo.Position += 0x0C) {
+                    sfo.Read(buffer, 0, 4);
+                    ParamOffsets[index] = ParamVariablesPointer + BitConverter.ToInt32(buffer, 0);
+                    index++;
                 }
 
-                for(ind = 0; ind < ParamCount; ind++) {
+                // Load The Rest Of The Required .pkg Variables From param.sfo
+                for(var i = 0; i < ParamCount; i++) {
 
-                    if(!RequiredSfoVariables.Contains(SfoParamLabels[ind]))
-                        continue;
+                    OutputWindow.AppendText(SfoParamLabels[i] + ':');
 
-                    switch(SfoParamLabels[ind]) {
-                        case "APP_VER":
-                            buffer = new byte[5];
-                            sfo.Read(buffer, 0, 5);
-                            SfoParams[ind] = app_ver = Encoding.UTF8.GetString(buffer);
-                            break;
-                        case "CATEGORY": // gd / gp
-                            sfo.Read(buffer, 0, 2);
-                            SfoParams[ind] = category = Encoding.UTF8.GetString(buffer, 0, 2);
-                            break;
-                        case "CONTENT_ID":
-                            buffer = new byte[36];
-                            sfo.Read(buffer, 0, 36);
-                            SfoParams[ind] = content_id = Encoding.UTF8.GetString(buffer);
-                            break;
-                        case "TITLE_ID":
-                            buffer = new byte[9];
-                            sfo.Read(buffer, 0, 9);
-                            SfoParams[ind] = title_id = Encoding.UTF8.GetString(buffer);
-                            break;
-                        case "VERSION": // Remaster
-                            buffer = new byte[5];
-                            sfo.Read(buffer, 0, 5);
-                            SfoParams[ind] = version = Encoding.UTF8.GetString(buffer);
-                            break;
+                    // Ignore Variables Not Needed For .gp4 Project Creation
+                    if(RequiredSfoVariables.Contains(SfoParamLabels[i])) {
+
+                        sfo.Position = ParamOffsets[i];
+
+
+                        // REPLACE ME WITH THE NEW, *FULL* PARSE CODE
+                        switch(SfoParamLabels[i]) {
+                            default:
+                                OutputWindow.AppendText($"Required Parameter {SfoParamLabels[i]} Not Accounted For\n");
+                                SfoParams[i] = "ingored";
+                                break;
+                            case "APP_TYPE":
+                                buffer = new byte[4];
+                                break;
+                            case "ATTRIBUTE":
+                                buffer = new byte[4];
+                                break;
+                            case "ATTRIBUTE2":
+                                buffer = new byte[4];
+                                break;
+                            case "DEV_FLAG":
+                                buffer = new byte[4];
+                                break;
+                            case "DOWNLOAD_DATA_SIZE":
+                                buffer = new byte[4];
+                                break;
+                            case "FORMAT":
+                                buffer = new byte[4];
+                                break;
+                            case "PARENTAL_LEVEL":
+                                buffer = new byte[4];
+                                break;
+                            case "PUBTOOLINFO":
+                                buffer = new byte[4];
+                                break;
+                            case "PUBTOOLMINVER":
+                                buffer = new byte[4];
+                                break;
+                            case "PUBTOOLVER":
+                                buffer = new byte[4];
+                                break;
+                            case "REMOTE_PLAY_KEY_ASSIGN":
+                                buffer = new byte[4];
+                                break;
+                            case "SERVICE_ID_ADDCONT_ADD_1":
+                                buffer = new byte[4];
+                                break;
+                            case "SERVICE_ID_ADDCONT_ADD_2":
+                                buffer = new byte[4];
+                                break;
+                            case "SERVICE_ID_ADDCONT_ADD_3":
+                                buffer = new byte[4];
+                                break;
+                            case "SERVICE_ID_ADDCONT_ADD_4":
+                                buffer = new byte[4];
+                                break;
+                            case "SERVICE_ID_ADDCONT_ADD_5":
+                                buffer = new byte[4];
+                                break;
+                            case "SERVICE_ID_ADDCONT_ADD_6":
+                                buffer = new byte[4];
+                                break;
+                            case "SERVICE_ID_ADDCONT_ADD_7":
+                                buffer = new byte[4];
+                                break;
+                            case "SYSTEM_VER":
+                                buffer = new byte[4];
+                                break;
+                            case "TARGET_APP_VER":
+                                buffer = new byte[4];
+                                break;
+                            case "TITLE":
+                                buffer = new byte[4];
+                                break;
+                            case "TITLE_00":
+                                buffer = new byte[4];
+                                break;
+                            case "TITLE_03":
+                                buffer = new byte[4];
+                                break;
+                            case "TITLE_05":
+                                buffer = new byte[4];
+                                break;
+                            case "TITLE_07":
+                                buffer = new byte[4];
+                                break;
+                            case "TITLE_08":
+                                buffer = new byte[4];
+                                break;
+                            case "TITLE_17":
+                                buffer = new byte[4];
+                                break;
+                            case "TITLE_20":
+                                buffer = new byte[4];
+                                break;
+                            case "USER_DEFINED_PARAM_1":
+                                buffer = new byte[4];
+                                break;
+
+
+                            case "APP_VER":
+                                buffer = new byte[5];
+                                sfo.Read(buffer, 0, 5);
+                                OutputWindow.AppendText(app_ver = Encoding.UTF8.GetString(buffer));
+                                SfoParams[i] = app_ver;
+                                break;
+
+                            case "CATEGORY": // gd / gp
+                                buffer = new byte[2];
+                                sfo.Read(buffer, 0, 2);
+                                OutputWindow.AppendText(category = Encoding.UTF8.GetString(buffer, 0, 2));
+                                SfoParams[i] = category;
+                                break;
+
+                            case "CONTENT_ID":
+                                buffer = new byte[36];
+                                sfo.Read(buffer, 0, 36);
+                                OutputWindow.AppendText(content_id = Encoding.UTF8.GetString(buffer));
+                                SfoParams[i] = content_id;
+                                break;
+
+                            case "TITLE_ID":
+                                buffer = new byte[9];
+                                sfo.Read(buffer, 0, 9);
+                                OutputWindow.AppendText(title_id = Encoding.UTF8.GetString(buffer));
+                                SfoParams[i] = title_id;
+                                break;
+
+                            case "VERSION": // Remaster
+                                buffer = new byte[5];
+                                sfo.Read(buffer, 0, 5);
+                                OutputWindow.AppendText(version = Encoding.UTF8.GetString(buffer));
+                                SfoParams[i] = version;
+                                break;
+                        }
                     }
 
+                    OutputWindow.AppendText("\n\n");
+                }
+
+                for(var i = 0; i < SfoParamLabels.Length; i++) {
                     DLog("\n-------------------");
-                    DLog(SfoParamLabels[ind]);
-                    DLog(SfoParams[ind]);
+                    DLog(SfoParamLabels[i]);
+                    DLog(SfoParams[i]);
                     DLog("\n-------------------");
                 }
+
+
                 timing = DateTime.Now.Millisecond - timing;
                 DLog($"\nLegacy Test Timing (milliseconds): {timing}");
                 DLog($"Dumping...\n");
@@ -1134,13 +1246,13 @@ namespace GP4_GUI {
                 playgo_chunks_dat.Position = scenario_label_array_pointer;
                 buffer = new byte[scenario_label_array_length];
                 playgo_chunks_dat.Read(buffer, 0, buffer.Length);
-                ConvertBufferToStringArray(scenario_labels);
+                ConvertBufferToStringArray(scenario_labels, buffer);
 
                 // Load Chunk Labels
                 buffer = new byte[chunk_label_array_length];
                 playgo_chunks_dat.Position = chunk_label_pointer;
                 playgo_chunks_dat.Read(buffer, 0, buffer.Length);
-                ConvertBufferToStringArray(chunk_labels);
+                ConvertBufferToStringArray(chunk_labels, buffer);
             }
         }
 
@@ -1182,7 +1294,7 @@ namespace GP4_GUI {
             return false;
         }
 
-        private void ConvertBufferToStringArray(string[] StringArray) {
+        private void ConvertBufferToStringArray(string[] StringArray, byte[] buffer) {
             int byteIndex = 0;
             StringBuilder Builder;
 
