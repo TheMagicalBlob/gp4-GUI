@@ -40,7 +40,6 @@ namespace GP4_GUI {
 
        ;private Button AppOrPatchBtn;
         private Button clearLogBtn;
-        private Button sfoDebugBtn;
         private Button CheckintegrityBtn;
         private void GP4DirCheck() {
             if(!File.Exists(testgp4path)) {
@@ -240,12 +239,9 @@ namespace GP4_GUI {
             this.BrowseBtn = new System.Windows.Forms.Button();
             this.DisableLogBox = new System.Windows.Forms.CheckBox();
             this.OptionsBtn = new System.Windows.Forms.Button();
-            this.DButton1 = new System.Windows.Forms.Button();
-            this.DButton2 = new System.Windows.Forms.Button();
             this.CheckintegrityBtn = new System.Windows.Forms.Button();
             this.AppOrPatchBtn = new System.Windows.Forms.Button();
             this.clearLogBtn = new System.Windows.Forms.Button();
-            this.sfoDebugBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateBtn
@@ -357,38 +353,12 @@ namespace GP4_GUI {
             this.OptionsBtn.UseVisualStyleBackColor = false;
             this.OptionsBtn.Click += new System.EventHandler(this.OptionsBtn_Click);
             // 
-            // DButton1
-            // 
-            this.DButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.DButton1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.DButton1.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.DButton1.Location = new System.Drawing.Point(7, 75);
-            this.DButton1.Name = "DButton1";
-            this.DButton1.Size = new System.Drawing.Size(44, 22);
-            this.DButton1.TabIndex = 11;
-            this.DButton1.Text = "Static Read";
-            this.DButton1.UseVisualStyleBackColor = false;
-            this.DButton1.Click += new System.EventHandler(this.DButton1_Click);
-            // 
-            // DButton2
-            // 
-            this.DButton2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.DButton2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.DButton2.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.DButton2.Location = new System.Drawing.Point(44, 75);
-            this.DButton2.Name = "DButton2";
-            this.DButton2.Size = new System.Drawing.Size(34, 22);
-            this.DButton2.TabIndex = 12;
-            this.DButton2.Text = "Init";
-            this.DButton2.UseVisualStyleBackColor = false;
-            this.DButton2.Click += new System.EventHandler(this.DButton2_Click);
-            // 
             // CheckintegrityBtn
             // 
             this.CheckintegrityBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.CheckintegrityBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.CheckintegrityBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CheckintegrityBtn.Location = new System.Drawing.Point(75, 75);
+            this.CheckintegrityBtn.Location = new System.Drawing.Point(15, 75);
             this.CheckintegrityBtn.Name = "CheckintegrityBtn";
             this.CheckintegrityBtn.Size = new System.Drawing.Size(42, 22);
             this.CheckintegrityBtn.TabIndex = 13;
@@ -401,7 +371,7 @@ namespace GP4_GUI {
             this.AppOrPatchBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.AppOrPatchBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.AppOrPatchBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.AppOrPatchBtn.Location = new System.Drawing.Point(113, 75);
+            this.AppOrPatchBtn.Location = new System.Drawing.Point(74, 75);
             this.AppOrPatchBtn.Name = "AppOrPatchBtn";
             this.AppOrPatchBtn.Size = new System.Drawing.Size(66, 22);
             this.AppOrPatchBtn.TabIndex = 14;
@@ -414,7 +384,7 @@ namespace GP4_GUI {
             this.clearLogBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.clearLogBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.clearLogBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.clearLogBtn.Location = new System.Drawing.Point(174, 75);
+            this.clearLogBtn.Location = new System.Drawing.Point(154, 75);
             this.clearLogBtn.Name = "clearLogBtn";
             this.clearLogBtn.Size = new System.Drawing.Size(46, 22);
             this.clearLogBtn.TabIndex = 15;
@@ -422,32 +392,15 @@ namespace GP4_GUI {
             this.clearLogBtn.UseVisualStyleBackColor = false;
             this.clearLogBtn.Click += new System.EventHandler(this.ClearLogBtn_Click);
             // 
-            // sfoDebugBtn
-            // 
-            this.sfoDebugBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.sfoDebugBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.sfoDebugBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
-            this.sfoDebugBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.sfoDebugBtn.Location = new System.Drawing.Point(216, 75);
-            this.sfoDebugBtn.Name = "sfoDebugBtn";
-            this.sfoDebugBtn.Size = new System.Drawing.Size(63, 22);
-            this.sfoDebugBtn.TabIndex = 16;
-            this.sfoDebugBtn.Text = "Parse .sfo";
-            this.sfoDebugBtn.UseVisualStyleBackColor = false;
-            this.sfoDebugBtn.Click += new System.EventHandler(this.sfoDebugTest1Btn_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
-            this.Controls.Add(this.sfoDebugBtn);
             this.Controls.Add(this.clearLogBtn);
             this.Controls.Add(this.AppOrPatchBtn);
             this.Controls.Add(this.CheckintegrityBtn);
-            this.Controls.Add(this.DButton2);
-            this.Controls.Add(this.DButton1);
             this.Controls.Add(this.OptionsBtn);
             this.Controls.Add(this.DisableLogBox);
             this.Controls.Add(this.BrowseBtn);
@@ -665,10 +618,9 @@ namespace GP4_GUI {
         ///////////////\\\\\\\\\\\\\\
 
 
-        private static readonly string[] varstrings = new string[] { "Legacy", "First", "Second" };
+        private static readonly string[] varstrings = new string[] { "Legacy", "First", "Second", "Third" };
         private void DumpSfoVariables(long Time, int ind) {
 
-            // E.G. CUSA10249-patch_1.09.gp4
             var LogFilePath = $@"\[{varstrings[ind]}]-{title_id}-{(category == "gp" ? "patch" : "app")}_{app_ver}.gp4";
             DLog($"[Output Path: {LogFilePath}]");
 
@@ -684,43 +636,7 @@ namespace GP4_GUI {
 
         private static object[] SfoParams;
         private static string[]
-            SfoParamLabels,
-            RequiredSfoVariables = new string[] {
-                "APP_TYPE",
-                "APP_VER",
-                "ATTRIBUTE",
-                "ATTRIBUTE2",
-                "CATEGORY",
-                "CONTENT_ID",
-                "DEV_FLAG",
-                "DOWNLOAD_DATA_SIZE",
-                "FORMAT",
-                "PARENTAL_LEVEL",
-                "PUBTOOLINFO",
-                "PUBTOOLMINVER",
-                "PUBTOOLVER",
-                "REMOTE_PLAY_KEY_ASSIGN",
-                "SERVICE_ID_ADDCONT_ADD_1",
-                "SERVICE_ID_ADDCONT_ADD_2",
-                "SERVICE_ID_ADDCONT_ADD_3",
-                "SERVICE_ID_ADDCONT_ADD_4",
-                "SERVICE_ID_ADDCONT_ADD_5",
-                "SERVICE_ID_ADDCONT_ADD_6",
-                "SERVICE_ID_ADDCONT_ADD_7",
-                "SYSTEM_VER",
-                "TARGET_APP_VER",
-                "TITLE",
-                "TITLE_00",
-                "TITLE_03",
-                "TITLE_05",
-                "TITLE_07",
-                "TITLE_08",
-                "TITLE_17",
-                "TITLE_20",
-                "TITLE_ID",
-                "USER_DEFINED_PARAM_1",
-                "VERSION"
-            }
+            SfoParamLabels
         ;
         private void sfoDebugTest1Btn_Click(object sender, EventArgs e) {
 
@@ -736,516 +652,9 @@ namespace GP4_GUI {
             var timer = Stopwatch.StartNew();
 
 
-            // LEGACY Test Start (No Way In Hell I'm Keeping This Trash One, I'm Just Curious)
-            DLog($"###################################\n    Beginning Legacy Code Test\n###################################\n\n");
-            var ticks = timer.ElapsedMilliseconds;
-            using(var sfo = File.OpenRead(sfopath)) {
-                #region
-
-                // Check PSF File Magic
-                var buffer = new byte[8];
-                sfo.Read(buffer, 0, 8);
-                if(BitConverter.ToInt64(buffer, 0) != 1104986460160)
-                    throw new InvalidDataException($"File Magic For .sfo Wasn't Valid ([Expected: 00-50-53-46-01-01-00-00] != [Read: {BitConverter.ToString(buffer)}])");
-
-
-                // Read Parameter Label Base Pointer
-                buffer = new byte[4];
-                sfo.Read(buffer, 0, 4);
-                var ParamLabelArrayPointer = BitConverter.ToInt32(buffer, 0);
-
-                // Read Parameter Base Pointer
-                sfo.Read(buffer, 0, 4);
-                var ParamVariablesPointer = BitConverter.ToInt32(buffer, 0);
-
-                // Read Parameter Name Array Length And Initialize Offset Array
-                sfo.Read(buffer, 0, 4);
-                var ParamCount = BitConverter.ToInt32(buffer, 0);
-                var ParamOffsets = new int[ParamCount];
-                SfoParams        = new object[ParamCount];
-                SfoParamLabels   = new string[ParamCount];
-
-                // Load Parameter Labels
-                buffer = new byte[ParamVariablesPointer - ParamLabelArrayPointer];
-                sfo.Position = ParamLabelArrayPointer;
-                sfo.Read(buffer, 0, buffer.Length);
-                ConvertBufferToStringArray(SfoParamLabels, buffer);
-
-                // Load Parameter Offsets
-                sfo.Position = 0x20;
-                for(var index = 0; index < ParamCount; sfo.Position += 0x0C) {
-                    sfo.Read(buffer, 0, 4);
-                    ParamOffsets[index] = ParamVariablesPointer + BitConverter.ToInt32(buffer, 0);
-                    index++;
-                }
-
-
-                var str = string.Empty;
-                for(var i = 0; i < ParamCount; i++) {
-
-                    sfo.Position = ParamOffsets[i];
-
-                    if(RequiredSfoVariables.Contains(SfoParamLabels[i])) {
-                        
-                        switch(SfoParamLabels[i]) {
-                            default:
-                                OutputWindow.AppendText($"Required Parameter {SfoParamLabels[i]} Not Accounted For\n");
-                                SfoParams[i] = "ingored";
-                                break;
-                            case "APP_TYPE":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "ATTRIBUTE":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "ATTRIBUTE2":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "DEV_FLAG":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "DOWNLOAD_DATA_SIZE":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "FORMAT":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "PARENTAL_LEVEL":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "PUBTOOLINFO":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "PUBTOOLMINVER":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "PUBTOOLVER":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "REMOTE_PLAY_KEY_ASSIGN":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "SERVICE_ID_ADDCONT_ADD_1":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "SERVICE_ID_ADDCONT_ADD_2":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "SERVICE_ID_ADDCONT_ADD_3":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "SERVICE_ID_ADDCONT_ADD_4":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "SERVICE_ID_ADDCONT_ADD_5":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "SERVICE_ID_ADDCONT_ADD_6":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "SERVICE_ID_ADDCONT_ADD_7":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "SYSTEM_VER":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-                            case "TARGET_APP_VER":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-
-                            case "TITLE":
-                                str = string.Empty;
-
-                                while((str += (char)sfo.ReadByte()).Last() != (char)0);
-
-                                SfoParams[i] = str;
-                                break;
-
-                            case "TITLE_00":
-                                str = string.Empty;
-
-                                while((str += (char)sfo.ReadByte()).Last() != (char)0);
-
-                                SfoParams[i] = str;
-                                break;
-
-                            case "TITLE_03":
-                                str = string.Empty;
-
-                                while((str += (char)sfo.ReadByte()).Last() != (char)0);
-
-                                SfoParams[i] = str;
-                                break;
-
-                            case "TITLE_05":
-                                str = string.Empty;
-
-                                while((str += (char)sfo.ReadByte()).Last() != (char)0);
-
-                                SfoParams[i] = str;
-                                break;
-
-                            case "TITLE_07":
-                                str = string.Empty;
-
-                                while((str += (char)sfo.ReadByte()).Last() != (char)0);
-
-                                SfoParams[i] = str;
-                                break;
-
-                            case "TITLE_08":
-                                str = string.Empty;
-
-                                while((str += (char)sfo.ReadByte()).Last() != (char)0);
-
-                                SfoParams[i] = str;
-                                break;
-
-                            case "TITLE_17":
-                                str = string.Empty;
-
-                                while((str += (char)sfo.ReadByte()).Last() != (char)0);
-
-                                SfoParams[i] = str;
-                                break;
-
-                            case "TITLE_20":
-                                str = string.Empty;
-
-                                while((str += (char)sfo.ReadByte()).Last() != (char)0);
-
-                                SfoParams[i] = str;
-                                break;
-
-                            case "USER_DEFINED_PARAM_1":
-                                buffer = new byte[4];
-                                sfo.Read(buffer, 0, 4);
-                                SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                                break;
-
-
-                            case "APP_VER":
-                                buffer = new byte[5];
-                                sfo.Read(buffer, 0, 5);
-                                app_ver = Encoding.UTF8.GetString(buffer);
-                                SfoParams[i] = app_ver;
-                                break;
-
-                            case "CATEGORY": // gd / gp
-                                buffer = new byte[2];
-                                sfo.Read(buffer, 0, 2);
-                                category = Encoding.UTF8.GetString(buffer, 0, 2);
-                                SfoParams[i] = category;
-                                break;
-
-                            case "CONTENT_ID":
-                                buffer = new byte[36];
-                                sfo.Read(buffer, 0, 36);
-                                content_id = Encoding.UTF8.GetString(buffer);
-                                SfoParams[i] = content_id;
-                                break;
-
-                            case "TITLE_ID":
-                                buffer = new byte[9];
-                                sfo.Read(buffer, 0, 9);
-                                title_id = Encoding.UTF8.GetString(buffer);
-                                SfoParams[i] = title_id;
-                                break;
-
-                            case "VERSION": // Remaster
-                                buffer = new byte[5];
-                                sfo.Read(buffer, 0, 5);
-                                version = Encoding.UTF8.GetString(buffer);
-                                SfoParams[i] = version;
-                                break;
-                        }
-                    }
-                }
-
-                for(var i = 0; i < SfoParamLabels.Length; i++)
-                    DLog($"Label: {SfoParamLabels[i]}\nParam: {SfoParams[i]}\n");
-                #endregion
-
-
-                var Stop = timer.ElapsedMilliseconds - ticks;
-                DLog($"\nLegacy Test Timing (milliseconds): {Stop}");
-                DLog($"Dumping...");
-                DumpSfoVariables(Stop, 0);
-            }
-            // --
-
-
-            // First Test Start
-            DLog($"###################################\n       Beginning First Test\n###################################\n");
-            ticks = timer.ElapsedMilliseconds;
-            using(var sfo = File.OpenRead(sfopath)) {
-
-                var buffer = new byte[4];
-
-                List<string> Labels;
-
-                Int16[] LabelOffsets;
-                int[]
-                    ParamOffsets,
-                    DataTypes,
-                    ParamLengths
-                ;
-                
-                // Read Pointer For Array Of Parameter Labels
-                sfo.Position = 0x8;
-                sfo.Read(buffer, 0, 4);
-                var ParamLabelsPointer = BitConverter.ToInt32(buffer, 0);
-
-                // Read Base Pointer For .pkg Parameters
-                sfo.Read(buffer, 0, 4);
-                var ParamVariablesPointer = BitConverter.ToInt32(buffer, 0);
-
-                // Read PSF Parameter Count
-                sfo.Read(buffer, 0, 4);
-                var ParameterCount = BitConverter.ToInt32(buffer, 0);
-
-                // Initialize Arrays
-                SfoParams = new object[ParameterCount];
-                SfoParamLabels = new string[ParameterCount];
-                DataTypes = new int[ParameterCount];
-                ParamLengths = new int[ParameterCount];
-                ParamOffsets = new int[ParameterCount];
-                LabelOffsets = new Int16[ParameterCount];
-
-
-                // Load Parameter Data (DataType, Len, Offset, Pointers, Etc.)
-                for(var i = 0; i < ParameterCount; i++) {
-
-                    // Read Label Offset (+1 Byte To Skip Unknown 0x4 Const)
-                    sfo.Read(buffer, 0, 3);
-                    LabelOffsets[i] = BitConverter.ToInt16(buffer, 0);
-                    
-                    if((DataTypes[i] = sfo.ReadByte()) == 2 || DataTypes[i] == 4) { // Read And Check Data Type (4 = Int32, 2 = UTf8, 0 = Rsv4 )
-
-                        sfo.Read(buffer, 0, 4);
-                        ParamLengths[i] = BitConverter.ToInt32(buffer, 0);
-                        sfo.Read(buffer, 0, 4);
-                        ParamOffsets[i] = BitConverter.ToInt32(buffer, 0);
-                    }
-
-                    sfo.Position += 0x4;
-                }
-
-
-
-                // Load Parameter Labels
-                for(int i = 0; i < ParameterCount - 1; i++) {
-                    buffer = new byte[LabelOffsets[i + 1] - LabelOffsets[i]];
-                    sfo.Read(buffer, 0, buffer.Length);
-
-                    SfoParamLabels[i] = Encoding.UTF8.GetString(buffer, 0, buffer.Length - 1);
-                }
-                buffer = new byte[7];
-                sfo.Read(buffer, 0, 7);
-                SfoParamLabels[SfoParamLabels.Length - 1] = Encoding.UTF8.GetString(buffer);
-
-
-                for(int i = 0; i < ParameterCount; ParamVariablesPointer += ParamOffsets[i++]) {
-                    sfo.Position = ParamVariablesPointer;
-
-                    buffer = new byte[ParamLengths[i]];
-                    sfo.Read(buffer, 0, ParamLengths[i]);
-
-                    DLog($"\nLabel: {SfoParamLabels[i]}");
-
-                    // String
-                    if(DataTypes[i] == 2) {
-                        if(ParamLengths[i] > 1 && buffer[ParamLengths[i] - 1] == 0)
-                            SfoParams[i] = Encoding.UTF8.GetString(buffer, 0, buffer.Length - 1);
-
-                        else
-                            SfoParams[i] = Encoding.UTF8.GetString(buffer);
-
-
-                        if(((string)SfoParams[i])[0] == 0)
-                            SfoParams[i] = "Empty String";
-                    }
-
-                    // Int32
-                    else if(DataTypes[i] == 4) {
-                        SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                    }
-
-                    DLog($"Param: {SfoParams[i]}");
-                }
-
-
-                #region
-                var Stop = timer.ElapsedMilliseconds - ticks;
-                DLog($"\nTest 1 Timing (milliseconds): {Stop}");
-                DLog($"Dumping...");
-                DumpSfoVariables(Stop, 1);
-                #endregion
-            }
-            // --
-
-
-            // Second Test Start
-            DLog($"###################################\n       Beginning Second Test\n###################################\n");
-            ticks = timer.ElapsedMilliseconds;
-            using(var sfo = File.OpenRead(sfopath)) {
-
-                var buffer = new byte[8];
-
-                List<string> Labels;
-
-                Int16[] LabelOffsets;
-                int[]
-                    ParamOffsets,
-                    DataTypes,
-                    ParamLengths
-                ;
-
-
-                // Check PSF File Magic
-                sfo.Read(buffer, 0, 8);
-                if(BitConverter.ToInt64(buffer, 0) != 1104986460160)
-                    throw new InvalidDataException($"File Magic For .sfo Wasn't Valid ([Expected: 00-50-53-46-01-01-00-00] != [Read: {BitConverter.ToString(buffer)}])");
-
-
-                // Read Pointer For Array Of Parameter Labels
-                buffer = new byte[4];
-                sfo.Read(buffer, 0, 4);
-                var ParamLabelsPointer = BitConverter.ToInt32(buffer, 0);
-
-                // Read Base Pointer For .pkg Parameters
-                sfo.Read(buffer, 0, 4);
-                var ParamVariablesPointer = BitConverter.ToInt32(buffer, 0);
-
-                // Read PSF Parameter Count
-                sfo.Read(buffer, 0, 4);
-                var ParameterCount = BitConverter.ToInt32(buffer, 0);
-
-                // Initialize Arrays
-                SfoParams = new object[ParameterCount];
-                SfoParamLabels = new string[ParameterCount];
-                DataTypes = new int[ParameterCount];
-                ParamLengths = new int[ParameterCount];
-                ParamOffsets = new int[ParameterCount];
-                LabelOffsets = new Int16[ParameterCount];
-
-
-                // Load Parameter Labels & Offsets
-                for(int i = 0; i < ParameterCount; i++) {
-
-                    // Read Label Offset (+1 Byte To Skip Unknown 0x4 Const)
-                    sfo.Read(buffer, 0, 3);
-                    LabelOffsets[i] = BitConverter.ToInt16(buffer, 0);
-
-                    if((DataTypes[i] = sfo.ReadByte()) == 2 || DataTypes[i] == 4) { // Read And Check Data Type (4 = Int32, 2 = UTf8, 0 = Rsv4 )
-
-                        sfo.Read(buffer, 0, 4);
-                        ParamLengths[i] = BitConverter.ToInt32(buffer, 0);
-
-                        sfo.Read(buffer, 0, 4);
-                        ParamOffsets[i] = BitConverter.ToInt32(buffer, 0);
-                    }
-
-                    sfo.Position += 0x4;
-                }
-
-
-
-                // Load Parameter Labels
-                for(int i = 0; i < ParameterCount; i++) {
-                    var ByteList = new List<byte>();
-
-                    for(; ByteList.Count == 0 || ByteList.Last() != 0; ByteList.Add((byte)sfo.ReadByte())) ;
-                    ByteList.RemoveAt(ByteList.Count - 1);
-
-                    SfoParamLabels[i] = Encoding.UTF8.GetString(ByteList.ToArray());
-                }
-
-
-                for(int i = 0; i < ParameterCount; ParamVariablesPointer += ParamOffsets[i++]) {
-                    sfo.Position = ParamVariablesPointer;
-
-                    buffer = new byte[ParamLengths[i]];
-                    sfo.Read(buffer, 0, ParamLengths[i]);
-
-                    DLog($"\nLabel: {SfoParamLabels[i]}");
-
-                    // String
-                    if(DataTypes[i] == 2) {
-                        if(ParamLengths[i] > 1 && buffer[ParamLengths[i] - 1] == 0)
-                            SfoParams[i] = Encoding.UTF8.GetString(buffer, 0, buffer.Length - 1);
-
-                        else
-                            SfoParams[i] = Encoding.UTF8.GetString(buffer);
-
-
-                        if(((string)SfoParams[i])[0] == 0)
-                            SfoParams[i] = "Empty String";
-
-                        DLog($"Param: {SfoParams[i]}");
-                    }
-
-                    // Int32
-                    else if(DataTypes[i] == 4) {
-                        SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                        DLog($"Param: {SfoParams[i]}");
-                    }
-                }
-
-                #region
-                var Stop = timer.ElapsedMilliseconds - ticks;
-                DLog($"\nTest 2 Timing (milliseconds): {Stop}");
-                DLog($"Dumping...");
-                DumpSfoVariables(Stop, 2);
-                #endregion
-            }
-            // --
-
-
-
             // Third Test Start
             DLog($"###################################\n       Beginning Third Test\n###################################\n");
-            ticks = timer.ElapsedMilliseconds;
+            var ticks = timer.ElapsedMilliseconds;
             using(var sfo = File.OpenRead(sfopath)) {
 
                 byte[] buffer;
@@ -1342,7 +751,7 @@ namespace GP4_GUI {
                 var Stop = timer.ElapsedMilliseconds - ticks;
                 DLog($"\nTest 3 Timing (milliseconds): {Stop}");
                 DLog($"Dumping...");
-                DumpSfoVariables(Stop, 2);
+                DumpSfoVariables(Stop, 3);
                 #endregion
             }
             // --
@@ -1507,22 +916,8 @@ namespace GP4_GUI {
         }
 
         private void BuildProjectFile(object sender, EventArgs e) {
-
-
-
-            if(CheckGP4Settings()) return;
-
-            OutputWindow.Clear();
-            OutputWindow.AppendText("Starting .gp4 Creation");
-
-            var check = content_id;
-
-            if(check != content_id) {
-                WLog($"Content Id Mismatch In Param.sfo vs playgo-chunks.dat\nsfo: {content_id}\n.dat:{check}");
-            }
-
-            file_paths = GetProjectFilePaths();
-
+            var Venat = new GP4Creator(gamedata_folder);
+            Venat.BuildAndSaveGP4(gp4_output_directory);
         }
         #endregion
 
@@ -1540,8 +935,6 @@ namespace GP4_GUI {
         private Button BrowseBtn;
         private CheckBox DisableLogBox;
         private Button OptionsBtn;
-        private Button DButton1;
-        private Button DButton2;
         #endregion
     }
 }
