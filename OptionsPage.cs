@@ -34,7 +34,7 @@ namespace GP4_GUI {
             this.CustomGP4PathTextBox = new System.Windows.Forms.TextBox();
             this.Title = new System.Windows.Forms.Label();
             this.ExitBtn = new System.Windows.Forms.Button();
-            this.LimitedOutputBox = new System.Windows.Forms.CheckBox();
+            this.VerboseOutputBox = new System.Windows.Forms.CheckBox();
             this.SourcePkgPathTextBox = new System.Windows.Forms.TextBox();
             this.FilterTextBox = new System.Windows.Forms.TextBox();
             this.CustomPasscodeTextBox = new System.Windows.Forms.TextBox();
@@ -88,16 +88,16 @@ namespace GP4_GUI {
             this.ExitBtn.UseVisualStyleBackColor = false;
             this.ExitBtn.Click += new System.EventHandler(this.ExitBtn_Click);
             // 
-            // LimitedOutputBox
+            // VerboseOutputBox
             // 
-            this.LimitedOutputBox.AutoSize = true;
-            this.LimitedOutputBox.Location = new System.Drawing.Point(7, 107);
-            this.LimitedOutputBox.Name = "LimitedOutputBox";
-            this.LimitedOutputBox.Size = new System.Drawing.Size(196, 17);
-            this.LimitedOutputBox.TabIndex = 6;
-            this.LimitedOutputBox.Text = "Limit Log Output (Builds .gp4 Faster)";
-            this.LimitedOutputBox.UseVisualStyleBackColor = true;
-            this.LimitedOutputBox.CheckedChanged += new System.EventHandler(this.LimitedOutputBox_CheckedChanged);
+            this.VerboseOutputBox.AutoSize = true;
+            this.VerboseOutputBox.Location = new System.Drawing.Point(7, 107);
+            this.VerboseOutputBox.Name = "VerboseOutputBox";
+            this.VerboseOutputBox.Size = new System.Drawing.Size(100, 17);
+            this.VerboseOutputBox.TabIndex = 6;
+            this.VerboseOutputBox.Text = "Verbose Output";
+            this.VerboseOutputBox.UseVisualStyleBackColor = true;
+            this.VerboseOutputBox.CheckedChanged += new System.EventHandler(this.LimitedOutputBox_CheckedChanged);
             // 
             // SourcePkgPathTextBox
             // 
@@ -192,7 +192,7 @@ namespace GP4_GUI {
             this.Controls.Add(this.CustomPasscodeTextBox);
             this.Controls.Add(this.FilterTextBox);
             this.Controls.Add(this.SourcePkgPathTextBox);
-            this.Controls.Add(this.LimitedOutputBox);
+            this.Controls.Add(this.VerboseOutputBox);
             this.Controls.Add(this.ExitBtn);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.CustomGP4PathTextBox);
@@ -214,10 +214,11 @@ namespace GP4_GUI {
             this.Dispose();
         }
         private void LoadOptions() {
-            if(MainForm.gp4_output_directory != "")
-                CustomGP4PathTextBox.Text = MainForm.gp4_output_directory;
-            if(MainForm.pkg_source != "")
-                SourcePkgPathTextBox.Text = MainForm.pkg_source;
+            /*
+            if(MainForm.Gp4OutputDirectory != "")
+                CustomGP4PathTextBox.Text = MainForm.Gp4OutputDirectory;
+            if(MainForm.PkgSource != "")
+                SourcePkgPathTextBox.Text = MainForm.PkgSource;
 
             if(MainForm.user_blacklist != null) {
                 FilterTextBox.Text = string.Empty;
@@ -226,10 +227,11 @@ namespace GP4_GUI {
                 FilterTextBox.Text = FilterTextBox.Text.TrimEnd(',');
             }
 
-            KeystoneToggleBox.Checked = MainForm.ignore_keystone;
+            KeystoneToggleBox.Checked = MainForm.IgnoreKeystone;
 
-            if(MainForm.passcode != "00000000000000000000000000000000")
-                CustomPasscodeTextBox.Text = MainForm.passcode;
+            if(MainForm.Passcode != "00000000000000000000000000000000")
+                CustomPasscodeTextBox.Text = MainForm.Passcode;
+            */
 
 
             // Designer Will Delete These From InitializeComponent If Added Manually
@@ -248,14 +250,14 @@ namespace GP4_GUI {
         ///--     Options Related Functions     --\\\
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
         #region Options Related Functions
-        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => MainForm.ignore_keystone = KeystoneToggleBox.Checked;
-        private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => MainForm.limit_output = LimitedOutputBox.Checked;
+        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => MainForm.gp4.Keystone = KeystoneToggleBox.Checked;
+        private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => MainForm.limit_output = VerboseOutputBox.Checked;
         
         private void CustomGP4PathTextBox_TextChanged(object sender, EventArgs e) {
             if(((TextBox)sender).Text == "") return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
-            MainForm.gp4_output_directory = CustomGP4PathTextBox.Text;
+            //! MainForm.Gp4OutputDirectory = CustomGP4PathTextBox.Text;
             if(CustomGP4PathTextBox.Text != "" && CustomGP4PathTextBox.Text != MainForm.default_strings[1])
                 MainForm.text_box_changed[1] = true;
         }
@@ -270,7 +272,7 @@ namespace GP4_GUI {
             if(((TextBox)sender).Text == "") return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
-            MainForm.pkg_source = SourcePkgPathTextBox.Text.Replace("\"", "");
+            //! MainForm.gp4.SourcePkgPath = SourcePkgPathTextBox.Text.Replace("\"", "");
             if(SourcePkgPathTextBox.Text != "" && SourcePkgPathTextBox.Text != MainForm.default_strings[2])
                 MainForm.text_box_changed[2] = true;
         }
@@ -298,18 +300,18 @@ namespace GP4_GUI {
                 if(c == ';' || c == ',')
                     filter_strings_length++;
 
-            MainForm.user_blacklist = new string[filter_strings_length];
-            MainForm.buffer = Encoding.UTF8.GetBytes((FilterTextBox.Text + ';').ToCharArray());
+            MainForm.gp4.BlacklistedFilesOrFolders = new string[filter_strings_length];
+            var buffer = Encoding.UTF8.GetBytes((FilterTextBox.Text + ';').ToCharArray());
 
             try {
-                for(var array_index = 0; array_index < MainForm.user_blacklist.Length; array_index++) {
+                for(var array_index = 0; array_index < MainForm.gp4.BlacklistedFilesOrFolders.Length; array_index++) {
                     Builder = new StringBuilder();
 
-                    while(MainForm.buffer[char_index] != 0x3B && MainForm.buffer[char_index] != 0x2C)
-                        Builder.Append(Encoding.UTF8.GetString(new byte[] { MainForm.buffer[char_index++] }));
+                    while(buffer[char_index] != 0x3B && buffer[char_index] != 0x2C)
+                        Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[char_index++] }));
 
                     char_index++;
-                    MainForm.user_blacklist[array_index] = Builder.ToString().Trim(' ');
+                    MainForm.gp4.BlacklistedFilesOrFolders[array_index] = Builder.ToString().Trim(' ');
                     MainForm.text_box_changed[3] = true;
                 }
             }
@@ -339,7 +341,7 @@ namespace GP4_GUI {
                 MainForm.text_box_changed[4] = true;
             else return;
 
-            MainForm.passcode = CustomPasscodeTextBox.Text;
+            MainForm.gp4.Passcode = CustomPasscodeTextBox.Text;
         }
         #endregion
 
@@ -356,7 +358,7 @@ namespace GP4_GUI {
         private Button SourcePkgPathBtn;
         private Button FilterBrowseBtn;
         private CheckBox KeystoneToggleBox;
-        private CheckBox LimitedOutputBox;
+        private CheckBox VerboseOutputBox;
         private TextBox CustomGP4PathTextBox;
         private TextBox SourcePkgPathTextBox;
         private TextBox FilterTextBox;

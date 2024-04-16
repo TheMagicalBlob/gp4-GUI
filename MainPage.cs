@@ -24,11 +24,27 @@ namespace GP4_GUI {
             AppFolderPathTextBox.MouseClick += TextBoxReady;
             AppFolderPathTextBox.LostFocus  += TextBoxReset;
 
-            GP4Reader.TMPOUT = OutputWindow;
             GP4DirCheck();
+
+            gp4 = new GP4Creator("");
+        }
+        public const string Version = "ver 1.17.53 ";
+
+
+        private class rTextBox : TextBox {
+            public rTextBox() {
+
+                IsDefault = true;
+                TextChanged += SetDefaultText;
+            }
+            private void SetDefaultText(object sender, EventArgs e) => DefaultText = Text;
+            public void Reset() { IsDefault = true; Text = DefaultText; }
+
+            public string DefaultText;
+            public bool IsDefault;
         }
 
-        public const string Version = "ver 1.17.53 ";
+
 
         // Testing Options For .gp4 Library
         #if DEBUG
@@ -230,8 +246,8 @@ namespace GP4_GUI {
             base.Dispose(disposing);
         }
         private void InitializeComponent() {
+            this.AppFolderPathTextBox = new GP4_GUI.MainForm.rTextBox();
             this.CreateBtn = new System.Windows.Forms.Button();
-            this.AppFolderPathTextBox = new System.Windows.Forms.TextBox();
             this.Title = new System.Windows.Forms.Label();
             this.MinimizeBtn = new System.Windows.Forms.Button();
             this.ExitBtn = new System.Windows.Forms.Button();
@@ -343,6 +359,7 @@ namespace GP4_GUI {
             // OptionsBtn
             // 
             this.OptionsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.OptionsBtn.Enabled = false;
             this.OptionsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.OptionsBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.OptionsBtn.Location = new System.Drawing.Point(8, 6);
@@ -426,7 +443,7 @@ namespace GP4_GUI {
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
         #region Basic Form Init Functions
         public static void BorderFunc(Form form) {
-            MainBox = new GroupBox();
+            var MainBox = new GroupBox();
             MainBox.Location = new Point(0, -6);
             MainBox.Name = "MainBox";
             MainBox.Size = new Size(form.Size.Width, form.Size.Height + 7);
@@ -497,8 +514,6 @@ namespace GP4_GUI {
         ///--     Application Variables     --\\\
         /////////////////////\\\\\\\\\\\\\\\\\\\\
         #region Application Variables
-
-
         public static int mouse_is_down = 0;
         public static bool options_page_is_open, limit_output;
         public static bool[] text_box_changed = new bool[5];
@@ -510,41 +525,9 @@ namespace GP4_GUI {
             "Add Custom .pkg Passcode Here (Defaults To All Zeros)"
         };
         public static Point MouseDif, LastPos;
-        static Form Options;
+        public static Form Options;
+        public static GP4Creator gp4;
         #endregion
-
-
-
-
-        /////////////////////\\\\\\\\\\\\\\\\\\\\\
-        ///--     GP4 Creation Variables     --\\\
-        /////////////////////\\\\\\\\\\\\\\\\\\\\\
-        #region GP4 Creation Variables
-        public static byte[] buffer;
-        private int chunk_count, scenario_count, default_id, index = 0;
-        private int[] scenario_types, scenario_chunk_range, initial_chunk_count;
-        private string gamedata_folder, app_ver = "", version = "", content_id, title_id = "TEST08108", category = "?";
-        private string[] chunk_labels, scenario_labels, file_paths;
-        private readonly string[] required_sfo_variables = new string[] { "APP_VER", "CATEGORY", "CONTENT_ID", "TITLE_ID", "VERSION" };
-        private static XmlDocument gp4;
-        #endregion
-
-
-
-
-        //////////////////\\\\\\\\\\\\\\\\\\
-        ///--     GP4 User Options     --\\\
-        //////////////////\\\\\\\\\\\\\\\\\\
-        #region GP4 Creation Options
-        public static bool ignore_keystone = false;
-        public static string
-            passcode = "00000000000000000000000000000000",
-            gp4_output_directory = @"",
-            pkg_source = ""
-        ;
-        public static string[] user_blacklist;
-        #endregion
-
 
 
         ////////////////////\\\\\\\\\\\\\\\\\\\
@@ -565,27 +548,28 @@ namespace GP4_GUI {
                 Sender.Text = default_strings[Sender.TabIndex];
                 Sender.Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
             }
+        }
 
-            if(Sender.TabIndex == 4)
-            if(Sender.Text.Length < 32) {
-                Sender.AppendText(new string('0', 32 - passcode.Length));
-                passcode = Sender.Text;
+
+        /// <summary> Apply The Path In The Text Box To gamedata_path.
+        /// </summary>
+        private void AppFolderPathBox_TextChanged(object sender, EventArgs e) {
+            if(((TextBox)sender).Text == "")
+                return;
+
+            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
+
+
+            if(Directory.Exists(AppFolderPathTextBox.Text.Replace("\"", ""))) {
+                gp4 = new GP4Creator(((TextBox)sender).Text.Replace("\"", string.Empty));
+                text_box_changed[0] = true;
+                OptionsBtn.Enabled = true;
             }
         }
 
 
-        /// <summary> Apply The Path In The Text Box To gamedata_path
-        /// </summary>
-        private void AppFolderPathBox_TextChanged(object sender, EventArgs e) {
-            if(((TextBox)sender).Text == "") return;
-            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
-
-            gamedata_folder = AppFolderPathTextBox.Text.Replace("\"", "");
-            if(Directory.Exists(gamedata_folder))
-                text_box_changed[0] = true;
-        }
-
-        /// <summary> Create Page For Changing Various .gp4 Options <br/>(passcode, source pkg, etc)
+        /// <summary>
+        /// Create Page For Changing Various .gp4 Options. <br/>(passcode, source pkg, etc)
         /// </summary>
         private void OptionsBtn_Click(object sender, EventArgs e) {
             LastPos = Location;
@@ -598,6 +582,7 @@ namespace GP4_GUI {
             NewPage.Show();
         }
 
+
         /// <summary> Open Windows' Ghastly File Browser Dialog To Search For The Gamedata Folder
         /// </summary>
         private void BrowseBtn_Click(object sender, EventArgs e) {
@@ -605,6 +590,14 @@ namespace GP4_GUI {
 
             if(Browser.ShowDialog() == DialogResult.OK)
                 AppFolderPathTextBox.Text = Browser.SelectedPath;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void BuildProjectFile(object sender, EventArgs e) {
+            //gp4.CreateGP4();
         }
         #endregion
 
@@ -621,7 +614,7 @@ namespace GP4_GUI {
         private static readonly string[] varstrings = new string[] { "Legacy", "First", "Second", "Third" };
         private void DumpSfoVariables(long Time, int ind) {
 
-            var LogFilePath = $@"\[{varstrings[ind]}]-{title_id}-{(category == "gp" ? "patch" : "app")}_{app_ver}.gp4";
+            var LogFilePath = $@"\[{varstrings[ind]}]-{null}-{(null == "gp" ? "patch" : "app")}_{null}.gp4";
             DLog($"[Output Path: {LogFilePath}]");
 
             using(var f = File.CreateText(Directory.GetCurrentDirectory() + LogFilePath)) {
@@ -782,106 +775,11 @@ namespace GP4_GUI {
                 catch(Exception) { }
         }
 
-        void ParsePlaygoChunks(byte[] buffer) {
-            using(var playgo_chunks_dat = File.OpenRead($@"{gamedata_folder}\sce_sys\playgo-chunk.dat")) {
-                // Read Chunk Count
-                playgo_chunks_dat.Position = 0x0A;
-                chunk_count = (byte)playgo_chunks_dat.ReadByte();
-                chunk_labels = new string[chunk_count];
 
-                // Read Scenario Count
-                playgo_chunks_dat.Position = 0x0E;
-                scenario_count = (byte)playgo_chunks_dat.ReadByte();
-                scenario_types = new int[scenario_count];
-                scenario_labels = new string[scenario_count];
-                initial_chunk_count = new int[scenario_count];
-                scenario_chunk_range = new int[scenario_count];
-
-                // Read Default Scenario Id
-                playgo_chunks_dat.Position = 0x14;
-                default_id = (byte)playgo_chunks_dat.ReadByte();
-
-                // Read Content ID Here Instead Of The .sfo Because Meh, User Has Bigger Issues If Those Aren't Identical
-                buffer = new byte[36];
-                playgo_chunks_dat.Position = 0x40;
-                playgo_chunks_dat.Read(buffer, 0, 36);
-                content_id = Encoding.UTF8.GetString(buffer);
-
-                // Read Chunk Label Start Address From Pointer
-                buffer = new byte[4];
-                playgo_chunks_dat.Position = 0xD0;
-                playgo_chunks_dat.Read(buffer, 0, 4);
-                var chunk_label_pointer = BitConverter.ToInt32(buffer, 0);
-
-                // Read Length Of Chunk Label Byte Array
-                playgo_chunks_dat.Position = 0xD4;
-                playgo_chunks_dat.Read(buffer, 0, 4);
-                var chunk_label_array_length = BitConverter.ToInt32(buffer, 0);
-
-                // Load Scenario(s)
-                playgo_chunks_dat.Position = 0xE0;
-                playgo_chunks_dat.Read(buffer, 0, 4);
-                var scenarioPointer = BitConverter.ToInt32(buffer, 0);
-                for(index = 0; index < scenario_count; index++) {
-                    // Read Scenario Type
-                    playgo_chunks_dat.Position = scenarioPointer;
-                    scenario_types[index] = (byte)playgo_chunks_dat.ReadByte();
-
-                    // Read Scenario initial_chunk_count
-                    playgo_chunks_dat.Position = (scenarioPointer + 0x14);
-                    playgo_chunks_dat.Read(buffer, 2, 2);
-                    initial_chunk_count[index] = BitConverter.ToInt16(buffer, 2);
-                    playgo_chunks_dat.Read(buffer, 2, 2);
-                    scenario_chunk_range[index] = BitConverter.ToInt16(buffer, 2);
-                    scenarioPointer += 0x20;
-                }
-
-                // Load Scenario Label Array Byte Length
-                buffer = new byte[2];
-                playgo_chunks_dat.Position = 0xF4;
-                playgo_chunks_dat.Read(buffer, 0, 2);
-                var scenario_label_array_length = BitConverter.ToInt16(buffer, 0);
-
-                // Load Scenario Label Pointer
-                playgo_chunks_dat.Position = 0xF0;
-                buffer = new byte[4];
-                playgo_chunks_dat.Read(buffer, 0, 4);
-                var scenario_label_array_pointer = BitConverter.ToInt32(buffer, 0);
-
-                // Load Scenario Labels
-                playgo_chunks_dat.Position = scenario_label_array_pointer;
-                buffer = new byte[scenario_label_array_length];
-                playgo_chunks_dat.Read(buffer, 0, buffer.Length);
-                ConvertBufferToStringArray(scenario_labels, buffer);
-
-                // Load Chunk Labels
-                buffer = new byte[chunk_label_array_length];
-                playgo_chunks_dat.Position = chunk_label_pointer;
-                playgo_chunks_dat.Read(buffer, 0, buffer.Length);
-                ConvertBufferToStringArray(chunk_labels, buffer);
-            }
-        }
-
-
-        /// <summary>
-        /// Returns A String Array Containing The Paths For Every File In The<br/>
-        /// Selected Gamedata Folder
-        /// </summary>
-        private string[] GetProjectFilePaths() {
-
-            // Read All Files In Each Folder And Subfolder
-            DirectoryInfo directoryInfo = new DirectoryInfo(gamedata_folder);
-            FileInfo[] file_info = directoryInfo.GetFiles(".", SearchOption.AllDirectories);
-
-            string[] file_paths = new string[file_info.Length];
-            for(index = 0; index < file_info.Length; index++)
-                file_paths[index] = file_info[index].FullName;
-
-            return file_paths;
-        }
 
         private bool CheckGP4Settings() {
-            if(passcode.Length != 32) {
+            /*
+            if(Passcode.Length != 32) {
                 WLog("Incorrect Passcode Length, Must Be 32 Characters");
                 return true;
             }
@@ -890,44 +788,24 @@ namespace GP4_GUI {
                 WLog(".gp4 Creation Aborted");
                 return true;
             }
-            if(!Directory.Exists(gp4_output_directory)) {
-                WLog($"Could Not Find The Selected .gp4 Output Directory\n({gp4_output_directory})");
-                gp4_output_directory = gamedata_folder.Remove(gamedata_folder.LastIndexOf(@"\"));
-                WLog($".gp4 Will Be Placed In {gp4_output_directory}");
+            if(!Directory.Exists(Gp4OutputDirectory)) {
+                WLog($"Could Not Find The Selected .gp4 Output Directory\n({Gp4OutputDirectory})");
+                Gp4OutputDirectory = gamedata_folder.Remove(gamedata_folder.LastIndexOf(@"\"));
+                WLog($".gp4 Will Be Placed In {Gp4OutputDirectory}");
             }
-
+            */
 
             return false;
         }
 
-        private void ConvertBufferToStringArray(string[] StringArray, byte[] buffer) {
-            var byteIndex = 0;
-            StringBuilder Builder;
-
-            for(index = 0; index < StringArray.Length; index++) {
-                Builder = new StringBuilder();
-
-                while(buffer[byteIndex] != 0)
-                    Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[byteIndex++] })); // Just Take A Byte, You Fussy Prick
-
-                byteIndex++;
-                StringArray[index] = Builder.ToString();
-            }
-        }
-
-        private void BuildProjectFile(object sender, EventArgs e) {
-            var Venat = new GP4Creator(gamedata_folder);
-            Venat.BuildAndSaveGP4(gp4_output_directory);
-        }
         #endregion
 
         ////////////////////\\\\\\\\\\\\\\\\\\\\
         ///--     Control Declarations     --\\\
         ////////////////////\\\\\\\\\\\\\\\\\\\\
         #region ControlDeclarations
-        private static GroupBox MainBox;
         private Button CreateBtn;
-        private TextBox AppFolderPathTextBox;
+        private rTextBox AppFolderPathTextBox;
         private Label Title;
         private Button MinimizeBtn;
         private Button ExitBtn;
