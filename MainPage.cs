@@ -24,227 +24,43 @@ namespace GP4_GUI {
             AppFolderPathTextBox.MouseClick += TextBoxReady;
             AppFolderPathTextBox.LostFocus  += TextBoxReset;
 
-            GP4DirCheck();
-
-            gp4 = new GP4Creator("");
+#if DEBUG
+            gp4 = new GP4Creator(@"D:\PS4\CUSA10249-patch");
+#endif 
         }
         public const string Version = "ver 1.17.53 ";
 
 
         private class rTextBox : TextBox {
             public rTextBox() {
-
                 IsDefault = true;
                 TextChanged += SetDefaultText;
             }
-            private void SetDefaultText(object sender, EventArgs e) => DefaultText = Text;
-            public void Reset() { IsDefault = true; Text = DefaultText; }
 
+            private void SetDefaultText(object sender, EventArgs e) => DefaultText = Text;
+            
+            public void Reset() { IsDefault = true; Text = DefaultText; }
             public string DefaultText;
             public bool IsDefault;
         }
 
 
-
-        // Testing Options For .gp4 Library
-        #if DEBUG
-        private static string basegp4path = @"C:\Users\Blob\Desktop\t\CUSA00341";
-        private static readonly string[] ext = new string[] { "-app.gp4", "-patch.gp4" };
-        private static string testgp4path = @"C:\Users\Blob\Desktop\t\CUSA00341-patch.gp4";
-
-        private static int extIndex = 1
-
-       ;private Button AppOrPatchBtn;
-        private Button clearLogBtn;
-        private Button CheckintegrityBtn;
-        private void GP4DirCheck() {
-            if(!File.Exists(testgp4path)) {
-                foreach(var f in Directory.GetFiles(Directory.GetCurrentDirectory()))
-                    if(f.Contains(".gp4") && f.Contains(ext[extIndex])) {
-                        testgp4path = f;
-                        basegp4path = f.Remove(f.LastIndexOf('-'));
-                        DLog($"Found .gp4 At: {testgp4path}\n(New Base: {basegp4path})");
-                    }
-                    else DLog($".gp4 File Not Found ({ext[extIndex]})"); 
-            }
-        }
-
-        private void AppOrPatchBtn_Click(object sender, EventArgs e) {
-            ((Control)sender).Text = (testgp4path = basegp4path + ext[extIndex ^= 1]).Substring(testgp4path.LastIndexOf("\\") + 10);
-            ClearLogBtn_Click();
-        }
-
         private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
-        private void CheckintegrityBtn_Click(object sender, EventArgs e) => WLog(new GP4Reader(testgp4path).CheckGP4Integrity());
 
-        private void DButton1_Click(object sender, EventArgs e) {
-
-            WLog($"f.Passcode: {GP4Reader.GetPkgPasscode(testgp4path)}");
-            WLog("--");
-
-
-            if(GP4Reader.IsPatchPackage(testgp4path)) {
-                WLog("App Is A Patch Project");
-                WLog(GP4Reader.GetBasePkgPath(@"D:\PS4\CUSA00341-patch.gp4"));
-            }
-            else
-                WLog("App Is A Base Game Package");
-            WLog("--");
-
-            // Chunks
-            var ScenarioCount = GP4Reader.GetScenarioCount(testgp4path);
-            if(ScenarioCount != null)
-               WLog($" Scenario Count: {ScenarioCount}");
-
-            else
-                WLog($"Scenarios: Null");
-            WLog("--");
-            //\\
-
-            // Chunks
-            var ChunkCount = GP4Reader.GetChunkCount(testgp4path);
-            if(ChunkCount != null)
-                WLog($" Chunk Count: {ChunkCount}");
-
-            else
-                WLog($"Chunks: Null");
-            WLog("--");
-            //\\
-
-            // Chunks
-            var Chunks = GP4Reader.GetChunkListing(testgp4path);
-            if(Chunks != null)
-                foreach(var i in Chunks)
-                    WLog($" Chunks: {i}");
-
-            else
-                WLog($"Chunks: Null");
-            WLog("--");
-            //\\
-
-            // Scenarios
-            var Scenarios = GP4Reader.GetScenarioListing(testgp4path);
-            if(Scenarios != null)
-                foreach(var i in Scenarios)
-                    WLog($" Scenarios: {i.Id} {i.Type} {i.InitialChunkCount} {i.Label} {i.ChunkRange}");
-
-            else
-                WLog($"Scenarios: Null");
-            WLog("--");
-            //\\
-
-
-            // Files
-            var Files = GP4Reader.GetFileListing(testgp4path);
-            if(Files != null)
-                foreach(var i in Files)
-                    WLog($" files: {i}");
-
-            else
-                WLog($"files: Null");
-            WLog("--");
-            //\\
-
-
-            // Folders
-            var Folders = GP4Reader.GetFolderListing(testgp4path);
-            if(Folders.Length > 0)
-                foreach(var i in Folders)
-                    WLog($" folders: {i}");
-
-            else
-                WLog($"folders: Null");
-            WLog("--");
-            //\\
-
-
-            // Folder Namwes
-            var FolderNames = GP4Reader.GetFolderNames(testgp4path);
-            if(FolderNames != null)
-                foreach(var i in FolderNames)
-                    WLog($" folder names: {i}");
-
-            else
-                WLog($"folder names: Null");
-            WLog("--");
-            //\\
-
-
-            Update();
-        }
-        private void DButton2_Click(object sender, EventArgs e) {
-            var f = new GP4Reader(testgp4path);
-            
-            WLog($"f.Passcode: {f.Passcode}");
-            WLog("--");
-
-            if(f.IsPatchProject) {
-                WLog("App Is A Patch Project");
-                WLog(f.BaseAppPkgPath);
-            }
-            else
-                WLog("App Is A Base Game Package");
-            WLog("--");
-            
-            // Chunks
-            if(f.Chunks != null)
-                foreach(var i in f.Chunks)
-                    WLog($" Chunks: {i}");
-
-            else
-                WLog($"Chunks: Null");
-            WLog("--");
-            //\\
-
-
-            // Scenarios
-            if(f.Scenarios != null)
-                foreach(var i in f.Scenarios)
-                    WLog($" Scenarios: {i.Id} {i.Type} {i.InitialChunkCount} {i.Label} {i.ChunkRange}");
-
-            else
-                WLog($"Scenarios: Null");
-            WLog("--");
-            //\\
-
-
-            // Folders
-            if(f.Files != null)
-                foreach(var i in f.Files)
-                    WLog($" files: {i}");
-
-            else
-                WLog($"files: Null");
-            WLog("--");
-            //\\
-
-
-
-            // Folders
-            if(f.Subfolders != null)
-                foreach(var i in f.Subfolders)
-                    WLog($" folders: {i}");
-            
-                else
-                WLog($"folders: Null");
-            WLog("--");
-            //\\
-            Update();
-        }
-
-        #endif
 
 
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         ///--     Designer Managed Functions     --\\\
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         #region Designer Managed Functions
-#pragma warning disable CS0168 // var not used
+        #pragma warning disable CS0168 // var not used
+        
         private IContainer components = null;
         protected override void Dispose(bool disposing) {
             if(disposing) components?.Dispose();
             base.Dispose(disposing);
         }
+
         private void InitializeComponent() {
             this.AppFolderPathTextBox = new GP4_GUI.MainForm.rTextBox();
             this.CreateBtn = new System.Windows.Forms.Button();
@@ -255,10 +71,18 @@ namespace GP4_GUI {
             this.BrowseBtn = new System.Windows.Forms.Button();
             this.DisableLogBox = new System.Windows.Forms.CheckBox();
             this.OptionsBtn = new System.Windows.Forms.Button();
-            this.CheckintegrityBtn = new System.Windows.Forms.Button();
-            this.AppOrPatchBtn = new System.Windows.Forms.Button();
-            this.clearLogBtn = new System.Windows.Forms.Button();
+            this.ClearLogBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
+            // 
+            // AppFolderPathTextBox
+            // 
+            this.AppFolderPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AppFolderPathTextBox.Location = new System.Drawing.Point(8, 33);
+            this.AppFolderPathTextBox.Name = "AppFolderPathTextBox";
+            this.AppFolderPathTextBox.Size = new System.Drawing.Size(437, 21);
+            this.AppFolderPathTextBox.TabIndex = 0;
+            this.AppFolderPathTextBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
+            this.AppFolderPathTextBox.TextChanged += new System.EventHandler(this.AppFolderPathBox_TextChanged);
             // 
             // CreateBtn
             // 
@@ -272,16 +96,6 @@ namespace GP4_GUI {
             this.CreateBtn.Text = "Build .gp4";
             this.CreateBtn.UseVisualStyleBackColor = false;
             this.CreateBtn.Click += new System.EventHandler(this.BuildProjectFile);
-            // 
-            // AppFolderPathTextBox
-            // 
-            this.AppFolderPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AppFolderPathTextBox.Location = new System.Drawing.Point(8, 33);
-            this.AppFolderPathTextBox.Name = "AppFolderPathTextBox";
-            this.AppFolderPathTextBox.Size = new System.Drawing.Size(437, 21);
-            this.AppFolderPathTextBox.TabIndex = 0;
-            this.AppFolderPathTextBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
-            this.AppFolderPathTextBox.TextChanged += new System.EventHandler(this.AppFolderPathBox_TextChanged);
             // 
             // Title
             // 
@@ -359,7 +173,6 @@ namespace GP4_GUI {
             // OptionsBtn
             // 
             this.OptionsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.OptionsBtn.Enabled = false;
             this.OptionsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.OptionsBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.OptionsBtn.Location = new System.Drawing.Point(8, 6);
@@ -370,44 +183,18 @@ namespace GP4_GUI {
             this.OptionsBtn.UseVisualStyleBackColor = false;
             this.OptionsBtn.Click += new System.EventHandler(this.OptionsBtn_Click);
             // 
-            // CheckintegrityBtn
+            // ClearLogBtn
             // 
-            this.CheckintegrityBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.CheckintegrityBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.CheckintegrityBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CheckintegrityBtn.Location = new System.Drawing.Point(15, 75);
-            this.CheckintegrityBtn.Name = "CheckintegrityBtn";
-            this.CheckintegrityBtn.Size = new System.Drawing.Size(42, 22);
-            this.CheckintegrityBtn.TabIndex = 13;
-            this.CheckintegrityBtn.Text = "Verify";
-            this.CheckintegrityBtn.UseVisualStyleBackColor = false;
-            this.CheckintegrityBtn.Click += new System.EventHandler(this.CheckintegrityBtn_Click);
-            // 
-            // AppOrPatchBtn
-            // 
-            this.AppOrPatchBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.AppOrPatchBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.AppOrPatchBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.AppOrPatchBtn.Location = new System.Drawing.Point(74, 75);
-            this.AppOrPatchBtn.Name = "AppOrPatchBtn";
-            this.AppOrPatchBtn.Size = new System.Drawing.Size(66, 22);
-            this.AppOrPatchBtn.TabIndex = 14;
-            this.AppOrPatchBtn.Text = "-patch.gp4";
-            this.AppOrPatchBtn.UseVisualStyleBackColor = false;
-            this.AppOrPatchBtn.Click += new System.EventHandler(this.AppOrPatchBtn_Click);
-            // 
-            // clearLogBtn
-            // 
-            this.clearLogBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.clearLogBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.clearLogBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.clearLogBtn.Location = new System.Drawing.Point(154, 75);
-            this.clearLogBtn.Name = "clearLogBtn";
-            this.clearLogBtn.Size = new System.Drawing.Size(46, 22);
-            this.clearLogBtn.TabIndex = 15;
-            this.clearLogBtn.Text = "WIPE";
-            this.clearLogBtn.UseVisualStyleBackColor = false;
-            this.clearLogBtn.Click += new System.EventHandler(this.ClearLogBtn_Click);
+            this.ClearLogBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.ClearLogBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.ClearLogBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.ClearLogBtn.Location = new System.Drawing.Point(120, 60);
+            this.ClearLogBtn.Name = "ClearLogBtn";
+            this.ClearLogBtn.Size = new System.Drawing.Size(46, 22);
+            this.ClearLogBtn.TabIndex = 15;
+            this.ClearLogBtn.Text = "WIPE";
+            this.ClearLogBtn.UseVisualStyleBackColor = false;
+            this.ClearLogBtn.Click += new System.EventHandler(this.ClearLogBtn_Click);
             // 
             // MainForm
             // 
@@ -415,9 +202,7 @@ namespace GP4_GUI {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
-            this.Controls.Add(this.clearLogBtn);
-            this.Controls.Add(this.AppOrPatchBtn);
-            this.Controls.Add(this.CheckintegrityBtn);
+            this.Controls.Add(this.ClearLogBtn);
             this.Controls.Add(this.OptionsBtn);
             this.Controls.Add(this.DisableLogBox);
             this.Controls.Add(this.BrowseBtn);
@@ -563,7 +348,6 @@ namespace GP4_GUI {
             if(Directory.Exists(AppFolderPathTextBox.Text.Replace("\"", ""))) {
                 gp4 = new GP4Creator(((TextBox)sender).Text.Replace("\"", string.Empty));
                 text_box_changed[0] = true;
-                OptionsBtn.Enabled = true;
             }
         }
 
@@ -593,163 +377,11 @@ namespace GP4_GUI {
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
         private void BuildProjectFile(object sender, EventArgs e) {
-            //gp4.CreateGP4();
+            gp4.CreateGP4(@"C:\Users\Blob\Desktop", true);
         }
         #endregion
 
-
-
-
-
-
-        ///////////////\\\\\\\\\\\\\\
-        ///--     SFO Tests     --\\\
-        ///////////////\\\\\\\\\\\\\\
-
-
-        private static readonly string[] varstrings = new string[] { "Legacy", "First", "Second", "Third" };
-        private void DumpSfoVariables(long Time, int ind) {
-
-            var LogFilePath = $@"\[{varstrings[ind]}]-{null}-{(null == "gp" ? "patch" : "app")}_{null}.gp4";
-            DLog($"[Output Path: {LogFilePath}]");
-
-            using(var f = File.CreateText(Directory.GetCurrentDirectory() + LogFilePath)) {
-                for(int i = 0; i < SfoParamLabels.Length; i++)
-                    f.WriteLine($"{SfoParamLabels[i]}: {SfoParams[i]}");
-
-                f.WriteLine($"Timing: {Time}ms");
-
-                DLog($"Finished! Saved Log File At: {Directory.GetCurrentDirectory() + LogFilePath}\n\n");
-            }
-        }
-
-        private static object[] SfoParams;
-        private static string[]
-            SfoParamLabels
-        ;
-        private void sfoDebugTest1Btn_Click(object sender, EventArgs e) {
-
-            // Verify .sfo Path Or Search For One In The Current Directory
-            var sfopath = @"D:\PS4\CUSA10249-patch\sce_sys\param - Copy.sfo";
-            if(!File.Exists(sfopath))
-                foreach(var f in Directory.GetFiles(Directory.GetCurrentDirectory()))
-                    if(f.Contains(".sfo")) {
-                        sfopath = f;
-                        break;
-                    }
-
-            var timer = Stopwatch.StartNew();
-
-
-            // Third Test Start
-            DLog($"###################################\n       Beginning Third Test\n###################################\n");
-            var ticks = timer.ElapsedMilliseconds;
-            using(var sfo = File.OpenRead(sfopath)) {
-
-                byte[] buffer;
-
-                List<string> Labels;
-
-                int[]
-                    ParamOffsets,
-                    DataTypes,
-                    ParamLengths
-                ;
-
-
-                // Check PSF File Magic, + 4 Bytes To Skip Label Base Ptr
-                sfo.Read(buffer = new byte[12], 0, 12);
-                if(BitConverter.ToInt64(buffer, 0) != 1104986460160)
-                    throw new InvalidDataException($"File Magic For .sfo Wasn't Valid ([Expected: 00-50-53-46-01-01-00-00] != [Read: {BitConverter.ToString(buffer)}])");
-
-
-                // Read Base Pointer For .pkg Parameters
-                sfo.Read(buffer = new byte[4], 0, 4);
-                var ParamVariablesPointer = BitConverter.ToInt32(buffer, 0);
-
-                // Read PSF Parameter Count
-                sfo.Read(buffer, 0, 4);
-                var ParameterCount = BitConverter.ToInt32(buffer, 0);
-
-                // Initialize Arrays
-                SfoParams = new object[ParameterCount];
-                SfoParamLabels = new string[ParameterCount];
-                DataTypes = new int[ParameterCount];
-                ParamLengths = new int[ParameterCount];
-                ParamOffsets = new int[ParameterCount];
-
-
-
-                // Load Related Data For Each Parameter
-                for(int i = 0; i < ParameterCount; i++) {
-
-                    sfo.Position += 3; // Skip Label Offset
-
-                    // Read And Check Data Type (4 = Int32, 2 = UTf8, 0 = Rsv4 )
-                    if((DataTypes[i] = sfo.ReadByte()) == 2 || DataTypes[i] == 4) {
-                        sfo.Read(buffer, 0, 4);
-                        ParamLengths[i] = BitConverter.ToInt32(buffer, 0);
-
-                        sfo.Read(buffer, 0, 4);
-                        ParamOffsets[i] = BitConverter.ToInt32(buffer, 0);
-                    }
-
-                    sfo.Position += 4; // Skip Param Offset
-                }
-                
-                // Load Parameter Labels
-                for(int index = 0, @byte; index < ParameterCount; index++) {
-                    var ByteList = new List<byte>();
-
-                    // Read To End Of Label
-                    for(; (@byte = sfo.ReadByte()) != 0; ByteList.Add((byte)@byte));
-
-                    SfoParamLabels[index] = Encoding.UTF8.GetString(ByteList.ToArray());
-                }
-
-
-                for(int i = 0; i < ParameterCount; ParamVariablesPointer += ParamOffsets[i++]) {
-                    sfo.Position = ParamVariablesPointer;
-
-                    sfo.Read(buffer = new byte[ParamLengths[i]], 0, ParamLengths[i]);
-
-                    DLog($"\nLabel: {SfoParamLabels[i]}");
-
-                    // String
-                    if(DataTypes[i] == 2) {
-                        if(ParamLengths[i] > 1 && buffer[ParamLengths[i] - 1] == 0)
-                            SfoParams[i] = Encoding.UTF8.GetString(buffer, 0, buffer.Length - 1);
-                        else
-                            SfoParams[i] = Encoding.UTF8.GetString(buffer);
-
-
-                        if(((string)SfoParams[i])[0] == 0)
-                            SfoParams[i] = "Empty String";
-
-                        DLog($"Param: {SfoParams[i]}");
-                    }
-
-                    // Int32
-                    else if(DataTypes[i] == 4) {
-                        SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                        DLog($"Param: {SfoParams[i]}");
-                    }
-                }
-
-                #region
-                var Stop = timer.ElapsedMilliseconds - ticks;
-                DLog($"\nTest 3 Timing (milliseconds): {Stop}");
-                DLog($"Dumping...");
-                DumpSfoVariables(Stop, 3);
-                #endregion
-            }
-            // --
-
-        }
 
 
 
@@ -757,13 +389,6 @@ namespace GP4_GUI {
         ///--     GP4 Related Functions     --\\\
         /////////////////////\\\\\\\\\\\\\\\\\\\\
         #region GP4 Related Functions
-        private void WLog(object s) {
-            DLog(s);
-
-            if (!DisableLogBox.Checked)
-                OutputWindow.AppendText("\n" + s);
-        }
-
         private static void DLog(object o = null) {
             if(o == null) o = "\n";
 
@@ -774,37 +399,15 @@ namespace GP4_GUI {
                 try { Console.WriteLine(o.ToString()); }
                 catch(Exception) { }
         }
-
-
-
-        private bool CheckGP4Settings() {
-            /*
-            if(Passcode.Length != 32) {
-                WLog("Incorrect Passcode Length, Must Be 32 Characters");
-                return true;
-            }
-            if(!Directory.Exists(gamedata_folder)) {
-                WLog($"Could Not Find The Game Data Directory\n{gamedata_folder}");
-                WLog(".gp4 Creation Aborted");
-                return true;
-            }
-            if(!Directory.Exists(Gp4OutputDirectory)) {
-                WLog($"Could Not Find The Selected .gp4 Output Directory\n({Gp4OutputDirectory})");
-                Gp4OutputDirectory = gamedata_folder.Remove(gamedata_folder.LastIndexOf(@"\"));
-                WLog($".gp4 Will Be Placed In {Gp4OutputDirectory}");
-            }
-            */
-
-            return false;
-        }
-
         #endregion
+
 
         ////////////////////\\\\\\\\\\\\\\\\\\\\
         ///--     Control Declarations     --\\\
         ////////////////////\\\\\\\\\\\\\\\\\\\\
         #region ControlDeclarations
         private Button CreateBtn;
+        private Button ClearLogBtn;
         private rTextBox AppFolderPathTextBox;
         private Label Title;
         private Button MinimizeBtn;

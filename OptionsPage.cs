@@ -31,15 +31,15 @@ namespace GP4_GUI {
         }
         private void InitializeComponent() {
             this.KeystoneToggleBox = new System.Windows.Forms.CheckBox();
-            this.CustomGP4PathTextBox = new System.Windows.Forms.TextBox();
+            this.OutputPathTextBox = new System.Windows.Forms.TextBox();
             this.Title = new System.Windows.Forms.Label();
             this.ExitBtn = new System.Windows.Forms.Button();
             this.VerboseOutputBox = new System.Windows.Forms.CheckBox();
-            this.SourcePkgPathTextBox = new System.Windows.Forms.TextBox();
+            this.BasePkgPathTextBox = new System.Windows.Forms.TextBox();
             this.FilterTextBox = new System.Windows.Forms.TextBox();
             this.CustomPasscodeTextBox = new System.Windows.Forms.TextBox();
-            this.OutputDirectoryBtn = new System.Windows.Forms.Button();
-            this.SourcePkgPathBtn = new System.Windows.Forms.Button();
+            this.OutputPathBtn = new System.Windows.Forms.Button();
+            this.BasePkgPathBtn = new System.Windows.Forms.Button();
             this.FilterBrowseBtn = new System.Windows.Forms.Button();
             this.TinyVersionLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -55,15 +55,15 @@ namespace GP4_GUI {
             this.KeystoneToggleBox.UseVisualStyleBackColor = true;
             this.KeystoneToggleBox.CheckedChanged += new System.EventHandler(this.KeystoneToggleBox_CheckedChanged);
             // 
-            // CustomGP4PathTextBox
+            // OutputPathTextBox
             // 
-            this.CustomGP4PathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
-            this.CustomGP4PathTextBox.Location = new System.Drawing.Point(6, 30);
-            this.CustomGP4PathTextBox.Name = "CustomGP4PathTextBox";
-            this.CustomGP4PathTextBox.Size = new System.Drawing.Size(317, 21);
-            this.CustomGP4PathTextBox.TabIndex = 1;
-            this.CustomGP4PathTextBox.Text = "Add A Custom .gp4 Output Directory Here...";
-            this.CustomGP4PathTextBox.TextChanged += new System.EventHandler(this.CustomGP4PathTextBox_TextChanged);
+            this.OutputPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
+            this.OutputPathTextBox.Location = new System.Drawing.Point(6, 30);
+            this.OutputPathTextBox.Name = "OutputPathTextBox";
+            this.OutputPathTextBox.Size = new System.Drawing.Size(317, 21);
+            this.OutputPathTextBox.TabIndex = 1;
+            this.OutputPathTextBox.Text = "Add A Custom .gp4 Output Directory Here...";
+            this.OutputPathTextBox.TextChanged += new System.EventHandler(this.CustomGP4PathTextBox_TextChanged);
             // 
             // Title
             // 
@@ -99,15 +99,15 @@ namespace GP4_GUI {
             this.VerboseOutputBox.UseVisualStyleBackColor = true;
             this.VerboseOutputBox.CheckedChanged += new System.EventHandler(this.LimitedOutputBox_CheckedChanged);
             // 
-            // SourcePkgPathTextBox
+            // BasePkgPathTextBox
             // 
-            this.SourcePkgPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
-            this.SourcePkgPathTextBox.Location = new System.Drawing.Point(6, 56);
-            this.SourcePkgPathTextBox.Name = "SourcePkgPathTextBox";
-            this.SourcePkgPathTextBox.Size = new System.Drawing.Size(317, 21);
-            this.SourcePkgPathTextBox.TabIndex = 2;
-            this.SourcePkgPathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
-            this.SourcePkgPathTextBox.TextChanged += new System.EventHandler(this.SourcePkgPathTextBox_TextChanged);
+            this.BasePkgPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
+            this.BasePkgPathTextBox.Location = new System.Drawing.Point(6, 56);
+            this.BasePkgPathTextBox.Name = "BasePkgPathTextBox";
+            this.BasePkgPathTextBox.Size = new System.Drawing.Size(317, 21);
+            this.BasePkgPathTextBox.TabIndex = 2;
+            this.BasePkgPathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
+            this.BasePkgPathTextBox.TextChanged += new System.EventHandler(this.SourcePkgPathTextBox_TextChanged);
             // 
             // FilterTextBox
             // 
@@ -130,31 +130,31 @@ namespace GP4_GUI {
             this.CustomPasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
             this.CustomPasscodeTextBox.TextChanged += new System.EventHandler(this.CustomPasscodeTextBox_TextChanged);
             // 
-            // OutputDirectoryBtn
+            // OutputPathBtn
             // 
-            this.OutputDirectoryBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.OutputDirectoryBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.OutputDirectoryBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.OutputDirectoryBtn.Location = new System.Drawing.Point(325, 30);
-            this.OutputDirectoryBtn.Name = "OutputDirectoryBtn";
-            this.OutputDirectoryBtn.Size = new System.Drawing.Size(60, 22);
-            this.OutputDirectoryBtn.TabIndex = 8;
-            this.OutputDirectoryBtn.Text = "Browse...";
-            this.OutputDirectoryBtn.UseVisualStyleBackColor = false;
-            this.OutputDirectoryBtn.Click += new System.EventHandler(this.OutputDirectoryBtn_Click);
+            this.OutputPathBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.OutputPathBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.OutputPathBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.OutputPathBtn.Location = new System.Drawing.Point(325, 30);
+            this.OutputPathBtn.Name = "OutputPathBtn";
+            this.OutputPathBtn.Size = new System.Drawing.Size(60, 22);
+            this.OutputPathBtn.TabIndex = 8;
+            this.OutputPathBtn.Text = "Browse...";
+            this.OutputPathBtn.UseVisualStyleBackColor = false;
+            this.OutputPathBtn.Click += new System.EventHandler(this.OutputDirectoryBtn_Click);
             // 
-            // SourcePkgPathBtn
+            // BasePkgPathBtn
             // 
-            this.SourcePkgPathBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.SourcePkgPathBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.SourcePkgPathBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.SourcePkgPathBtn.Location = new System.Drawing.Point(325, 55);
-            this.SourcePkgPathBtn.Name = "SourcePkgPathBtn";
-            this.SourcePkgPathBtn.Size = new System.Drawing.Size(60, 22);
-            this.SourcePkgPathBtn.TabIndex = 9;
-            this.SourcePkgPathBtn.Text = "Browse...";
-            this.SourcePkgPathBtn.UseVisualStyleBackColor = false;
-            this.SourcePkgPathBtn.Click += new System.EventHandler(this.SourcePkgPathBtn_Click);
+            this.BasePkgPathBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.BasePkgPathBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.BasePkgPathBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.BasePkgPathBtn.Location = new System.Drawing.Point(325, 55);
+            this.BasePkgPathBtn.Name = "BasePkgPathBtn";
+            this.BasePkgPathBtn.Size = new System.Drawing.Size(60, 22);
+            this.BasePkgPathBtn.TabIndex = 9;
+            this.BasePkgPathBtn.Text = "Browse...";
+            this.BasePkgPathBtn.UseVisualStyleBackColor = false;
+            this.BasePkgPathBtn.Click += new System.EventHandler(this.SourcePkgPathBtn_Click);
             // 
             // FilterBrowseBtn
             // 
@@ -187,15 +187,15 @@ namespace GP4_GUI {
             this.ClientSize = new System.Drawing.Size(387, 195);
             this.Controls.Add(this.TinyVersionLabel);
             this.Controls.Add(this.FilterBrowseBtn);
-            this.Controls.Add(this.SourcePkgPathBtn);
-            this.Controls.Add(this.OutputDirectoryBtn);
+            this.Controls.Add(this.BasePkgPathBtn);
+            this.Controls.Add(this.OutputPathBtn);
             this.Controls.Add(this.CustomPasscodeTextBox);
             this.Controls.Add(this.FilterTextBox);
-            this.Controls.Add(this.SourcePkgPathTextBox);
+            this.Controls.Add(this.BasePkgPathTextBox);
             this.Controls.Add(this.VerboseOutputBox);
             this.Controls.Add(this.ExitBtn);
             this.Controls.Add(this.Title);
-            this.Controls.Add(this.CustomGP4PathTextBox);
+            this.Controls.Add(this.OutputPathTextBox);
             this.Controls.Add(this.KeystoneToggleBox);
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -235,10 +235,10 @@ namespace GP4_GUI {
 
 
             // Designer Will Delete These From InitializeComponent If Added Manually
-            SourcePkgPathTextBox.MouseClick += MainForm.TextBoxReady;
-            SourcePkgPathTextBox.LostFocus += MainForm.TextBoxReset;
-            CustomGP4PathTextBox.MouseClick += MainForm.TextBoxReady;
-            CustomGP4PathTextBox.LostFocus += MainForm.TextBoxReset;
+            BasePkgPathTextBox.MouseClick += MainForm.TextBoxReady;
+            BasePkgPathTextBox.LostFocus += MainForm.TextBoxReset;
+            OutputPathTextBox.MouseClick += MainForm.TextBoxReady;
+            OutputPathTextBox.LostFocus += MainForm.TextBoxReset;
             CustomPasscodeTextBox.MouseClick += MainForm.TextBoxReady;
             CustomPasscodeTextBox.LostFocus += MainForm.TextBoxReset;
             FilterTextBox.MouseClick += MainForm.TextBoxReady;
@@ -258,14 +258,14 @@ namespace GP4_GUI {
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
             //! MainForm.Gp4OutputDirectory = CustomGP4PathTextBox.Text;
-            if(CustomGP4PathTextBox.Text != "" && CustomGP4PathTextBox.Text != MainForm.default_strings[1])
+            if(OutputPathTextBox.Text != "" && OutputPathTextBox.Text != MainForm.default_strings[1])
                 MainForm.text_box_changed[1] = true;
         }
         private void OutputDirectoryBtn_Click(object sender, EventArgs e) {
             FolderBrowserDialog Browser = new FolderBrowserDialog();
 
             if(Browser.ShowDialog() == DialogResult.OK)
-                CustomGP4PathTextBox.Text = Browser.SelectedPath;
+                OutputPathTextBox.Text = Browser.SelectedPath;
         }
 
         private void SourcePkgPathTextBox_TextChanged(object sender, EventArgs e) {
@@ -273,14 +273,14 @@ namespace GP4_GUI {
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
             //! MainForm.gp4.SourcePkgPath = SourcePkgPathTextBox.Text.Replace("\"", "");
-            if(SourcePkgPathTextBox.Text != "" && SourcePkgPathTextBox.Text != MainForm.default_strings[2])
+            if(BasePkgPathTextBox.Text != "" && BasePkgPathTextBox.Text != MainForm.default_strings[2])
                 MainForm.text_box_changed[2] = true;
         }
         private void SourcePkgPathBtn_Click(object sender, EventArgs e) {
             OpenFileDialog Browser = new OpenFileDialog();
 
             if(Browser.ShowDialog() == DialogResult.OK)
-                SourcePkgPathTextBox.Text = Browser.FileName;
+                BasePkgPathTextBox.Text = Browser.FileName;
             Browser.Dispose();
         }
         private void FilterTextBox_TextChanged(object sender, EventArgs e) { // tst : eboot.bin, keystone, discname.txt; param.sfo
@@ -354,13 +354,13 @@ namespace GP4_GUI {
         private Label TinyVersionLabel;
         private Label Title;
         private Button ExitBtn;
-        private Button OutputDirectoryBtn;
-        private Button SourcePkgPathBtn;
+        private Button OutputPathBtn;
+        private Button BasePkgPathBtn;
         private Button FilterBrowseBtn;
         private CheckBox KeystoneToggleBox;
         private CheckBox VerboseOutputBox;
-        private TextBox CustomGP4PathTextBox;
-        private TextBox SourcePkgPathTextBox;
+        private TextBox OutputPathTextBox;
+        private TextBox BasePkgPathTextBox;
         private TextBox FilterTextBox;
         private TextBox CustomPasscodeTextBox;
         #endregion
