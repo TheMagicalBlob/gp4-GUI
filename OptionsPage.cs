@@ -19,6 +19,8 @@ namespace GP4_GUI {
             LoadOptions();
         }
 
+        private CheckBox AbsolutePathCheckBox;
+
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         ///--     Designer Managed Functions     --\\\
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
@@ -42,12 +44,13 @@ namespace GP4_GUI {
             this.BasePkgPathBtn = new System.Windows.Forms.Button();
             this.FilterBrowseBtn = new System.Windows.Forms.Button();
             this.TinyVersionLabel = new System.Windows.Forms.Label();
+            this.AbsolutePathCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // KeystoneToggleBox
             // 
             this.KeystoneToggleBox.AutoSize = true;
-            this.KeystoneToggleBox.Location = new System.Drawing.Point(8, 85);
+            this.KeystoneToggleBox.Location = new System.Drawing.Point(169, 87);
             this.KeystoneToggleBox.Name = "KeystoneToggleBox";
             this.KeystoneToggleBox.Size = new System.Drawing.Size(103, 17);
             this.KeystoneToggleBox.TabIndex = 5;
@@ -91,7 +94,7 @@ namespace GP4_GUI {
             // VerboseOutputBox
             // 
             this.VerboseOutputBox.AutoSize = true;
-            this.VerboseOutputBox.Location = new System.Drawing.Point(7, 107);
+            this.VerboseOutputBox.Location = new System.Drawing.Point(278, 87);
             this.VerboseOutputBox.Name = "VerboseOutputBox";
             this.VerboseOutputBox.Size = new System.Drawing.Size(100, 17);
             this.VerboseOutputBox.TabIndex = 6;
@@ -112,7 +115,7 @@ namespace GP4_GUI {
             // FilterTextBox
             // 
             this.FilterTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Italic);
-            this.FilterTextBox.Location = new System.Drawing.Point(7, 133);
+            this.FilterTextBox.Location = new System.Drawing.Point(7, 114);
             this.FilterTextBox.Name = "FilterTextBox";
             this.FilterTextBox.Size = new System.Drawing.Size(316, 21);
             this.FilterTextBox.TabIndex = 3;
@@ -122,7 +125,7 @@ namespace GP4_GUI {
             // CustomPasscodeTextBox
             // 
             this.CustomPasscodeTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
-            this.CustomPasscodeTextBox.Location = new System.Drawing.Point(6, 158);
+            this.CustomPasscodeTextBox.Location = new System.Drawing.Point(6, 139);
             this.CustomPasscodeTextBox.MaxLength = 32;
             this.CustomPasscodeTextBox.Name = "CustomPasscodeTextBox";
             this.CustomPasscodeTextBox.Size = new System.Drawing.Size(317, 21);
@@ -161,7 +164,7 @@ namespace GP4_GUI {
             this.FilterBrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.FilterBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.FilterBrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.FilterBrowseBtn.Location = new System.Drawing.Point(325, 132);
+            this.FilterBrowseBtn.Location = new System.Drawing.Point(325, 113);
             this.FilterBrowseBtn.Name = "FilterBrowseBtn";
             this.FilterBrowseBtn.Size = new System.Drawing.Size(60, 22);
             this.FilterBrowseBtn.TabIndex = 10;
@@ -179,12 +182,24 @@ namespace GP4_GUI {
             this.TinyVersionLabel.TabIndex = 11;
             this.TinyVersionLabel.Text = "placeholder";
             // 
+            // AbsolutePathCheckBox
+            // 
+            this.AbsolutePathCheckBox.AutoSize = true;
+            this.AbsolutePathCheckBox.Location = new System.Drawing.Point(13, 87);
+            this.AbsolutePathCheckBox.Name = "AbsolutePathCheckBox";
+            this.AbsolutePathCheckBox.Size = new System.Drawing.Size(150, 17);
+            this.AbsolutePathCheckBox.TabIndex = 12;
+            this.AbsolutePathCheckBox.Text = "Use Absolute Path Names";
+            this.AbsolutePathCheckBox.UseVisualStyleBackColor = true;
+            this.AbsolutePathCheckBox.CheckedChanged += new System.EventHandler(this.AbsolutePathCheckBox_CheckedChanged);
+            // 
             // OptionsPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
-            this.ClientSize = new System.Drawing.Size(387, 195);
+            this.ClientSize = new System.Drawing.Size(387, 170);
+            this.Controls.Add(this.AbsolutePathCheckBox);
             this.Controls.Add(this.TinyVersionLabel);
             this.Controls.Add(this.FilterBrowseBtn);
             this.Controls.Add(this.BasePkgPathBtn);
@@ -252,6 +267,7 @@ namespace GP4_GUI {
         #region Options Related Functions
         private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => MainForm.gp4.Keystone = KeystoneToggleBox.Checked;
         private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => MainForm.limit_output = VerboseOutputBox.Checked;
+        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => MainForm.gp4.AbsoluteFilePaths = AbsolutePathCheckBox.Checked;
         
         private void CustomGP4PathTextBox_TextChanged(object sender, EventArgs e) {
             if(((TextBox)sender).Text == "") return;

@@ -8,8 +8,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using libgp4;
-using System.Collections.Generic;
-using System.Reflection;
 
 
 namespace GP4_GUI {
@@ -25,10 +23,12 @@ namespace GP4_GUI {
             AppFolderPathTextBox.LostFocus  += TextBoxReset;
 
 #if DEBUG
-            gp4 = new GP4Creator(@"D:\PS4\CUSA10249-patch");
+            gp4 = new GP4Creator(@"D:\CUSA00744-app");
 #endif 
         }
-        public const string Version = "ver 1.17.53 ";
+
+        public const string Version = "ver 2.44.78 ";
+
 
 
         private class rTextBox : TextBox {
@@ -45,7 +45,12 @@ namespace GP4_GUI {
         }
 
 
+        private CheckBox DEBUG_Patch;
+        private CheckBox DEBUG_App;
+
         private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
+        private void DEBUG_App_Click(object sender, EventArgs e) => DEBUG_App.Checked = !(DEBUG_Patch.Checked = !DEBUG_Patch.Checked);
+        private void DEBUG_Patch_Click(object sender, EventArgs e) => DEBUG_Patch.Checked = !(DEBUG_App.Checked = !DEBUG_App.Checked);
 
 
 
@@ -53,8 +58,8 @@ namespace GP4_GUI {
         ///--     Designer Managed Functions     --\\\
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         #region Designer Managed Functions
-        #pragma warning disable CS0168 // var not used
-        
+#pragma warning disable CS0168 // var not used
+
         private IContainer components = null;
         protected override void Dispose(bool disposing) {
             if(disposing) components?.Dispose();
@@ -72,6 +77,8 @@ namespace GP4_GUI {
             this.DisableLogBox = new System.Windows.Forms.CheckBox();
             this.OptionsBtn = new System.Windows.Forms.Button();
             this.ClearLogBtn = new System.Windows.Forms.Button();
+            this.DEBUG_Patch = new System.Windows.Forms.CheckBox();
+            this.DEBUG_App = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // AppFolderPathTextBox
@@ -188,7 +195,7 @@ namespace GP4_GUI {
             this.ClearLogBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.ClearLogBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ClearLogBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.ClearLogBtn.Location = new System.Drawing.Point(120, 60);
+            this.ClearLogBtn.Location = new System.Drawing.Point(116, 70);
             this.ClearLogBtn.Name = "ClearLogBtn";
             this.ClearLogBtn.Size = new System.Drawing.Size(46, 22);
             this.ClearLogBtn.TabIndex = 15;
@@ -196,12 +203,38 @@ namespace GP4_GUI {
             this.ClearLogBtn.UseVisualStyleBackColor = false;
             this.ClearLogBtn.Click += new System.EventHandler(this.ClearLogBtn_Click);
             // 
+            // DEBUG_Patch
+            // 
+            this.DEBUG_Patch.AutoSize = true;
+            this.DEBUG_Patch.Location = new System.Drawing.Point(211, 70);
+            this.DEBUG_Patch.Name = "DEBUG_Patch";
+            this.DEBUG_Patch.Size = new System.Drawing.Size(54, 17);
+            this.DEBUG_Patch.TabIndex = 16;
+            this.DEBUG_Patch.Text = "Patch";
+            this.DEBUG_Patch.UseVisualStyleBackColor = true;
+            this.DEBUG_Patch.Click += new System.EventHandler(this.DEBUG_Patch_Click);
+            // 
+            // DEBUG_App
+            // 
+            this.DEBUG_App.AutoSize = true;
+            this.DEBUG_App.Checked = true;
+            this.DEBUG_App.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.DEBUG_App.Location = new System.Drawing.Point(167, 70);
+            this.DEBUG_App.Name = "DEBUG_App";
+            this.DEBUG_App.Size = new System.Drawing.Size(45, 17);
+            this.DEBUG_App.TabIndex = 17;
+            this.DEBUG_App.Text = "App";
+            this.DEBUG_App.UseVisualStyleBackColor = true;
+            this.DEBUG_App.Click += new System.EventHandler(this.DEBUG_App_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
+            this.Controls.Add(this.DEBUG_App);
+            this.Controls.Add(this.DEBUG_Patch);
             this.Controls.Add(this.ClearLogBtn);
             this.Controls.Add(this.OptionsBtn);
             this.Controls.Add(this.DisableLogBox);
@@ -378,28 +411,11 @@ namespace GP4_GUI {
 
 
         private void BuildProjectFile(object sender, EventArgs e) {
+            gp4.VerboseLogging = true;
             gp4.CreateGP4(@"C:\Users\Blob\Desktop", true);
         }
         #endregion
 
-
-
-
-        /////////////////////\\\\\\\\\\\\\\\\\\\\
-        ///--     GP4 Related Functions     --\\\
-        /////////////////////\\\\\\\\\\\\\\\\\\\\
-        #region GP4 Related Functions
-        private static void DLog(object o = null) {
-            if(o == null) o = "\n";
-
-            if(!Console.IsOutputRedirected)
-                try { Debug.WriteLine(o.ToString()); }
-                catch(Exception) { }
-
-                try { Console.WriteLine(o.ToString()); }
-                catch(Exception) { }
-        }
-        #endregion
 
 
         ////////////////////\\\\\\\\\\\\\\\\\\\\
