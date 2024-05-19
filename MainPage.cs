@@ -22,9 +22,12 @@ namespace GP4_GUI {
             AppFolderPathTextBox.MouseClick += TextBoxReady;
             AppFolderPathTextBox.LostFocus  += TextBoxReset;
 
-#if DEBUG
-            gp4 = new GP4Creator(@"D:\CUSA00744-app");
-#endif 
+
+            gp4 = new GP4Creator() {
+                LoggingMethod = delegate (object str) {
+                    OutputWindow.AppendText((string)str + '\n');
+                }
+            };
         }
 
         public const string Version = "ver 2.44.78 ";
@@ -46,12 +49,13 @@ namespace GP4_GUI {
 
 
         private CheckBox DEBUG_Patch;
+        private Button gengp4TestBtn;
         private CheckBox DEBUG_App;
 
         private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
+        private void gengp4TestBtn_Click(object sender = null, EventArgs e = null) => Process.Start(@"C:\Users\Blob\Desktop\gengp4 test.bat");
         private void DEBUG_App_Click(object sender, EventArgs e) => DEBUG_App.Checked = !(DEBUG_Patch.Checked = !DEBUG_Patch.Checked);
         private void DEBUG_Patch_Click(object sender, EventArgs e) => DEBUG_Patch.Checked = !(DEBUG_App.Checked = !DEBUG_App.Checked);
-
 
 
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
@@ -79,6 +83,7 @@ namespace GP4_GUI {
             this.ClearLogBtn = new System.Windows.Forms.Button();
             this.DEBUG_Patch = new System.Windows.Forms.CheckBox();
             this.DEBUG_App = new System.Windows.Forms.CheckBox();
+            this.gengp4TestBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // AppFolderPathTextBox
@@ -96,7 +101,7 @@ namespace GP4_GUI {
             this.CreateBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.CreateBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.CreateBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CreateBtn.Location = new System.Drawing.Point(371, 58);
+            this.CreateBtn.Location = new System.Drawing.Point(370, 58);
             this.CreateBtn.Name = "CreateBtn";
             this.CreateBtn.Size = new System.Drawing.Size(75, 23);
             this.CreateBtn.TabIndex = 0;
@@ -170,7 +175,7 @@ namespace GP4_GUI {
             // DisableLogBox
             // 
             this.DisableLogBox.AutoSize = true;
-            this.DisableLogBox.Location = new System.Drawing.Point(8, 58);
+            this.DisableLogBox.Location = new System.Drawing.Point(3, 59);
             this.DisableLogBox.Name = "DisableLogBox";
             this.DisableLogBox.Size = new System.Drawing.Size(82, 17);
             this.DisableLogBox.TabIndex = 8;
@@ -192,21 +197,22 @@ namespace GP4_GUI {
             // 
             // ClearLogBtn
             // 
-            this.ClearLogBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.ClearLogBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.ClearLogBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.ClearLogBtn.Location = new System.Drawing.Point(116, 70);
+            this.ClearLogBtn.BackColor = System.Drawing.SystemColors.ControlText;
+            this.ClearLogBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ClearLogBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 5.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ClearLogBtn.ForeColor = System.Drawing.SystemColors.Control;
+            this.ClearLogBtn.Location = new System.Drawing.Point(84, 7);
             this.ClearLogBtn.Name = "ClearLogBtn";
-            this.ClearLogBtn.Size = new System.Drawing.Size(46, 22);
+            this.ClearLogBtn.Size = new System.Drawing.Size(15, 16);
             this.ClearLogBtn.TabIndex = 15;
-            this.ClearLogBtn.Text = "WIPE";
+            this.ClearLogBtn.Text = "C";
             this.ClearLogBtn.UseVisualStyleBackColor = false;
             this.ClearLogBtn.Click += new System.EventHandler(this.ClearLogBtn_Click);
             // 
             // DEBUG_Patch
             // 
             this.DEBUG_Patch.AutoSize = true;
-            this.DEBUG_Patch.Location = new System.Drawing.Point(211, 70);
+            this.DEBUG_Patch.Location = new System.Drawing.Point(199, 70);
             this.DEBUG_Patch.Name = "DEBUG_Patch";
             this.DEBUG_Patch.Size = new System.Drawing.Size(54, 17);
             this.DEBUG_Patch.TabIndex = 16;
@@ -219,13 +225,26 @@ namespace GP4_GUI {
             this.DEBUG_App.AutoSize = true;
             this.DEBUG_App.Checked = true;
             this.DEBUG_App.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.DEBUG_App.Location = new System.Drawing.Point(167, 70);
+            this.DEBUG_App.Location = new System.Drawing.Point(155, 70);
             this.DEBUG_App.Name = "DEBUG_App";
             this.DEBUG_App.Size = new System.Drawing.Size(45, 17);
             this.DEBUG_App.TabIndex = 17;
             this.DEBUG_App.Text = "App";
             this.DEBUG_App.UseVisualStyleBackColor = true;
             this.DEBUG_App.Click += new System.EventHandler(this.DEBUG_App_Click);
+            // 
+            // gengp4TestBtn
+            // 
+            this.gengp4TestBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.gengp4TestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.gengp4TestBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.gengp4TestBtn.Location = new System.Drawing.Point(103, 66);
+            this.gengp4TestBtn.Name = "gengp4TestBtn";
+            this.gengp4TestBtn.Size = new System.Drawing.Size(46, 22);
+            this.gengp4TestBtn.TabIndex = 15;
+            this.gengp4TestBtn.Text = "test";
+            this.gengp4TestBtn.UseVisualStyleBackColor = false;
+            this.gengp4TestBtn.Click += new System.EventHandler(this.gengp4TestBtn_Click);
             // 
             // MainForm
             // 
@@ -235,6 +254,7 @@ namespace GP4_GUI {
             this.ClientSize = new System.Drawing.Size(452, 349);
             this.Controls.Add(this.DEBUG_App);
             this.Controls.Add(this.DEBUG_Patch);
+            this.Controls.Add(this.gengp4TestBtn);
             this.Controls.Add(this.ClearLogBtn);
             this.Controls.Add(this.OptionsBtn);
             this.Controls.Add(this.DisableLogBox);
@@ -411,6 +431,7 @@ namespace GP4_GUI {
 
 
         private void BuildProjectFile(object sender, EventArgs e) {
+            gp4.GamedataFolder = @"D:\CUSA00744-" + (DEBUG_App.Checked ? "app" : DEBUG_Patch.Checked ? "patch" : "dingus");
             gp4.VerboseLogging = true;
             gp4.CreateGP4(@"C:\Users\Blob\Desktop", true);
         }
