@@ -27,11 +27,10 @@ namespace libgp4 {
         /// 
         /// <param name="GP4Path"> The Absolute Path To The .gp4 Project File </param>
         public GP4Reader(string GP4Path) {
-            var gp4_file = new StreamReader(GP4Path);
-            using(gp4_file)
-
-            gp4_file.ReadLine();                  // Skip First Line To Avoid A Version Conflict
-            ParseGP4(XmlReader.Create(gp4_file)); // Read All Data Someone Might Want To Grab From The .gp4 For Whatevr Reason
+            using(var gp4_file = new StreamReader(GP4Path)) {
+                gp4_file.ReadLine();                  // Skip First Line To Avoid A Version Conflict
+                ParseGP4(XmlReader.Create(gp4_file)); // Read All Data Someone Might Want To Grab From The .gp4 For Whatevr Reason
+            }
         }
 
         /// <summary>
@@ -126,10 +125,6 @@ namespace libgp4 {
         ///</summary>
         private static readonly bool[] use_output_channel = new bool[] { true, true };
 
-        /// <summary> Backup Of The GP4's File Path For Various Methods.
-        ///</summary>
-        private readonly string gp4_path;
-
         /// <summary> The Content Id In The Named File. (Redundancy To Hopefully Catch A Mismatched Id)
         ///</summary>
         private string sfo_content_id, playgo_content_id;
@@ -151,7 +146,7 @@ namespace libgp4 {
         }
 
         /// <summary> Error Logging Method. </summary>
-        private static void ELog(string NodeName, string Error) {
+        private void ELog(string NodeName, string Error) {
             var Message = (assertion_base.Replace("$|$", NodeName)).Replace("%|%", Error);
 
             try { Debug.WriteLine("libgp4.dll: " + Message); }
@@ -348,6 +343,9 @@ namespace libgp4 {
                         case "chunk_info": {
                             ScenarioCount = int.Parse(gp4.GetAttribute("scenario_count"));
                             ChunkCount = int.Parse(gp4.GetAttribute("chunk_count"));
+                            DLog("Checking Chunk Info");
+                            DLog(ScenarioCount);
+                            DLog(ChunkCount);
 
                             // Check .gp4 Integrity
                             if(ScenarioCount == 0 || ChunkCount == 0)
@@ -765,13 +763,22 @@ namespace libgp4 {
                         if(Sc.Label == "")
                             Errors += $"Empty Scenario Label In Scenario #{i}\n\n";
 
-                        var RangeChk = int.Parse(Sc.ChunkRange.Substring(Sc.ChunkRange.LastIndexOf('-') + 1));
-                        if(RangeChk >= ChunkCount)
-                            Errors += $"Invalid Maximum Value For Chunk Range In Scenario #{i}\n ({RangeChk} >= {ChunkCount})\n\n";
 
-                        RangeChk = int.Parse(Sc.ChunkRange.Remove(Sc.ChunkRange.LastIndexOf('-')));
-                        if(RangeChk >= ChunkCount)
-                            Errors += $"Invalid Minimum Value For Chunk Range In Scenario #{i}\n ({RangeChk} >= {ChunkCount})\n\n";
+                        int RangeChk;
+                        if(Sc.ChunkRange.Contains('-')) {
+                            RangeChk = int.Parse(Sc.ChunkRange.Substring(Sc.ChunkRange.LastIndexOf('-') + 1));
+                            if(RangeChk >= ChunkCount)
+                                Errors += $"Invalid Maximum Value For Chunk Range In Scenario #{i}\n ({RangeChk} >= {ChunkCount})\n\n";
+
+                            RangeChk = int.Parse(Sc.ChunkRange.Remove(Sc.ChunkRange.LastIndexOf('-')));
+                            if(RangeChk >= ChunkCount)
+                                Errors += $"Invalid Minimum Value For Chunk Range In Scenario #{i}\n ({RangeChk} >= {ChunkCount})\n\n";
+
+                        }
+                        else if((RangeChk = int.Parse(Sc.ChunkRange)) != 0) {
+                            Errors += $"Invalid Chunk Range In Scenario #{i}\n ({RangeChk} >= {ChunkCount})\n\n";
+                        }
+
 
                         ++i;
                     }
@@ -859,7 +866,7 @@ namespace libgp4 {
         /// <returns> A String Array Containing Full Paths To All Game Scenarios Listed In The .gp4 Project
         ///</returns>
         public static Scenario[] GetScenarioListing(string GP4Path) {
-            using(StreamReader GP4File = new StreamReader(GP4Path)) {
+            using(var GP4File = new StreamReader(GP4Path)) {
 
                 GP4File.ReadLine(); // Skip Version Confilct
                 var Scenarios = new List<Scenario>();
@@ -881,14 +888,23 @@ namespace libgp4 {
                     if(Scenarios.Count == 0) {
                         var Error = $"Could Not Find Any Scenarios In The Selected .gp4 Project";
 
-                        ELog(gp4.LocalName, Error);
+#if DEBUG
+                        var Message = (assertion_base.Replace("$|$", gp4.LocalName)).Replace("%|%", Error);
+
+                        try { Debug.WriteLine("libgp4.dll: " + Message); }
+                        catch(Exception) { }
+
+                        if(!Console.IsOutputRedirected) // Avoid Duplicate Writes
+                            try { Console.WriteLine("libgp4.dll: " + Message); }
+                            catch(Exception) { }
+#endif
+
                         throw new InvalidDataException(Error);
                     }
                 }
 
                 return Scenarios.ToArray();
             }
-
         }
 
 
@@ -915,7 +931,7 @@ namespace libgp4 {
         /// <returns> A String Array Containing Full Paths To All Subfolders Listed In The .gp4 Project
         ///</returns>
         public static string[] GetFolderListing(string GP4Path) {
-            using(StreamReader GP4File = new StreamReader(GP4Path)) {
+            using(var GP4File = new StreamReader(GP4Path)) {
 
                 GP4File.ReadLine(); // Skip Version Confilct
 

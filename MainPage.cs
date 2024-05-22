@@ -410,7 +410,7 @@ namespace GP4_GUI {
         ///--     Main Form Functions     --\\\
         ////////////////////\\\\\\\\\\\\\\\\\\\
         #region Main Form Functions
-        public void WLog(object str = null) => OutputWindow.AppendLine(str as string);
+        public void WLog(object str = null) => OutputWindow.AppendLine(str.ToString());
 
         public static void DLog(string str = "") {
 #if DEBUG
@@ -485,15 +485,32 @@ namespace GP4_GUI {
         private void BuildProjectFile(object sender, EventArgs e) {
             gp4.GamedataFolder = @"D:\CUSA00744-" + (DEBUG_App.Checked ? "app" : DEBUG_Patch.Checked ? "patch" : "dingus");
             gp4.VerboseLogging = true;
-            var newGP4 = new GP4Reader(gp4.CreateGP4(@"C:\Users\Blob\Desktop", true));
+            var newGp4Path = gp4.CreateGP4(@"C:\Users\Blob\Desktop", true);
+            var newGp4 = new GP4Reader(newGp4Path);
 
-            newGP4.VerifyGP4();
+            newGp4.VerifyGP4();
 
-            WLog(newGP4.IsPatchProject);
-            WLog(newGP4.FileCount);
-            WLog(newGP4.ChunkCount);
-            WLog(newGP4.ScenarioCount);
-            WLog(newGP4.Timestamp);
+            // instance tests \\
+            WLog($"Is Patch Project: {newGp4.IsPatchProject}");
+            WLog($"{newGp4.FileCount} Files");
+            WLog($"{newGp4.SubfolderCount} Subfolders");
+            WLog($"{newGp4.ChunkCount} Chunks");
+            WLog($"{newGp4.ScenarioCount} Scenarios");
+            WLog($"Default Scenario: {newGp4.DefaultScenarioId}");
+            WLog($"Source .pkg Path: {newGp4.BaseAppPkgPath}");
+            WLog($"Content Id: {newGp4.ContentID}");
+            WLog($"Passcode: {newGp4.Passcode}");
+            //================\\
+
+            // static tests \\
+            foreach(var f in GP4Reader.GetScenarioListing(newGp4Path)) {
+                WLog(f.Label);
+            }
+
+            foreach(var f in GP4Reader.GetChunkListing(newGp4Path)) {
+                WLog(f);
+            }
+            //===============\\
         }
         #endregion
 
