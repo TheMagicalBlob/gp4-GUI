@@ -3,16 +3,14 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml;
 using libgp4;
-
 
 namespace GP4_GUI {
 
     public partial class MainForm : Form {
+
+        public const string Version = "ver 2.44.78 ";
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -20,7 +18,7 @@ namespace GP4_GUI {
 
             // Designer Will Delete This From InitializeComponent If Added Manually
             AppFolderPathTextBox.MouseClick += TextBoxReady;
-            AppFolderPathTextBox.LostFocus  += TextBoxReset;
+            AppFolderPathTextBox.LostFocus += TextBoxReset;
 
 
             gp4 = new GP4Creator() {
@@ -30,32 +28,54 @@ namespace GP4_GUI {
             };
         }
 
-        public const string Version = "ver 2.44.78 ";
 
-
-
-        private class rTextBox : TextBox {
-            public rTextBox() {
+        private class TextBox : System.Windows.Forms.TextBox {
+            public TextBox() {
                 IsDefault = true;
                 TextChanged += SetDefaultText;
             }
 
             private void SetDefaultText(object sender, EventArgs e) => DefaultText = Text;
-            
+
             public void Reset() { IsDefault = true; Text = DefaultText; }
             public string DefaultText;
             public bool IsDefault;
         }
 
+        private class RichTextBox : System.Windows.Forms.RichTextBox {
 
+            /// <summary> Appends Text to The Currrent Text of A Text Box, Followed By The Standard Line Terminator.<br/>Scrolls To Keep The Newest Line In View. </summary>
+            /// <param name="str"> The String To Output. </param>
+            public void AppendLine(string str) {
+                if(str == null || str.Length <= 0) {
+                    AppendText("\n");
+                }
+
+                else
+                    AppendText($"{str}\n");
+                ScrollToCaret();
+            }
+        }
+
+
+        //////////////////////\\\\\\\\\\\\\\\\\\\\\\
+        ///--      DEBUG TESTING (GP4 LIB)     --\\\
+        //////////////////////\\\\\\\\\\\\\\\\\\\\\\
         private CheckBox DEBUG_Patch;
         private Button gengp4TestBtn;
+        private Button DEBUG_Random;
         private CheckBox DEBUG_App;
 
         private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
         private void gengp4TestBtn_Click(object sender = null, EventArgs e = null) => Process.Start(@"C:\Users\Blob\Desktop\gengp4 test.bat");
         private void DEBUG_App_Click(object sender, EventArgs e) => DEBUG_App.Checked = !(DEBUG_Patch.Checked = !DEBUG_Patch.Checked);
         private void DEBUG_Patch_Click(object sender, EventArgs e) => DEBUG_Patch.Checked = !(DEBUG_App.Checked = !DEBUG_App.Checked);
+        private void DEBUG_Random_Click(object sender, EventArgs e) {
+
+        }
+
+        //============================\\
+
 
 
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
@@ -71,12 +91,12 @@ namespace GP4_GUI {
         }
 
         private void InitializeComponent() {
-            this.AppFolderPathTextBox = new GP4_GUI.MainForm.rTextBox();
+            this.AppFolderPathTextBox = new GP4_GUI.MainForm.TextBox();
             this.CreateBtn = new System.Windows.Forms.Button();
             this.Title = new System.Windows.Forms.Label();
             this.MinimizeBtn = new System.Windows.Forms.Button();
             this.ExitBtn = new System.Windows.Forms.Button();
-            this.OutputWindow = new System.Windows.Forms.RichTextBox();
+            this.OutputWindow = new GP4_GUI.MainForm.RichTextBox();
             this.BrowseBtn = new System.Windows.Forms.Button();
             this.DisableLogBox = new System.Windows.Forms.CheckBox();
             this.OptionsBtn = new System.Windows.Forms.Button();
@@ -84,12 +104,13 @@ namespace GP4_GUI {
             this.DEBUG_Patch = new System.Windows.Forms.CheckBox();
             this.DEBUG_App = new System.Windows.Forms.CheckBox();
             this.gengp4TestBtn = new System.Windows.Forms.Button();
+            this.DEBUG_Random = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // AppFolderPathTextBox
             // 
             this.AppFolderPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AppFolderPathTextBox.Location = new System.Drawing.Point(8, 33);
+            this.AppFolderPathTextBox.Location = new System.Drawing.Point(8, 34);
             this.AppFolderPathTextBox.Name = "AppFolderPathTextBox";
             this.AppFolderPathTextBox.Size = new System.Drawing.Size(437, 21);
             this.AppFolderPathTextBox.TabIndex = 0;
@@ -212,7 +233,7 @@ namespace GP4_GUI {
             // DEBUG_Patch
             // 
             this.DEBUG_Patch.AutoSize = true;
-            this.DEBUG_Patch.Location = new System.Drawing.Point(199, 70);
+            this.DEBUG_Patch.Location = new System.Drawing.Point(175, 64);
             this.DEBUG_Patch.Name = "DEBUG_Patch";
             this.DEBUG_Patch.Size = new System.Drawing.Size(54, 17);
             this.DEBUG_Patch.TabIndex = 16;
@@ -225,7 +246,7 @@ namespace GP4_GUI {
             this.DEBUG_App.AutoSize = true;
             this.DEBUG_App.Checked = true;
             this.DEBUG_App.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.DEBUG_App.Location = new System.Drawing.Point(155, 70);
+            this.DEBUG_App.Location = new System.Drawing.Point(131, 64);
             this.DEBUG_App.Name = "DEBUG_App";
             this.DEBUG_App.Size = new System.Drawing.Size(45, 17);
             this.DEBUG_App.TabIndex = 17;
@@ -238,13 +259,26 @@ namespace GP4_GUI {
             this.gengp4TestBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.gengp4TestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.gengp4TestBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.gengp4TestBtn.Location = new System.Drawing.Point(103, 66);
+            this.gengp4TestBtn.Location = new System.Drawing.Point(94, 61);
             this.gengp4TestBtn.Name = "gengp4TestBtn";
-            this.gengp4TestBtn.Size = new System.Drawing.Size(46, 22);
+            this.gengp4TestBtn.Size = new System.Drawing.Size(32, 22);
             this.gengp4TestBtn.TabIndex = 15;
             this.gengp4TestBtn.Text = "test";
             this.gengp4TestBtn.UseVisualStyleBackColor = false;
             this.gengp4TestBtn.Click += new System.EventHandler(this.gengp4TestBtn_Click);
+            // 
+            // DEBUG_Random
+            // 
+            this.DEBUG_Random.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.DEBUG_Random.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.DEBUG_Random.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.DEBUG_Random.Location = new System.Drawing.Point(262, 59);
+            this.DEBUG_Random.Name = "DEBUG_Random";
+            this.DEBUG_Random.Size = new System.Drawing.Size(32, 22);
+            this.DEBUG_Random.TabIndex = 18;
+            this.DEBUG_Random.Text = "test";
+            this.DEBUG_Random.UseVisualStyleBackColor = false;
+            this.DEBUG_Random.Click += new System.EventHandler(this.DEBUG_Random_Click);
             // 
             // MainForm
             // 
@@ -252,6 +286,7 @@ namespace GP4_GUI {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
+            this.Controls.Add(this.DEBUG_Random);
             this.Controls.Add(this.DEBUG_App);
             this.Controls.Add(this.DEBUG_Patch);
             this.Controls.Add(this.gengp4TestBtn);
@@ -280,7 +315,7 @@ namespace GP4_GUI {
         ///--     Basic Form Init Functions     --\\\
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
         #region Basic Form Init Functions
-        public static void BorderFunc(Form form) {
+        public void BorderFunc(Form form) {
             var MainBox = new GroupBox();
             MainBox.Location = new Point(0, -6);
             MainBox.Name = "MainBox";
@@ -288,7 +323,7 @@ namespace GP4_GUI {
             form.Controls.Add(MainBox);
         }
 
-        public static void AddControlEventHandlers(Control.ControlCollection Controls, Form form) {
+        public void AddControlEventHandlers(Control.ControlCollection Controls, Form form) {
             form.MouseDown += new MouseEventHandler(MouseDownFunc);
             form.MouseUp += new MouseEventHandler(MouseUpFunc);
             form.MouseMove += new MouseEventHandler(MoveForm);
@@ -322,21 +357,23 @@ namespace GP4_GUI {
             }
             catch(IndexOutOfRangeException) { }
         }
+
         private static void MinimizeBtn_Click(object sender, EventArgs e) => ActiveForm.WindowState = FormWindowState.Minimized;
         private static void ExitBtn_Click(object sender, EventArgs e) => Environment.Exit(0);
         public static void ExitBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100);
         public static void MinimizeBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255);
         public static void ExitBtnML(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0);
 
-        public static void MouseUpFunc(object sender, MouseEventArgs e) {
+
+        public void MouseUpFunc(object sender, MouseEventArgs e) {
             mouse_is_down = 0;
             Options?.BringToFront();
         }
-        public static void MouseDownFunc(object sender, MouseEventArgs e) {
+        public void MouseDownFunc(object sender, MouseEventArgs e) {
             MouseDif = new Point(MousePosition.X - ActiveForm.Location.X, MousePosition.Y - ActiveForm.Location.Y);
             mouse_is_down = 1;
         }
-        public static void MoveForm(object sender, MouseEventArgs e) {
+        public void MoveForm(object sender, MouseEventArgs e) {
             if(mouse_is_down != 0) {
                 ActiveForm.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
                 ActiveForm.Update();
@@ -352,19 +389,19 @@ namespace GP4_GUI {
         ///--     Application Variables     --\\\
         /////////////////////\\\\\\\\\\\\\\\\\\\\
         #region Application Variables
-        public static int mouse_is_down = 0;
-        public static bool options_page_is_open, limit_output;
-        public static bool[] text_box_changed = new bool[5];
-        public static string[] default_strings = new string[] {
+        public int mouse_is_down = 0;
+        public bool options_page_is_open, limit_output;
+        public bool[] text_box_changed = new bool[5];
+        public string[] default_strings = new string[] {
             "Paste The Gamedata Folder Path Here, Or Use The Browse Button...",
             "Add A Custom .gp4 Output Directory Here...",
             "Base Game .pkg Path... (For Game Patches)",
             "Add Files/Folders You Want To Exclude From The .gp4, Seperated By Semicolons",
             "Add Custom .pkg Passcode Here (Defaults To All Zeros)"
         };
-        public static Point MouseDif, LastPos;
-        public static Form Options;
-        public static GP4Creator gp4;
+        public Point MouseDif;
+        private Form Options;
+        public GP4Creator gp4;
         #endregion
 
 
@@ -372,16 +409,32 @@ namespace GP4_GUI {
         ///--     Main Form Functions     --\\\
         ////////////////////\\\\\\\\\\\\\\\\\\\
         #region Main Form Functions
+        public void WLog(string str = null) => OutputWindow.AppendLine(str);
 
-        public static void TextBoxReady(object sender, EventArgs e) {
-            var Sender = sender as TextBox;
+        public static void DLog(string str = "") {
+#if DEBUG
+            try {
+                Debug.WriteLine(str);
+            }
+            finally{}
+
+            try {
+                Console.WriteLine(str);
+            }
+            catch(Exception){}
+#endif
+        }
+
+        public void TextBoxReady(object sender, EventArgs e) {
+            var Sender = sender as System.Windows.Forms.TextBox;
             if(Sender.Font.Italic) {
                 Sender.Font = new Font("Microsoft YaHei UI", 8.25F);
                 Sender.Clear();
             }
         }
-        public static void TextBoxReset(object sender, EventArgs e) {
-            var Sender = sender as TextBox;
+
+        public void TextBoxReset(object sender, EventArgs e) {
+            var Sender = sender as System.Windows.Forms.TextBox;
             if(!text_box_changed[Sender.TabIndex] | Sender.Text == "") {
                 Sender.Text = default_strings[Sender.TabIndex];
                 Sender.Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
@@ -392,14 +445,14 @@ namespace GP4_GUI {
         /// <summary> Apply The Path In The Text Box To gamedata_path.
         /// </summary>
         private void AppFolderPathBox_TextChanged(object sender, EventArgs e) {
-            if(((TextBox)sender).Text == "")
+            if(((System.Windows.Forms.TextBox)sender).Text == "")
                 return;
 
-            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
+            ((System.Windows.Forms.TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
 
             if(Directory.Exists(AppFolderPathTextBox.Text.Replace("\"", ""))) {
-                gp4 = new GP4Creator(((TextBox)sender).Text.Replace("\"", string.Empty));
+                gp4 = new GP4Creator(((System.Windows.Forms.TextBox)sender).Text.Replace("\"", string.Empty));
                 text_box_changed[0] = true;
             }
         }
@@ -409,12 +462,10 @@ namespace GP4_GUI {
         /// Create Page For Changing Various .gp4 Options. <br/>(passcode, source pkg, etc)
         /// </summary>
         private void OptionsBtn_Click(object sender, EventArgs e) {
-            LastPos = Location;
-
             Options?.BringToFront();
             if(options_page_is_open) return;
 
-            OptionsPage NewPage = new OptionsPage();
+            var NewPage = new OptionsPage(this, Location);
             Options = NewPage;
             NewPage.Show();
         }
@@ -423,7 +474,7 @@ namespace GP4_GUI {
         /// <summary> Open Windows' Ghastly File Browser Dialog To Search For The Gamedata Folder
         /// </summary>
         private void BrowseBtn_Click(object sender, EventArgs e) {
-            FolderBrowserDialog Browser = new FolderBrowserDialog();
+            var Browser = new FolderBrowserDialog();
 
             if(Browser.ShowDialog() == DialogResult.OK)
                 AppFolderPathTextBox.Text = Browser.SelectedPath;
@@ -433,7 +484,9 @@ namespace GP4_GUI {
         private void BuildProjectFile(object sender, EventArgs e) {
             gp4.GamedataFolder = @"D:\CUSA00744-" + (DEBUG_App.Checked ? "app" : DEBUG_Patch.Checked ? "patch" : "dingus");
             gp4.VerboseLogging = true;
-            gp4.CreateGP4(@"C:\Users\Blob\Desktop", true);
+            var tst = new GP4Reader(gp4.CreateGP4(@"C:\Users\Blob\Desktop", true));
+
+            
         }
         #endregion
 
@@ -445,7 +498,7 @@ namespace GP4_GUI {
         #region ControlDeclarations
         private Button CreateBtn;
         private Button ClearLogBtn;
-        private rTextBox AppFolderPathTextBox;
+        private TextBox AppFolderPathTextBox;
         private Label Title;
         private Button MinimizeBtn;
         private Button ExitBtn;

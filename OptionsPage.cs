@@ -8,18 +8,16 @@ namespace GP4_GUI {
 
     public partial class OptionsPage : Form {
 
-        public OptionsPage() {
+        public OptionsPage(MainForm MainForm, Point LastPos) {
             InitializeComponent();
             MainForm.BorderFunc(this);
             MainForm.options_page_is_open = true;
 
-            Location = new Point(MainForm.LastPos.X + 30, MainForm.LastPos.Y + 60);
+            Location = new Point(LastPos.X + 30, LastPos.Y + 60);
             TinyVersionLabel.Text = MainForm.Version;
          
             LoadOptions();
         }
-
-        private CheckBox AbsolutePathCheckBox;
 
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         ///--     Designer Managed Functions     --\\\
@@ -225,39 +223,39 @@ namespace GP4_GUI {
 
 
         private void ExitBtn_Click(object sender, EventArgs e) {
-            MainForm.options_page_is_open = false;
+            parent.options_page_is_open = false;
             this.Dispose();
         }
         private void LoadOptions() {
             /*
-            if(MainForm.Gp4OutputDirectory != "")
-                CustomGP4PathTextBox.Text = MainForm.Gp4OutputDirectory;
-            if(MainForm.PkgSource != "")
-                SourcePkgPathTextBox.Text = MainForm.PkgSource;
+            if(parent.Gp4OutputDirectory != "")
+                CustomGP4PathTextBox.Text = parent.Gp4OutputDirectory;
+            if(parent.PkgSource != "")
+                SourcePkgPathTextBox.Text = parent.PkgSource;
 
-            if(MainForm.user_blacklist != null) {
+            if(parent.user_blacklist != null) {
                 FilterTextBox.Text = string.Empty;
-                foreach(string file in MainForm.user_blacklist)
+                foreach(string file in parent.user_blacklist)
                 FilterTextBox.Text += $"{file},";
                 FilterTextBox.Text = FilterTextBox.Text.TrimEnd(',');
             }
 
-            KeystoneToggleBox.Checked = MainForm.IgnoreKeystone;
+            KeystoneToggleBox.Checked = parent.IgnoreKeystone;
 
-            if(MainForm.Passcode != "00000000000000000000000000000000")
-                CustomPasscodeTextBox.Text = MainForm.Passcode;
+            if(parent.Passcode != "00000000000000000000000000000000")
+                CustomPasscodeTextBox.Text = parent.Passcode;
             */
 
 
             // Designer Will Delete These From InitializeComponent If Added Manually
-            BasePkgPathTextBox.MouseClick += MainForm.TextBoxReady;
-            BasePkgPathTextBox.LostFocus += MainForm.TextBoxReset;
-            OutputPathTextBox.MouseClick += MainForm.TextBoxReady;
-            OutputPathTextBox.LostFocus += MainForm.TextBoxReset;
-            CustomPasscodeTextBox.MouseClick += MainForm.TextBoxReady;
-            CustomPasscodeTextBox.LostFocus += MainForm.TextBoxReset;
-            FilterTextBox.MouseClick += MainForm.TextBoxReady;
-            FilterTextBox.LostFocus += MainForm.TextBoxReset;
+            BasePkgPathTextBox.MouseClick += parent.TextBoxReady;
+            BasePkgPathTextBox.LostFocus += parent.TextBoxReset;
+            OutputPathTextBox.MouseClick += parent.TextBoxReady;
+            OutputPathTextBox.LostFocus += parent.TextBoxReset;
+            CustomPasscodeTextBox.MouseClick += parent.TextBoxReady;
+            CustomPasscodeTextBox.LostFocus += parent.TextBoxReset;
+            FilterTextBox.MouseClick += parent.TextBoxReady;
+            FilterTextBox.LostFocus += parent.TextBoxReset;
         }
 
 
@@ -265,17 +263,17 @@ namespace GP4_GUI {
         ///--     Options Related Functions     --\\\
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
         #region Options Related Functions
-        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => MainForm.gp4.Keystone = KeystoneToggleBox.Checked;
-        private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => MainForm.limit_output = VerboseOutputBox.Checked;
-        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => MainForm.gp4.AbsoluteFilePaths = AbsolutePathCheckBox.Checked;
+        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => parent.gp4.Keystone = KeystoneToggleBox.Checked;
+        private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => parent.limit_output = VerboseOutputBox.Checked;
+        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => parent.gp4.AbsoluteFilePaths = AbsolutePathCheckBox.Checked;
         
         private void CustomGP4PathTextBox_TextChanged(object sender, EventArgs e) {
             if(((TextBox)sender).Text == "") return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
-            //! MainForm.Gp4OutputDirectory = CustomGP4PathTextBox.Text;
-            if(OutputPathTextBox.Text != "" && OutputPathTextBox.Text != MainForm.default_strings[1])
-                MainForm.text_box_changed[1] = true;
+            //! parent.Gp4OutputDirectory = CustomGP4PathTextBox.Text;
+            if(OutputPathTextBox.Text != "" && OutputPathTextBox.Text != parent.default_strings[1])
+                parent.text_box_changed[1] = true;
         }
         private void OutputDirectoryBtn_Click(object sender, EventArgs e) {
             FolderBrowserDialog Browser = new FolderBrowserDialog();
@@ -288,9 +286,9 @@ namespace GP4_GUI {
             if(((TextBox)sender).Text == "") return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
-            //! MainForm.gp4.SourcePkgPath = SourcePkgPathTextBox.Text.Replace("\"", "");
-            if(BasePkgPathTextBox.Text != "" && BasePkgPathTextBox.Text != MainForm.default_strings[2])
-                MainForm.text_box_changed[2] = true;
+            //! parent.gp4.SourcePkgPath = SourcePkgPathTextBox.Text.Replace("\"", "");
+            if(BasePkgPathTextBox.Text != "" && BasePkgPathTextBox.Text != parent.default_strings[2])
+                parent.text_box_changed[2] = true;
         }
         private void SourcePkgPathBtn_Click(object sender, EventArgs e) {
             OpenFileDialog Browser = new OpenFileDialog();
@@ -300,12 +298,12 @@ namespace GP4_GUI {
             Browser.Dispose();
         }
         private void FilterTextBox_TextChanged(object sender, EventArgs e) { // tst : eboot.bin, keystone, discname.txt; param.sfo
-            if(MainForm.text_box_changed[3] == true && ((TextBox)sender).Text == "") {
-                //MainForm.filter_array = null;
+            if(parent.text_box_changed[3] == true && ((TextBox)sender).Text == "") {
+                //parent.filter_array = null;
                 return;
             }
 
-            if(((TextBox)sender).Text == "" || (FilterTextBox.Text == MainForm.default_strings[3])) return;
+            if(((TextBox)sender).Text == "" || (FilterTextBox.Text == parent.default_strings[3])) return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
             
 
@@ -316,19 +314,19 @@ namespace GP4_GUI {
                 if(c == ';' || c == ',')
                     filter_strings_length++;
 
-            MainForm.gp4.BlacklistedFilesOrFolders = new string[filter_strings_length];
+            parent.gp4.BlacklistedFilesOrFolders = new string[filter_strings_length];
             var buffer = Encoding.UTF8.GetBytes((FilterTextBox.Text + ';').ToCharArray());
 
             try {
-                for(var array_index = 0; array_index < MainForm.gp4.BlacklistedFilesOrFolders.Length; array_index++) {
+                for(var array_index = 0; array_index < parent.gp4.BlacklistedFilesOrFolders.Length; array_index++) {
                     Builder = new StringBuilder();
 
                     while(buffer[char_index] != 0x3B && buffer[char_index] != 0x2C)
                         Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[char_index++] }));
 
                     char_index++;
-                    MainForm.gp4.BlacklistedFilesOrFolders[array_index] = Builder.ToString().Trim(' ');
-                    MainForm.text_box_changed[3] = true;
+                    parent.gp4.BlacklistedFilesOrFolders[array_index] = Builder.ToString().Trim(' ');
+                    parent.text_box_changed[3] = true;
                 }
             }
             catch (IndexOutOfRangeException ex) {
@@ -353,11 +351,11 @@ namespace GP4_GUI {
             if(((TextBox)sender).Text == "") return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
-            if(CustomPasscodeTextBox.Text != MainForm.default_strings[4])
-                MainForm.text_box_changed[4] = true;
+            if(CustomPasscodeTextBox.Text != parent.default_strings[4])
+                parent.text_box_changed[4] = true;
             else return;
 
-            MainForm.gp4.Passcode = CustomPasscodeTextBox.Text;
+            parent.gp4.Passcode = CustomPasscodeTextBox.Text;
         }
         #endregion
 
@@ -375,10 +373,12 @@ namespace GP4_GUI {
         private Button FilterBrowseBtn;
         private CheckBox KeystoneToggleBox;
         private CheckBox VerboseOutputBox;
+        private CheckBox AbsolutePathCheckBox;
         private TextBox OutputPathTextBox;
         private TextBox BasePkgPathTextBox;
         private TextBox FilterTextBox;
         private TextBox CustomPasscodeTextBox;
+        private MainForm parent;
         #endregion
     }
 }
