@@ -34,6 +34,7 @@ namespace GP4_GUI {
                 FilterTextBox.Text = FilterTextBox.Text.TrimEnd(',');
             }
 
+            AbsolutePathCheckBox.Checked = parent.gp4.AbsoluteFilePaths;
             KeystoneToggleBox.Checked = parent.gp4.Keystone;
 
             if(parent.gp4.Passcode != "00000000000000000000000000000000")

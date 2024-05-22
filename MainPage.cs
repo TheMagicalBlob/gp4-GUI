@@ -511,6 +511,8 @@ namespace GP4_GUI {
                 WLog(f);
             }
             //===============\\
+
+            System.Diagnostics.Process.Start(newGp4Path);
         }
         #endregion
 

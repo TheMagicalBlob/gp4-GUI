@@ -639,7 +639,6 @@ namespace libgp4 {
                     Errors += $"Incorrect Passcode Length, Must Be 32 Characters (Actual Length: {Passcode.Length})\n\n";
 
 
-
                 #region Lazy Content Id Chwck
                 var buff = new byte[36];
                 string[] arr;
@@ -713,8 +712,8 @@ namespace libgp4 {
                             playgo.Read(buff, 0, 36);
                         }
 
-                        if(ContentID == (playgo_content_id = Encoding.UTF8.GetString(buff)) && playgo_content_id == sfo_content_id) // Check For Mismatched Content Id's
-                            Errors += $"Content Id Mismatch In .gp4 Project.\n{ContentID}\n.dat{playgo_content_id}\n.sfo: {sfo_content_id}\n\n";
+                        if(ContentID != (playgo_content_id = Encoding.UTF8.GetString(buff)) || playgo_content_id != sfo_content_id) // Check For Mismatched Content Id's
+                            Errors += $"Content Id Mismatch In .gp4 Project.\n{ContentID}\n\n.dat: {playgo_content_id}\n.sfo: {sfo_content_id}\n\n";
                     }
                 }
                 #endregion
