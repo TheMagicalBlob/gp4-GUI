@@ -44,7 +44,7 @@ namespace libgp4 {
         ///  <br/> [int] InitialChunkCount
         ///  <br/> [string] ChunkRange
         ///</summary>
-        public struct Scenario {
+        public class Scenario {
             public Scenario(XmlReader gp4Stream) {
                 Type = gp4Stream.GetAttribute("type");
                 Label = gp4Stream.GetAttribute("label");
@@ -201,7 +201,7 @@ namespace libgp4 {
         ///</returns>
         private static string GetAttribute(string GP4Path, string NodeName, string AttributeName) {
             if((GP4Path = CheckGP4Path(GP4Path)) != string.Empty)
-                using(StreamReader GP4File = new StreamReader(GP4Path)) {
+                using(var GP4File = new StreamReader(GP4Path)) {
                     string Out;
 
                     GP4File.ReadLine(); // Skip Version Confilct
@@ -713,11 +713,10 @@ namespace libgp4 {
                         using(var playgo = File.OpenRead(p2)) {
                             playgo.Position = 0x40;
                             playgo.Read(buff, 0, 36);
-                            playgo_content_id = Encoding.UTF8.GetString(buff);
                         }
 
-                        if(ContentID == playgo_content_id && playgo_content_id == sfo_content_id) // Check For Mismatched Content Id's
-                            Errors += $"Content Id Mismatch In .gp4 Project.\n{ContentID}\n .dat{playgo_content_id}\n .sfo: {sfo_content_id}\n\n";
+                        if(ContentID == (playgo_content_id = Encoding.UTF8.GetString(buff)) && playgo_content_id == sfo_content_id) // Check For Mismatched Content Id's
+                            Errors += $"Content Id Mismatch In .gp4 Project.\n{ContentID}\n.dat{playgo_content_id}\n.sfo: {sfo_content_id}\n\n";
                     }
                 }
                 #endregion
@@ -796,51 +795,37 @@ namespace libgp4 {
 
 
 
-            //===========================\\
-            //| No Errors Were Detected |\\
-            //===========================\\
-            if(Errors == string.Empty) {
-                return;
-            }
-
-
-
             //==================================================\\
             //| Throw An Exception If Any Errors Were Detected |\\
             //==================================================\\
+            if(Errors != string.Empty) {
+                string Message;
+                var ErrorCount = (Errors.Length - Errors.Replace("\n\n", "").Length) / 2;
 
-            string Message;
-            var ErrorCount = (Errors.Length - Errors.Replace("\n\n", "").Length) / 2;
+                if(ErrorCount == 1)
+                    Message = $"The Following Error Was Found In The .gp4 Project File:\n{Errors}";
 
-            if(ErrorCount == 1)
-                Message = $"The Following Error Was Found In The .gp4 Project File:\n{Errors}";
+                else
+                    Message = $"The Following {ErrorCount} Errors Were Found In The .gp4 Project File:\n{Errors}";
 
-            else
-                Message = $"The Following {ErrorCount} Errors Were Found In The .gp4 Project File:\n{Errors}";
+                DLog(Message);
 
-            DLog(Message);
-
-            throw new InvalidDataException(Message);
+                throw new InvalidDataException(Message);
+            }
         }
 
         /// <summary>
-        /// Check Whether Or Not The .gp4 Project File Is For A Patch .pkg
+        /// Check Whether The .gp4 Project File Is A Patch, Or An Application Project.
         /// </summary>
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns> True If The Volume Type Is pkg_ps4_patch. </returns>
         public static bool IsPatchPackage(string GP4Path) { return GetInnerXMLData(GP4Path, "volume_type") == "pkg_ps4_patch"; }
 
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns>  </returns>
         public static string GetTimestamp(string GP4Path) => GetInnerXMLData(GP4Path, "volume_ts");
 
 
-        ///<summary>
-        ///
-        ///</summary>
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns> The Passcode The .pkg Will Be Encrypted With (Pointless On fpkg's, Does Not Prevent Dumping, Only orbis-pub-chk extraction)
         ///</returns>
@@ -854,34 +839,22 @@ namespace libgp4 {
         ///</returns>
         public static string GetBasePkgPath(string GP4Path) => GetAttribute(GP4Path, "package", "app_path");
 
-        ///<summary>
-        ///
-        ///</summary>
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns> .gp4 Project File
         ///</returns>
         public static string GetChunkCount(string GP4Path) => GetAttribute(GP4Path, "chunk_info", "chunk_count");
 
-        ///<summary>
-        ///
-        ///</summary>
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns> .gp4 Project File
         ///</returns>
         public static string GetScenarioCount(string GP4Path) => GetAttribute(GP4Path, "chunk_info", "scenario_count");
 
 
-        ///<summary>
-        ///
-        ///</summary>
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns> A String Array Containing Full Paths To All Game Chunks Listed In The .gp4 Project
         ///</returns>
         public static string[] GetChunkListing(string GP4Path) => GetAttributes(GP4Path, "chunk", "label");
 
-        ///<summary>
-        ///
-        ///</summary>
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns> A String Array Containing Full Paths To All Game Scenarios Listed In The .gp4 Project
         ///</returns>
@@ -968,7 +941,7 @@ namespace libgp4 {
 
                         // Append Subfolder Name To Parent If Node Depth Is Deeper Than The Previous Iteration
                         if(PrevNodeIndentation > 0 && gp4.Depth > PrevNodeIndentation)
-                            Subfolders.Add($@"{Subfolders[Subfolders.Count - 1]}\{DirName}");
+                            Subfolders.Add($"{Subfolders[Subfolders.Count - 1]}\\{DirName}");
 
                         else // Add As New Folder Otherwise
                             Subfolders.Add(DirName);
@@ -1004,17 +977,11 @@ namespace libgp4 {
         /// </summary>
         /// 
         /// <param name="GamedataFolder"> The Folder Containing The Gamedata To Create A .gp4 Project File For. </param>
-        public GP4Creator(string GamedataFolder) {
+        public GP4Creator(string gamedataFolder) {
             Passcode = "00000000000000000000000000000000";
             Keystone = true;
 
-            this.GamedataFolder = GamedataFolder;
-
-            // Parse playgo-chunk.dat For Required .gp4 Variables.
-            PlaygoData = new PlaygoParameters(this, GamedataFolder);
-
-            // Parse param.sfo For Required .gp4 Variables.
-            SfoParams = new SfoParser(this, GamedataFolder);
+            GamedataFolder = gamedataFolder;
         }
 
         /// <summary>
@@ -1057,11 +1024,11 @@ namespace libgp4 {
             /// <br/> content_id(Read Again For Error Checking)
             /// </summary>
             /// 
-            /// <param name="Mommy">Current GP4 Creator Incstance (For Logging With Current Verbosity Settings 'n Shit)</param>
+            /// <param name="Parent">Current GP4 Creator Incstance (For Logging With Current Verbosity Settings 'n Shit)</param>
             /// <param name="gamedata_folder"> PS4 Project Folder Containing The sce_sys Subfolder </param>
             /// 
             /// <exception cref="InvalidDataException"/>
-            public SfoParser(GP4Creator Mommy, string gamedata_folder) {
+            public SfoParser(GP4Creator Parent, string gamedataFolder) {
 
                 app_ver = null;
                 version = null;
@@ -1070,9 +1037,9 @@ namespace libgp4 {
                 category = null;
                 storage_type = null;
 
-                using(var sfo = File.OpenRead($@"{gamedata_folder}\sce_sys\param.sfo")) {
+                using(var sfo = File.OpenRead($@"{gamedataFolder}\sce_sys\param.sfo")) {
 #if Log
-                    Mommy.WLog($"Parsing param.sfo File\nPath: {gamedata_folder}\\sce_sys\\param.sfo", true);
+                    Parent.WLog($"Parsing param.sfo File\nPath: {gamedataFolder}\\sce_sys\\param.sfo", true);
 #endif
 
                     var buffer = new byte[12];
@@ -1093,7 +1060,7 @@ namespace libgp4 {
                     sfo.Read(buffer, 0, 4);
                     var ParameterCount = BitConverter.ToInt32(buffer, 0);
 #if Log
-                    Mommy.WLog($"{ParameterCount} Parameters In .sfo", true);
+                    Parent.WLog($"{ParameterCount} Parameters In .sfo", true);
 #endif
 
 
@@ -1197,8 +1164,8 @@ namespace libgp4 {
                                 var arr = ((string)SfoParams[i]).Split(',');
                                 foreach(var v in arr)
                                     Debug.WriteLine(v);
-                                Mommy.CreationDate = arr[0].Substring(arr[0].IndexOf('='));
-                                Mommy.SdkVersion = arr[1].Substring(arr[1].IndexOf('='));
+                                Parent.CreationDate = arr[0].Substring(arr[0].IndexOf('='));
+                                Parent.SdkVersion = arr[1].Substring(arr[1].IndexOf('='));
                                 storage_type = arr[2].Substring(arr[2].IndexOf('=')); // (digital25 / bd50)
                                 //==================================================
 #else
@@ -1209,20 +1176,20 @@ namespace libgp4 {
 #if GUIExtras
                             // Store Some Extra Things I May Use In My .gp4 GUI
                             case "APP_TYPE":
-                                Mommy.AppType = (int)SfoParams[i];
+                                Parent.AppType = (int)SfoParams[i];
                                 continue;
 
                             case "TITLE":
-                                (Mommy.AppTitles = new List<string>()).Add(Mommy.AppTitle = (string)SfoParams[i]);
+                                (Parent.AppTitles = new List<string>()).Add(Parent.AppTitle = (string)SfoParams[i]);
                                 continue;
 
                             default:
                                 if(SfoParamLabels[i].Contains("Title_"))
-                                    Mommy.AppTitles.Add((string)SfoParams[i]);
+                                    Parent.AppTitles.Add((string)SfoParams[i]);
                                 continue;
 
                             case "TARGET_APP_VER":
-                                Mommy.TargetAppVer = ((string)SfoParams[i]);
+                                Parent.TargetAppVer = ((string)SfoParams[i]);
                                 continue;
 #endif
                         }
@@ -1278,10 +1245,10 @@ namespace libgp4 {
             ///  <br/> default_id
             ///  <br/> content_id
             /// </summary>
-            /// <param name="Mommy"></param>
+            /// <param name="Parent"></param>
             /// <param name="gamedata_folder"></param>
             /// <exception cref="InvalidDataException"></exception>
-            public PlaygoParameters(GP4Creator Mommy, string gamedata_folder) {
+            public PlaygoParameters(GP4Creator Parent, string gamedataFolder) {
                 chunk_count = 0;
                 scenario_count = 0;
                 default_scenario_id = 0;
@@ -1291,14 +1258,13 @@ namespace libgp4 {
                 initial_chunk_count = null;
 
                 playgo_content_id = null;
-
                 chunk_labels = null;
                 scenario_labels = null;
 
 
-                using(var playgo = File.OpenRead($@"{gamedata_folder}\sce_sys\playgo-chunk.dat")) {
+                using(var playgo = File.OpenRead($@"{gamedataFolder}\sce_sys\playgo-chunk.dat")) {
 #if Log
-                    Mommy.WLog($"Parsing playgo-chunk.dat File\nPath: {gamedata_folder}\\sce_sys\\playgo-chunk.dat", true);
+                    Parent.WLog($"Parsing playgo-chunk.dat File\nPath: {gamedataFolder}\\sce_sys\\playgo-chunk.dat", true);
 #endif
                     var buffer = new byte[4];
 
@@ -1315,7 +1281,7 @@ namespace libgp4 {
                     chunk_count = (byte)playgo.ReadByte();
                     chunk_labels = new string[chunk_count];
 #if Log
-                    Mommy.WLog($"{chunk_count} Chunks in Project File", true);
+                    Parent.WLog($"{chunk_count} Chunks in Project File", true);
 #endif
 
 
@@ -1327,7 +1293,7 @@ namespace libgp4 {
                     initial_chunk_count = new int[scenario_count];
                     scenario_chunk_range = new int[scenario_count];
 #if Log
-                    Mommy.WLog($"{scenario_count} Scenarios in Project File", true);
+                    Parent.WLog($"{scenario_count} Scenarios in Project File", true);
 #endif
 
 
@@ -1376,7 +1342,7 @@ namespace libgp4 {
                     }
 
 #if Log
-                    Mommy.WLog($"Default Scenario Type = {scenario_types[default_scenario_id]}", true);
+                    Parent.WLog($"Default Scenario Type = {scenario_types[default_scenario_id]}", true);
 #endif
 
                     // Load Scenario Label Array Byte Length

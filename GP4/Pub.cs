@@ -13,15 +13,20 @@ namespace libgp4 {
         ///////////////\\\\\\\\\\\\\\\
         //--     User Options     --\\
         ///////////////\\\\\\\\\\\\\\\
-        #region User Options
+#region User Options
         public SfoParser SfoParams { get; private set; }
         public PlaygoParameters PlaygoData { get; private set; }
 
+        private string gamedata_folder;
         /// <summary> Root Path Of The PS4 Package Project The .gp4 Is To Be Created For. (Should Contain At Least An Executable And sce_sys Folder)
         ///</summary>
         public string GamedataFolder {
-            get => GamedataFolder;
-            set { SfoParams = new SfoParser(this, GamedataFolder); }
+            get => gamedata_folder;
+            set {
+                gamedata_folder = value;
+                SfoParams = new SfoParser(this, value);
+                PlaygoData = new PlaygoParameters(this, value);
+            }
         }
 
 
@@ -55,19 +60,6 @@ namespace libgp4 {
         /// </summary>
         public bool AbsoluteFilePaths;
 
-#if Log
-        /// <summary>
-        /// Optional Method To Use For Logging. [Function(string s)]
-        /// </summary>
-        public Action<object> LoggingMethod;
-
-        /// <summary>
-        /// Set GP4 Log Verbosity.
-        /// </summary>
-        public bool VerboseLogging;
-#endif
-
-
 #if GUIExtras
         /// <summary>
         /// The Application's Default Name, Read From The param.sfo In The Provided Gamedata Folder.
@@ -99,6 +91,17 @@ namespace libgp4 {
         /// </summary>
         public string SdkVersion { get; private set; }
 #endif
+#if Log
+        /// <summary>
+        /// Optional Method To Use For Logging. [Function(string s)]
+        /// </summary>
+        public Action<object> LoggingMethod;
+
+        /// <summary>
+        /// Set GP4 Log Verbosity.
+        /// </summary>
+        public bool VerboseLogging;
+#endif
         #endregion
 
 
@@ -111,6 +114,8 @@ namespace libgp4 {
         /// <summary>
         /// Add External Files To The Project's File Listing (wip, this wouldn't work the way it is lol)
         /// </summary>
+        /// <param name="TargetPaths"> The Destination Paths In The Created Package. <param/>
+        /// <param name="OriginalPaths"> Source Paths Of The Files Being Added. <param/>
         public void AddFiles(string[] TargetPaths, string[] OriginalPaths) {
             if(extra_files == null) {
                 extra_files = new string[OriginalPaths.Length][];
@@ -135,6 +140,8 @@ namespace libgp4 {
         /// <summary>
         /// Add An External File To The Project's File Listing (wip, this wouldn't work the way it is lol)
         /// </summary>
+        /// <param name="TargetPath"> The Destination Path In The Created Package. <param/>
+        /// <param name="OriginalPath"> Source Path Of The File Being Added. <param/>
         public void AddFile(string TargetPath, string OriginalPath) {
             if(extra_files != null) {
                 var buffer = extra_files;
@@ -163,46 +170,17 @@ namespace libgp4 {
             WLog($"PKG Passcode: {Passcode}\nSource .pkg Path: {SourcePkgPath}\n", true);
 #endif
 
+
+            if(GamedataFolder == null || PlaygoData == null || SfoParams == null) {
+                WLog("No Valid Project Folder Was Assigned. Please Provide A Valid Project Folder On Class Ini Or Through Manual Assignment To GamedataFolder Param", false);
+                goto ret;
+            }
+
             // Timestamp For GP4, Same Format Sony Used Though Sony's Technically Only Tracks The Date,
             // With The Time Left As 00:00, But Imma Just Add The Time. It Doesn't Break Anything).
             var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[78];
 
             string[] file_paths; // Array Of All Files In The Project Folder (Excluding Blacklisted Files/Directories)
-
-
-            /* Parse playgo-chunk.dat For Required .gp4 Variables.
-            | ========================= |
-            | Sets The Following Values:
-            |
-            | chunk_count
-            | chunk_labels
-            | scenario_count
-            | scenario_types
-            | scenario_labels
-            | initial_chunk_count
-            | scenario_chunk_range
-            | default_id
-            | content_id
-            | 
-            | ========================= | */
-            if(PlaygoData == null)
-                PlaygoData = new PlaygoParameters(this, GamedataFolder);
-
-            /* Parse param.sfo For Required .gp4 Variables.
-            | =======================
-            | Sets The Following Values:
-            |
-            | parameter_labels
-            | app_ver
-            | version
-            | category
-            | title_id
-            | content_id (Read Again For Error Checking)
-            |
-            | ========================= | */
-            if(SfoParams == null)
-                SfoParams = new SfoParser(this, GamedataFolder);
-
 
 
             // Get The Paths Of All Project Files & Subdirectories In The Given Project Folder. 
@@ -257,7 +235,7 @@ namespace libgp4 {
 #if Log
             WLog($"GP4 Creation Successful, File Saved As {GP4OutputPath}", false);
 #endif
-
+            ret:
             return GP4OutputPath;
         }
         #endregion

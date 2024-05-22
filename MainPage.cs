@@ -399,6 +399,7 @@ namespace GP4_GUI {
             "Add Files/Folders You Want To Exclude From The .gp4, Seperated By Semicolons",
             "Add Custom .pkg Passcode Here (Defaults To All Zeros)"
         };
+        public string Gp4OutputDirectory;
         public Point MouseDif;
         private Form Options;
         public GP4Creator gp4;
@@ -409,7 +410,7 @@ namespace GP4_GUI {
         ///--     Main Form Functions     --\\\
         ////////////////////\\\\\\\\\\\\\\\\\\\
         #region Main Form Functions
-        public void WLog(string str = null) => OutputWindow.AppendLine(str);
+        public void WLog(object str = null) => OutputWindow.AppendLine(str as string);
 
         public static void DLog(string str = "") {
 #if DEBUG
@@ -484,9 +485,15 @@ namespace GP4_GUI {
         private void BuildProjectFile(object sender, EventArgs e) {
             gp4.GamedataFolder = @"D:\CUSA00744-" + (DEBUG_App.Checked ? "app" : DEBUG_Patch.Checked ? "patch" : "dingus");
             gp4.VerboseLogging = true;
-            var tst = new GP4Reader(gp4.CreateGP4(@"C:\Users\Blob\Desktop", true));
+            var newGP4 = new GP4Reader(gp4.CreateGP4(@"C:\Users\Blob\Desktop", true));
 
-            
+            newGP4.VerifyGP4();
+
+            WLog(newGP4.IsPatchProject);
+            WLog(newGP4.FileCount);
+            WLog(newGP4.ChunkCount);
+            WLog(newGP4.ScenarioCount);
+            WLog(newGP4.Timestamp);
         }
         #endregion
 

@@ -9,15 +9,49 @@ namespace GP4_GUI {
     public partial class OptionsPage : Form {
 
         public OptionsPage(MainForm MainForm, Point LastPos) {
+            parent = MainForm;
+
             InitializeComponent();
-            MainForm.BorderFunc(this);
-            MainForm.options_page_is_open = true;
+            parent.BorderFunc(this);
+            parent.options_page_is_open = true;
 
             Location = new Point(LastPos.X + 30, LastPos.Y + 60);
             TinyVersionLabel.Text = MainForm.Version;
-         
-            LoadOptions();
+
+#region Load Options
+            // Restore Edited User Settings To Controls
+
+            if(parent.Gp4OutputDirectory != null)
+                OutputPathTextBox.Text = parent.Gp4OutputDirectory;
+
+            if(parent.gp4.SourcePkgPath != null)
+                BasePkgPathTextBox.Text = parent.gp4.SourcePkgPath;
+
+            if(parent.gp4.BlacklistedFilesOrFolders != null) {
+                FilterTextBox.Text = string.Empty;
+                foreach(string file in parent.gp4.BlacklistedFilesOrFolders)
+                    FilterTextBox.Text += $"{file},";
+                FilterTextBox.Text = FilterTextBox.Text.TrimEnd(',');
+            }
+
+            KeystoneToggleBox.Checked = parent.gp4.Keystone;
+
+            if(parent.gp4.Passcode != "00000000000000000000000000000000")
+                CustomPasscodeTextBox.Text = parent.gp4.Passcode;
+
+
+            // Designer Will Delete These From InitializeComponent If Added Manually
+            BasePkgPathTextBox.MouseClick += parent.TextBoxReady;
+            BasePkgPathTextBox.LostFocus += parent.TextBoxReset;
+            OutputPathTextBox.MouseClick += parent.TextBoxReady;
+            OutputPathTextBox.LostFocus += parent.TextBoxReset;
+            CustomPasscodeTextBox.MouseClick += parent.TextBoxReady;
+            CustomPasscodeTextBox.LostFocus += parent.TextBoxReset;
+            FilterTextBox.MouseClick += parent.TextBoxReady;
+            FilterTextBox.LostFocus += parent.TextBoxReset;
+#endregion
         }
+
 
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         ///--     Designer Managed Functions     --\\\
@@ -64,7 +98,7 @@ namespace GP4_GUI {
             this.OutputPathTextBox.Size = new System.Drawing.Size(317, 21);
             this.OutputPathTextBox.TabIndex = 1;
             this.OutputPathTextBox.Text = "Add A Custom .gp4 Output Directory Here...";
-            this.OutputPathTextBox.TextChanged += new System.EventHandler(this.CustomGP4PathTextBox_TextChanged);
+            this.OutputPathTextBox.TextChanged += new System.EventHandler(this.OutputPathTextBox_TextChanged);
             // 
             // Title
             // 
@@ -108,7 +142,7 @@ namespace GP4_GUI {
             this.BasePkgPathTextBox.Size = new System.Drawing.Size(317, 21);
             this.BasePkgPathTextBox.TabIndex = 2;
             this.BasePkgPathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
-            this.BasePkgPathTextBox.TextChanged += new System.EventHandler(this.SourcePkgPathTextBox_TextChanged);
+            this.BasePkgPathTextBox.TextChanged += new System.EventHandler(this.BasePkgPathTextBox_TextChanged);
             // 
             // FilterTextBox
             // 
@@ -224,38 +258,7 @@ namespace GP4_GUI {
 
         private void ExitBtn_Click(object sender, EventArgs e) {
             parent.options_page_is_open = false;
-            this.Dispose();
-        }
-        private void LoadOptions() {
-            /*
-            if(parent.Gp4OutputDirectory != "")
-                CustomGP4PathTextBox.Text = parent.Gp4OutputDirectory;
-            if(parent.PkgSource != "")
-                SourcePkgPathTextBox.Text = parent.PkgSource;
-
-            if(parent.user_blacklist != null) {
-                FilterTextBox.Text = string.Empty;
-                foreach(string file in parent.user_blacklist)
-                FilterTextBox.Text += $"{file},";
-                FilterTextBox.Text = FilterTextBox.Text.TrimEnd(',');
-            }
-
-            KeystoneToggleBox.Checked = parent.IgnoreKeystone;
-
-            if(parent.Passcode != "00000000000000000000000000000000")
-                CustomPasscodeTextBox.Text = parent.Passcode;
-            */
-
-
-            // Designer Will Delete These From InitializeComponent If Added Manually
-            BasePkgPathTextBox.MouseClick += parent.TextBoxReady;
-            BasePkgPathTextBox.LostFocus += parent.TextBoxReset;
-            OutputPathTextBox.MouseClick += parent.TextBoxReady;
-            OutputPathTextBox.LostFocus += parent.TextBoxReset;
-            CustomPasscodeTextBox.MouseClick += parent.TextBoxReady;
-            CustomPasscodeTextBox.LostFocus += parent.TextBoxReset;
-            FilterTextBox.MouseClick += parent.TextBoxReady;
-            FilterTextBox.LostFocus += parent.TextBoxReset;
+            Dispose();
         }
 
 
@@ -267,11 +270,11 @@ namespace GP4_GUI {
         private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => parent.limit_output = VerboseOutputBox.Checked;
         private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => parent.gp4.AbsoluteFilePaths = AbsolutePathCheckBox.Checked;
         
-        private void CustomGP4PathTextBox_TextChanged(object sender, EventArgs e) {
+        private void OutputPathTextBox_TextChanged(object sender, EventArgs e) {
             if(((TextBox)sender).Text == "") return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
-            //! parent.Gp4OutputDirectory = CustomGP4PathTextBox.Text;
+            parent.Gp4OutputDirectory = OutputPathTextBox.Text;
             if(OutputPathTextBox.Text != "" && OutputPathTextBox.Text != parent.default_strings[1])
                 parent.text_box_changed[1] = true;
         }
@@ -282,11 +285,11 @@ namespace GP4_GUI {
                 OutputPathTextBox.Text = Browser.SelectedPath;
         }
 
-        private void SourcePkgPathTextBox_TextChanged(object sender, EventArgs e) {
+        private void BasePkgPathTextBox_TextChanged(object sender, EventArgs e) {
             if(((TextBox)sender).Text == "") return;
             ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
-            //! parent.gp4.SourcePkgPath = SourcePkgPathTextBox.Text.Replace("\"", "");
+            //! parent.gp4.SourcePkgPath = BasePkgPathTextBox.Text.Replace("\"", "");
             if(BasePkgPathTextBox.Text != "" && BasePkgPathTextBox.Text != parent.default_strings[2])
                 parent.text_box_changed[2] = true;
         }
