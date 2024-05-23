@@ -838,16 +838,13 @@ namespace libgp4 {
         ///</returns>
         public static string GetContentId(string GP4Path) => GetAttribute(GP4Path, "package", "content_id");
 
-        ///<summary>
-        ///
-        ///</summary>
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns> The Path Of The Base Game Package The .gp4 Project File's Patch Is To Be Married With
         ///</returns>
         public static string GetBasePkgPath(string GP4Path) => GetAttribute(GP4Path, "package", "app_path");
 
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
-        /// <returns> .gp4 Project File
+        /// <returns> The Amount Of Chunks In The Application/Patch Project.
         ///</returns>
         public static string GetChunkCount(string GP4Path) => GetAttribute(GP4Path, "chunk_info", "chunk_count");
 
@@ -857,7 +854,7 @@ namespace libgp4 {
         public static string GetDefaultScenarioId(string GP4Path) => GetAttribute(GP4Path, "scenarios", "default_id");
 
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
-        /// <returns>
+        /// <returns> The Amount Of Scenarios The Application/Patch Project.
         ///</returns>
         public static string GetScenarioCount(string GP4Path) => GetAttribute(GP4Path, "chunk_info", "scenario_count");
 
@@ -868,7 +865,7 @@ namespace libgp4 {
         public static string[] GetChunkListing(string GP4Path) => GetAttributes(GP4Path, "chunk", "label");
 
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
-        /// <returns> A String Array Containing Full Paths To All Game Scenarios Listed In The .gp4 Project
+        /// <returns> An Array Of Scenarios Read From The Application/Patch Project.
         ///</returns>
         public static Scenario[] GetScenarioListing(string GP4Path) {
             using(var GP4File = new StreamReader(GP4Path)) {
@@ -913,9 +910,6 @@ namespace libgp4 {
         }
 
 
-        ///<summary>
-        ///
-        ///</summary>
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns> A String Array Containing Full Paths To All Project Files Listed In The .gp4 Project
         ///</returns>
@@ -979,11 +973,13 @@ namespace libgp4 {
         }
 
 
-
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
         ///</summary>
-        /// <returns> False If Nothing's Wrong. </returns>
-        public static void VerifyGP4(string GP4Path) => new GP4Reader(GP4Path).VerifyGP4();
+        public static void VerifyGP4(string GP4Path) {
+
+            // TODO: replace me
+            new GP4Reader(GP4Path).VerifyGP4();
+        }
         #endregion
     }
 
@@ -1008,14 +1004,12 @@ namespace libgp4 {
         /// <summary>
         /// Initialize A New Instance Of The GP4Creator Class With Which To Build A New .gp4 Project With Various Settings.<br/>
         /// Allows For The Editing Of Various Options Before .gp4 Creation.
-        /// 
         /// <br/><br/> (A Valid GamedataFolder Must Be Set Prior To Creating The .gp4 Project File)
         /// </summary>
         public GP4Creator() {
             Passcode = "00000000000000000000000000000000";
             Keystone = true;
         }
-
 
 
         /// <summary> Class For Reading Parameters Reqired For .gp4 Creation From The param.sfo File (CUSA1234-example\sce_sys\param.sfo)
@@ -1212,12 +1206,6 @@ namespace libgp4 {
                         }
                     }
                 }
-            }
-
-
-
-            public string[][] ToArray() {
-                return new string[0][] { };
             }
         }
 
@@ -1422,7 +1410,7 @@ namespace libgp4 {
         /// <summary> Names Of Files That Are Always To Be Excluded From .gp4 Projects By Default.
         ///</summary>
         public readonly string[] DefaultBlacklist = new string[] {
-                  // Drunk Canadian Guy
+                    // Drunk Canadian Guy
                     "right.sprx",
                     "sce_discmap.plt",
                     "sce_discmap_patch.plt",
@@ -1430,7 +1418,7 @@ namespace libgp4 {
                     @"sce_sys\psreserved.dat",
                     @"sce_sys\playgo-manifest.xml",
                     @"sce_sys\origin-deltainfo.dat",
-                  // Al Azif
+                    // Al Azif
                     @"sce_sys\.metas",
                     @"sce_sys\.digests",
                     @"sce_sys\.image_key",
@@ -1449,48 +1437,6 @@ namespace libgp4 {
                     @"sce_sys\app\playgo-manifest.xml"
         };
 
-
-#if DEBUG
-        // Collection of Parameters Parsed From The Last of Us Part II, Kept For Testing Purposes
-        string[] DEBUG_misc_sfo_variables = new string[] {
-                        "APP_TYPE",
-                        "APP_VER",
-                        "ATTRIBUTE",
-                        "ATTRIBUTE2",
-                        "CATEGORY",
-                        "CONTENT_ID",
-                        "DEV_FLAG",
-                        "DOWNLOAD_DATA_SIZE",
-                        "FORMAT",
-                        "PARENTAL_LEVEL",
-                        "PUBTOOLINFO",
-                        "PUBTOOLMINVER",
-                        "PUBTOOLVER",
-                        "REMOTE_PLAY_KEY_ASSIGN",
-                        "SERVICE_ID_ADDCONT_ADD_1",
-                        "SERVICE_ID_ADDCONT_ADD_2",
-                        "SERVICE_ID_ADDCONT_ADD_3",
-                        "SERVICE_ID_ADDCONT_ADD_4",
-                        "SERVICE_ID_ADDCONT_ADD_5",
-                        "SERVICE_ID_ADDCONT_ADD_6",
-                        "SERVICE_ID_ADDCONT_ADD_7",
-                        "SYSTEM_VER",
-                        "TARGET_APP_VER",
-                        "TITLE",
-                        "TITLE_00",
-                        "TITLE_03",
-                        "TITLE_05",
-                        "TITLE_07",
-                        "TITLE_08",
-                        "TITLE_17",
-                        "TITLE_20",
-                        "TITLE_ID",
-                        "USER_DEFINED_PARAM_1",
-                        "VERSION"
-        };
-#endif
-
-
         /// <summary> List Of Additional Files To Include In The Project, Added by The User.
         ///</summary>
         private string[][] extra_files;
@@ -1504,11 +1450,9 @@ namespace libgp4 {
 #if Log
             if(LoggingMethod != null && !(VerboseLogging ^= Verbosity))
                 LoggingMethod(o as string);
-
 #if DEBUG
             DLog(o);
 #endif
-
 #endif
         }
 
@@ -1524,11 +1468,6 @@ namespace libgp4 {
                 catch(Exception) { }
 #endif
             return o as string;
-        }
-
-
-        private void SetProjectFolder() {
-
         }
 
 

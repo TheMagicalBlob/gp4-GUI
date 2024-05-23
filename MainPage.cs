@@ -485,10 +485,10 @@ namespace GP4_GUI {
         private void BuildProjectFile(object sender, EventArgs e) {
             gp4.GamedataFolder = @"D:\CUSA00744-" + (DEBUG_App.Checked ? "app" : DEBUG_Patch.Checked ? "patch" : "dingus");
             gp4.VerboseLogging = true;
-            var newGp4Path = gp4.CreateGP4(@"C:\Users\Blob\Desktop", true);
+            var newgp4path = gp4.CreateGP4(@"C:\Users\Blob\Desktop", true);
             
             
-            var newgp4 = new GP4Reader(newGp4Path);
+            var newgp4 = new GP4Reader(newgp4path);
 
             // instance tests \\
             newgp4.VerifyGP4();
@@ -514,25 +514,27 @@ namespace GP4_GUI {
 
             // static tests \\
             WLog("================== Static Tests Start ====================");
-            var cat = GP4Reader.IsPatchPackage(newGp4Path);
+            var cat = GP4Reader.IsPatchPackage(newgp4path);
             WLog($"Is Patch Project: {cat}");
-            WLog($"{GP4Reader.GetFileListing(newGp4Path).Length} Files");
-            WLog($"{GP4Reader.GetFolderListing(newGp4Path).Length} Folders");
-            if (cat) WLog($"Source .pkg Path: {GP4Reader.GetBasePkgPath(newGp4Path)}");
-            WLog($"Default Scenario: {GP4Reader.GetDefaultScenarioId(newGp4Path)}");
-            WLog($"Content Id: {GP4Reader.GetContentId(newGp4Path)}");
-            WLog($"Passcode: {newgp4.Passcode}");
-            foreach(var s in GP4Reader.GetScenarioListing(newGp4Path)) {
+            WLog($"{GP4Reader.GetFileListing(newgp4path).Length} Files");
+            WLog($"{GP4Reader.GetFolderListing(newgp4path).Length} Folders");
+            if (cat) WLog($"Source .pkg Path: {GP4Reader.GetBasePkgPath(newgp4path)}");
+            WLog($"Default Scenario: {GP4Reader.GetDefaultScenarioId(newgp4path)}");
+            WLog($"Content Id: {GP4Reader.GetContentId(newgp4path)}");
+            WLog($"Passcode: {GP4Reader.GetPkgPasscode(newgp4path)}");
+            foreach(var s in GP4Reader.GetScenarioListing(newgp4path)) {
                 WLog($"Scenario {s.Id}: Label={s.Label} Type={s.Type} InitialChunkCount:{s.InitialChunkCount} Range={s.ChunkRange}");
             }
 
-            foreach(var f in GP4Reader.GetChunkListing(newGp4Path)) {
+            foreach(var f in GP4Reader.GetChunkListing(newgp4path)) {
                 WLog(f);
             }
+
+            GP4Reader.VerifyGP4(newgp4path);
             WLog("================== Static Tests End ====================");
             //===============\\
 
-            System.Diagnostics.Process.Start(newGp4Path);
+            System.Diagnostics.Process.Start(newgp4path);
         }
         #endregion
 
