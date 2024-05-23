@@ -86,8 +86,6 @@ namespace libgp4 {
                     file_paths[index].Remove(0, gamedata_folder.Length + 1) // Strip
                 );
 
-                DLog($"File Path Absolute? {AbsoluteFilePaths}");
-
                 if(!SkipPfsCompressionForFile(file_paths[index]))
                     file.SetAttribute("pfs_compression", "enable");
 

@@ -17,7 +17,7 @@ namespace libgp4 {
     ///  1. Create A New Instance To Parse And Return All Relevant Data From The .gp4 File.<br/><br/>
     ///  2. Use The A Static Method To Read A Specific Attribute From The .gp4, Rather Than Reading Them All To Grab One/A Couple Things.
     ///</summary>
-    public class GP4Reader {
+    public class GP4Reader{
 
         /// <summary>
         ///  Create A New Instance Of The GP4Reader Class With A Given .gp4 File.<br/>
@@ -43,7 +43,7 @@ namespace libgp4 {
         ///  <br/> [int] InitialChunkCount
         ///  <br/> [string] ChunkRange
         ///</summary>
-        public class Scenario {
+        public struct Scenario {
             public Scenario(XmlReader gp4Stream) {
                 Type = gp4Stream.GetAttribute("type");
                 Label = gp4Stream.GetAttribute("label");
@@ -343,9 +343,6 @@ namespace libgp4 {
                         case "chunk_info": {
                             ScenarioCount = int.Parse(gp4.GetAttribute("scenario_count"));
                             ChunkCount = int.Parse(gp4.GetAttribute("chunk_count"));
-                            DLog("Checking Chunk Info");
-                            DLog(ScenarioCount);
-                            DLog(ChunkCount);
 
                             // Check .gp4 Integrity
                             if(ScenarioCount == 0 || ChunkCount == 0)
@@ -831,11 +828,15 @@ namespace libgp4 {
         /// <returns>  </returns>
         public static string GetTimestamp(string GP4Path) => GetInnerXMLData(GP4Path, "volume_ts");
 
-
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns> The Passcode The .pkg Will Be Encrypted With (Pointless On fpkg's, Does Not Prevent Dumping, Only orbis-pub-chk extraction)
         ///</returns>
         public static string GetPkgPasscode(string GP4Path) => GetAttribute(GP4Path, "package", "passcode");
+
+        /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
+        /// <returns> The Content Id of The Current Application/Patch Project.
+        ///</returns>
+        public static string GetContentId(string GP4Path) => GetAttribute(GP4Path, "package", "content_id");
 
         ///<summary>
         ///
@@ -851,7 +852,12 @@ namespace libgp4 {
         public static string GetChunkCount(string GP4Path) => GetAttribute(GP4Path, "chunk_info", "chunk_count");
 
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
-        /// <returns> .gp4 Project File
+        /// <returns> The Id/Index Of The Default Game Scenario For The Application/Patch Project.
+        ///</returns>
+        public static string GetDefaultScenarioId(string GP4Path) => GetAttribute(GP4Path, "scenarios", "default_id");
+
+        /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
+        /// <returns>
         ///</returns>
         public static string GetScenarioCount(string GP4Path) => GetAttribute(GP4Path, "chunk_info", "scenario_count");
 
@@ -977,7 +983,7 @@ namespace libgp4 {
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
         ///</summary>
         /// <returns> False If Nothing's Wrong. </returns>
-        public static void CheckGP4Integrity(string GP4Path) => new GP4Reader(GP4Path).VerifyGP4();
+        public static void VerifyGP4(string GP4Path) => new GP4Reader(GP4Path).VerifyGP4();
         #endregion
     }
 
@@ -1146,10 +1152,6 @@ namespace libgp4 {
                             DLog($"Param: {SfoParams[i]}");
 #endif
                         }
-
-#if Log
-                        DLog('\n');
-#endif
                     }
 
 
