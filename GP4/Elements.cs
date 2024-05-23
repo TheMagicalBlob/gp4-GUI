@@ -219,11 +219,8 @@ namespace libgp4 {
         /// </summary>
         /// <returns> True If The File in filepath Shouldn't Be Included In The .gp4 </returns>
         private bool FileShouldBeExcluded(string filepath) {
-            string filename = string.Empty;
-
-            if(filepath.Contains('.'))
-                filename = filepath.Remove(filepath.LastIndexOf(".")).Substring(filepath.LastIndexOf('\\') + 1); // Tf Am I Doing Here?
-
+            if(filepath.Contains("sce_sys") && filepath.Contains(".dds"))
+                return true;
 
             foreach(var blacklisted_file_or_folder in DefaultBlacklist)
                 if(filepath.Contains(blacklisted_file_or_folder)) {

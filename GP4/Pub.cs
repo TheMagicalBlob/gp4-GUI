@@ -84,7 +84,7 @@ namespace libgp4 {
         /// <summary>
         /// Creation Date Of The param.sfo File.
         /// </summary>
-        public string CreationDate { get; private set; }
+        public string SfoCreationDate { get; private set; }
 
         /// <summary>
         /// The PS4/Orbis SDK Version Of The Application.

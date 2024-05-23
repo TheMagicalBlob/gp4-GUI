@@ -976,8 +976,7 @@ namespace libgp4 {
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
         ///</summary>
         public static void VerifyGP4(string GP4Path) {
-
-            // TODO: replace me
+            // TODO: replace me with a stripped down version
             new GP4Reader(GP4Path).VerifyGP4();
         }
         #endregion
@@ -1175,7 +1174,7 @@ namespace libgp4 {
                                 var arr = ((string)SfoParams[i]).Split(',');
                                 foreach(var v in arr)
                                     Debug.WriteLine(v);
-                                Parent.CreationDate = arr[0].Substring(arr[0].IndexOf('='));
+                                Parent.SfoCreationDate = arr[0].Substring(arr[0].IndexOf('='));
                                 Parent.SdkVersion = arr[1].Substring(arr[1].IndexOf('='));
                                 storage_type = arr[2].Substring(arr[2].IndexOf('=')); // (digital25 / bd50)
                                 //==================================================
