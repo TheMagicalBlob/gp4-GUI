@@ -530,6 +530,9 @@ namespace GP4_GUI {
 
         private void BuildProjectFile(object sender, EventArgs e) {
             gp4.GamedataFolder = GamedataFolderPathBox.Text;
+
+            if(Gp4OutputDirectory == null)
+                Gp4OutputDirectory = gp4.GamedataFolder;
             gp4.CreateGP4(Gp4OutputDirectory, true);
         }
         #endregion
