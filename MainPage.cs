@@ -17,25 +17,43 @@ namespace GP4_GUI {
             AddControlEventHandlers(Controls, this);
 
             // Designer Will Delete This From InitializeComponent If Added Manually
-            GamedataFolderPathBox.MouseClick += TextBoxReady;
-            GamedataFolderPathBox.LostFocus += TextBoxReset;
-
 
             gp4 = new GP4Creator() {
                 LoggingMethod = delegate (object str) {
-                    OutputWindow.AppendText((string)str + '\n');
+                    OutputWindow.AppendLine((string)str);
                 }
             };
         }
 
 
-        private class TextBox : System.Windows.Forms.TextBox {
+        public class TextBox : System.Windows.Forms.TextBox {
             public TextBox() {
                 IsDefault = true;
-                TextChanged += SetDefaultText;
+                MouseClick += TextBoxReady;
+                LostFocus += TextBoxReset;
+
+                TextChanged += SetDefaultText; // Yoink Default Text From First Text Assignment
             }
 
             private void SetDefaultText(object sender, EventArgs e) => DefaultText = Text;
+            private void TextBoxReady(object sender, EventArgs e) {
+                var Sender = sender as TextBox;
+                if(Sender.IsDefault) {
+                    Sender.Font = new Font("Microsoft YaHei UI", 8.25F);
+                    Sender.Clear();
+                    Sender.IsDefault = false;
+                }
+            }
+
+            private void TextBoxReset(object sender, EventArgs e) {
+                var Sender = sender as TextBox;
+                if(Sender.Text.Length <= 0 || Sender.Text.Trim().Length <= 0) {
+                    Sender.Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
+                    Sender.Text = DefaultText;
+                    Sender.IsDefault = true;
+                }
+            }
+
 
             public void Reset() { IsDefault = true; Text = DefaultText; }
             public string DefaultText;
@@ -165,7 +183,6 @@ namespace GP4_GUI {
             this.GamedataFolderPathBox.Size = new System.Drawing.Size(437, 21);
             this.GamedataFolderPathBox.TabIndex = 0;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
-            this.GamedataFolderPathBox.TextChanged += new System.EventHandler(this.AppFolderPathBox_TextChanged);
             // 
             // CreateBtn
             // 
@@ -283,7 +300,7 @@ namespace GP4_GUI {
             // DEBUG_Patch
             // 
             this.DEBUG_Patch.AutoSize = true;
-            this.DEBUG_Patch.Location = new System.Drawing.Point(175, 64);
+            this.DEBUG_Patch.Location = new System.Drawing.Point(171, 60);
             this.DEBUG_Patch.Name = "DEBUG_Patch";
             this.DEBUG_Patch.Size = new System.Drawing.Size(54, 17);
             this.DEBUG_Patch.TabIndex = 16;
@@ -296,7 +313,7 @@ namespace GP4_GUI {
             this.DEBUG_App.AutoSize = true;
             this.DEBUG_App.Checked = true;
             this.DEBUG_App.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.DEBUG_App.Location = new System.Drawing.Point(131, 64);
+            this.DEBUG_App.Location = new System.Drawing.Point(127, 60);
             this.DEBUG_App.Name = "DEBUG_App";
             this.DEBUG_App.Size = new System.Drawing.Size(45, 17);
             this.DEBUG_App.TabIndex = 17;
@@ -309,11 +326,11 @@ namespace GP4_GUI {
             this.gengp4TestBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.gengp4TestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.gengp4TestBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.gengp4TestBtn.Location = new System.Drawing.Point(94, 61);
+            this.gengp4TestBtn.Location = new System.Drawing.Point(127, 79);
             this.gengp4TestBtn.Name = "gengp4TestBtn";
-            this.gengp4TestBtn.Size = new System.Drawing.Size(32, 22);
+            this.gengp4TestBtn.Size = new System.Drawing.Size(90, 19);
             this.gengp4TestBtn.TabIndex = 15;
-            this.gengp4TestBtn.Text = "test";
+            this.gengp4TestBtn.Text = "createOrbisGP4";
             this.gengp4TestBtn.UseVisualStyleBackColor = false;
             this.gengp4TestBtn.Click += new System.EventHandler(this.gengp4TestBtn_Click);
             // 
@@ -441,14 +458,6 @@ namespace GP4_GUI {
         #region Application Variables
         public int mouse_is_down = 0;
         public bool options_page_is_open, limit_output;
-        public bool[] text_box_changed = new bool[5];
-        public string[] default_strings = new string[] {
-            "Paste The Gamedata Folder Path Here, Or Use The Browse Button...",
-            "Add A Custom .gp4 Output Directory Here...",
-            "Base Game .pkg Path... (For Game Patches)",
-            "Blacklisted Files/Folders To Exclude, Seperated By ; or ,",
-            "Add Custom .pkg Passcode Here (Defaults To All Zeros)"
-        };
         public string Gp4OutputDirectory;
         public Point MouseDif;
         private Form Options;
@@ -467,40 +476,13 @@ namespace GP4_GUI {
             try {
                 Debug.WriteLine(str);
             }
-            finally{}
+            catch(Exception){}
 
             try {
                 Console.WriteLine(str);
             }
             catch(Exception){}
 #endif
-        }
-
-        public void TextBoxReady(object sender, EventArgs e) {
-            var Sender = sender as System.Windows.Forms.TextBox;
-            if(Sender.Font.Italic) {
-                Sender.Font = new Font("Microsoft YaHei UI", 8.25F);
-                Sender.Clear();
-            }
-        }
-
-        public void TextBoxReset(object sender, EventArgs e) {
-            var Sender = sender as System.Windows.Forms.TextBox;
-            if(!text_box_changed[Sender.TabIndex] | Sender.Text == "") {
-                Sender.Text = default_strings[Sender.TabIndex];
-                Sender.Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
-            }
-        }
-
-
-        /// <summary> Apply The Path In The Text Box To gamedata_path.
-        /// </summary>
-        private void AppFolderPathBox_TextChanged(object sender, EventArgs e) {
-            if(((TextBox)sender).Text.Length <= 0)
-                return;
-
-            ((System.Windows.Forms.TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
-            text_box_changed[0] = true;
         }
 
 
@@ -520,19 +502,25 @@ namespace GP4_GUI {
         /// <summary> Open Windows' Ghastly File Browser Dialog To Search For The Gamedata Folder
         /// </summary>
         private void BrowseBtn_Click(object sender, EventArgs e) {
-            var Browser = new FolderBrowserDialog();
-
-            if(Browser.ShowDialog() == DialogResult.OK) {
-                GamedataFolderPathBox.Text = Browser.SelectedPath;
-            }
+            using(var Browser = new FolderBrowserDialog())
+                if(Browser.ShowDialog() == DialogResult.OK)
+                    GamedataFolderPathBox.Text = Browser.SelectedPath;
         }
 
 
         private void BuildProjectFile(object sender, EventArgs e) {
+            if(GamedataFolderPathBox.IsDefault) {
+                WLog("Please Assign A Valid Gamedata Folder Before Building");
+                return;
+            }
+
             gp4.GamedataFolder = GamedataFolderPathBox.Text;
 
             if(Gp4OutputDirectory == null)
-                Gp4OutputDirectory = gp4.GamedataFolder;
+                if(!gp4.AbsoluteFilePaths)
+                    Gp4OutputDirectory = gp4.GamedataFolder;
+                else Gp4OutputDirectory = gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
+
             gp4.CreateGP4(Gp4OutputDirectory, true);
         }
         #endregion

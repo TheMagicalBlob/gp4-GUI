@@ -39,17 +39,6 @@ namespace GP4_GUI {
 
             if(_MainForm.gp4.Passcode != "00000000000000000000000000000000")
                 CustomPasscodeTextBox.Text = _MainForm.gp4.Passcode;
-
-
-            // Designer Will Delete These From InitializeComponent If Added Manually
-            BasePkgPathTextBox.MouseClick += _MainForm.TextBoxReady;
-            BasePkgPathTextBox.LostFocus += _MainForm.TextBoxReset;
-            OutputPathTextBox.MouseClick += _MainForm.TextBoxReady;
-            OutputPathTextBox.LostFocus += _MainForm.TextBoxReset;
-            CustomPasscodeTextBox.MouseClick += _MainForm.TextBoxReady;
-            CustomPasscodeTextBox.LostFocus += _MainForm.TextBoxReset;
-            FilterTextBox.MouseClick += _MainForm.TextBoxReady;
-            FilterTextBox.LostFocus += _MainForm.TextBoxReset;
 #endregion
         }
 
@@ -164,7 +153,7 @@ namespace GP4_GUI {
             this.CustomPasscodeTextBox.Size = new System.Drawing.Size(317, 21);
             this.CustomPasscodeTextBox.TabIndex = 4;
             this.CustomPasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
-            this.CustomPasscodeTextBox.TextChanged += new System.EventHandler(this.CustomPasscodeTextBox_TextChanged);
+            this.CustomPasscodeTextBox.LostFocus += new System.EventHandler(this.CustomPasscodeTextBox_FocusChanged);
             // 
             // OutputPathBtn
             // 
@@ -272,12 +261,7 @@ namespace GP4_GUI {
         private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => _MainForm.gp4.AbsoluteFilePaths = AbsolutePathCheckBox.Checked;
         
         private void OutputPathTextBox_TextChanged(object sender, EventArgs e) {
-            if(((TextBox)sender).Text.Length > 0 && OutputPathTextBox.Text != _MainForm.default_strings[1]) {
-                ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
 
-                _MainForm.Gp4OutputDirectory = OutputPathTextBox.Text;
-                _MainForm.text_box_changed[1] = true;
-            }
         }
         private void OutputDirectoryBtn_Click(object sender, EventArgs e) {
             var Browser = new FolderBrowserDialog();
@@ -287,12 +271,6 @@ namespace GP4_GUI {
         }
 
         private void BasePkgPathTextBox_TextChanged(object sender, EventArgs e) {
-            if(((TextBox)sender).Text.Length > 0 && BasePkgPathTextBox.Text != _MainForm.default_strings[2]) {
-                ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
-
-                _MainForm.gp4.SourcePkgPath = BasePkgPathTextBox.Text.Replace("\"", "");
-                _MainForm.text_box_changed[2] = true;
-            }
         }
         private void SourcePkgPathBtn_Click(object sender, EventArgs e) {
             var Browser = new OpenFileDialog();
@@ -303,14 +281,12 @@ namespace GP4_GUI {
         }
 
         private void FilterTextBox_TextChanged(object sender, EventArgs e) { // tst : eboot.bin, keystone, discname.txt; param.sfo
-            if(_MainForm.text_box_changed[3] == true && ((TextBox)sender).Text == "") {
+            var Sender = ((MainForm.TextBox)sender);
+            if((Sender.IsDefault && ((TextBox)sender).Text == "")) {
                 _MainForm.gp4.BlacklistedFilesOrFolders = null;
                 return;
             }
 
-            if(((TextBox)sender).Text == "" || (FilterTextBox.Text == _MainForm.default_strings[3])) return;
-            ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
-            
 
             int filter_strings_length = 0, char_index = 0;
             StringBuilder Builder;
@@ -331,7 +307,7 @@ namespace GP4_GUI {
 
                     char_index++;
                     _MainForm.gp4.BlacklistedFilesOrFolders[array_index] = Builder.ToString().Trim(' ');
-                    _MainForm.text_box_changed[3] = true;
+                    Sender.IsDefault = false; //!
                 }
             }
             catch (IndexOutOfRangeException ex) {
@@ -352,14 +328,12 @@ namespace GP4_GUI {
             Browser.Dispose();
         }
 
-        private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) {
-            if(((TextBox)sender).Text.Length > 0 && CustomPasscodeTextBox.Text != _MainForm.default_strings[4]) {
-                ((TextBox)sender).Font = new Font("Microsoft YaHei UI", 8.25F);
-
-                _MainForm.gp4.Passcode = CustomPasscodeTextBox.Text;
-                _MainForm.text_box_changed[4] = true;
-            }
+        private void CustomPasscodeTextBox_FocusChanged(object sender, EventArgs e) {
+            var Sender = ((MainForm.TextBox)sender);
+            if(!Sender.IsDefault)
+                _MainForm.gp4.Passcode = Sender.Text;
         }
+
         #endregion
 
 

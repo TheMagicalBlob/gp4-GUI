@@ -1447,8 +1447,8 @@ namespace libgp4 {
         ///</summary>
         private void WLog(object o, bool Verbosity) {
 #if Log
-            if(LoggingMethod != null && !(VerboseLogging ^= Verbosity))
-                LoggingMethod(o as string);
+            if(LoggingMethod != null && !(VerboseLogging ^ Verbosity))
+                LoggingMethod(o);
 #if DEBUG
             DLog(o);
 #endif
