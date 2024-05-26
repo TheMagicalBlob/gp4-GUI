@@ -28,36 +28,42 @@ namespace GP4_GUI {
 
         public class TextBox : System.Windows.Forms.TextBox {
             public TextBox() {
+
+                GotFocus += delegate (object _, EventArgs __) {
+                    if(IsDefault) {
+                        Font = new Font("Microsoft YaHei UI", 8.25F);
+                        Clear();
+                        IsDefault = false;
+                    }
+                };
+
+                LostFocus += delegate (object _, EventArgs __) {
+                    if(Text.Length <= 0 || Text.Trim().Length <= 0) {
+                        Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
+                        Text = DefaultText;
+                        IsDefault = true;
+                    }
+                };
+
                 IsDefault = true;
-                MouseClick += TextBoxReady;
-                LostFocus += TextBoxReset;
-
-                TextChanged += SetDefaultText; // Yoink Default Text From First Text Assignment
+                TextChanged += Set;
             }
 
-            private void SetDefaultText(object sender, EventArgs e) => DefaultText = Text;
-            private void TextBoxReady(object sender, EventArgs e) {
-                var Sender = sender as TextBox;
-                if(Sender.IsDefault) {
-                    Sender.Font = new Font("Microsoft YaHei UI", 8.25F);
-                    Sender.Clear();
-                    Sender.IsDefault = false;
-                }
+            /// <summary> Yoink Default Text From First Text Assignment. </summary>
+            void Set(object s, EventArgs e) {
+                DefaultText = Text;
+                
+                TextChanged -= Set;
+                TextChanged += delegate (object control, EventArgs _) {
+                    if(IsDefault && Text.Length > 0) {
+                        Font = new Font("Microsoft YaHei UI", 8.25F);
+                        IsDefault = false;
+                    }
+                };
             }
 
-            private void TextBoxReset(object sender, EventArgs e) {
-                var Sender = sender as TextBox;
-                if(Sender.Text.Length <= 0 || Sender.Text.Trim().Length <= 0) {
-                    Sender.Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
-                    Sender.Text = DefaultText;
-                    Sender.IsDefault = true;
-                }
-            }
-
-
-            public void Reset() { IsDefault = true; Text = DefaultText; }
-            public string DefaultText;
-            public bool IsDefault;
+            private string DefaultText;
+            public bool IsDefault { get; private set; }
         }
 
         private class RichTextBox : System.Windows.Forms.RichTextBox {
@@ -82,6 +88,8 @@ namespace GP4_GUI {
         private CheckBox DEBUG_Patch;
         private Button gengp4TestBtn;
         private Button DEBUG_Random;
+        private Button dummy;
+        private Button button1;
         private CheckBox DEBUG_App;
 
         private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
@@ -173,6 +181,8 @@ namespace GP4_GUI {
             this.DEBUG_App = new System.Windows.Forms.CheckBox();
             this.gengp4TestBtn = new System.Windows.Forms.Button();
             this.DEBUG_Random = new System.Windows.Forms.Button();
+            this.dummy = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // GamedataFolderPathBox
@@ -181,7 +191,7 @@ namespace GP4_GUI {
             this.GamedataFolderPathBox.Location = new System.Drawing.Point(8, 34);
             this.GamedataFolderPathBox.Name = "GamedataFolderPathBox";
             this.GamedataFolderPathBox.Size = new System.Drawing.Size(437, 21);
-            this.GamedataFolderPathBox.TabIndex = 0;
+            this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
             // 
             // CreateBtn
@@ -192,7 +202,7 @@ namespace GP4_GUI {
             this.CreateBtn.Location = new System.Drawing.Point(370, 58);
             this.CreateBtn.Name = "CreateBtn";
             this.CreateBtn.Size = new System.Drawing.Size(75, 23);
-            this.CreateBtn.TabIndex = 0;
+            this.CreateBtn.TabIndex = 3;
             this.CreateBtn.Text = "Build .gp4";
             this.CreateBtn.UseVisualStyleBackColor = false;
             this.CreateBtn.Click += new System.EventHandler(this.BuildProjectFile);
@@ -347,12 +357,39 @@ namespace GP4_GUI {
             this.DEBUG_Random.UseVisualStyleBackColor = false;
             this.DEBUG_Random.Click += new System.EventHandler(this.DEBUG_Random_Click);
             // 
+            // dummy
+            // 
+            this.dummy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.dummy.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.dummy.Font = new System.Drawing.Font("Microsoft Sans Serif", 0.1F);
+            this.dummy.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.dummy.Location = new System.Drawing.Point(0, 0);
+            this.dummy.Name = "dummy";
+            this.dummy.Size = new System.Drawing.Size(0, 0);
+            this.dummy.TabIndex = 0;
+            this.dummy.UseVisualStyleBackColor = false;
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button1.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.button1.Location = new System.Drawing.Point(383, 81);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(50, 22);
+            this.button1.TabIndex = 19;
+            this.button1.Text = "chk blk";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.dummy);
             this.Controls.Add(this.DEBUG_Random);
             this.Controls.Add(this.DEBUG_App);
             this.Controls.Add(this.DEBUG_Patch);
@@ -490,8 +527,8 @@ namespace GP4_GUI {
         /// Create Page For Changing Various .gp4 Options. <br/>(passcode, source pkg, etc)
         /// </summary>
         private void OptionsBtn_Click(object sender, EventArgs e) {
-            Options?.BringToFront();
             if(options_page_is_open) return;
+            Options?.BringToFront();
 
             var NewPage = new OptionsPage(this, Location);
             Options = NewPage;
@@ -513,8 +550,7 @@ namespace GP4_GUI {
                 WLog("Please Assign A Valid Gamedata Folder Before Building");
                 return;
             }
-
-            gp4.GamedataFolder = GamedataFolderPathBox.Text;
+            else if (!Directory.Exists(gp4.GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty)))
 
             if(Gp4OutputDirectory == null)
                 if(!gp4.AbsoluteFilePaths)
@@ -524,7 +560,6 @@ namespace GP4_GUI {
             gp4.CreateGP4(Gp4OutputDirectory, true);
         }
         #endregion
-
 
 
         ////////////////////\\\\\\\\\\\\\\\\\\\\
@@ -542,5 +577,13 @@ namespace GP4_GUI {
         private CheckBox DisableLogBox;
         private Button OptionsBtn;
         #endregion
+
+        private void button1_Click(object sender, EventArgs e) {
+            foreach(var b in gp4.BlacklistedFilesOrFolders) {
+                WLog(b);
+            }
+        }
+
+        private Button DummyBtn; // Manipulate Designer Stupidity (Stop Creating Methods Inside Existing Code, You Fucking Moron)
     }
 }

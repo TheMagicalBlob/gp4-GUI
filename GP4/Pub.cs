@@ -167,7 +167,7 @@ namespace libgp4 {
         public string CreateGP4(string GP4OutputPath, bool VerifyIntegrity) {
 #if Log
             WLog($"Starting .gp4 Creation.", false);
-            WLog($"PKG Passcode: {Passcode}\nSource .pkg Path: {SourcePkgPath}\n", true);
+            WLog($"PKG Passcode: {Passcode}\nSource .pkg Path: {SourcePkgPath}\n.gp4 Destination Path: {GP4OutputPath}", true);
 #endif
 
 
