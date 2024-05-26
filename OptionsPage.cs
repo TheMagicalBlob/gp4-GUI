@@ -9,37 +9,38 @@ namespace GP4_GUI {
     public partial class OptionsPage : Form {
 
         public OptionsPage(MainForm MainForm, Point LastPos) {
-            mainForm = MainForm;
+            Venat = MainForm;
 
             InitializeComponent();
-            mainForm.BorderFunc(this);
-            mainForm.options_page_is_open = true;
+            MainForm.BorderFunc(this);
+            MainForm.options_page_is_open = true;
 
             Location = new Point(LastPos.X + 30, LastPos.Y + 60);
             TinyVersionLabel.Text = MainForm.Version;
 
 #region Load Options
             // Restore Edited User Settings To Controls
-            if(mainForm.Gp4OutputDirectory != null)
-                OutputPathTextBox.Text = mainForm.Gp4OutputDirectory;
+            if(MainForm.Gp4OutputDirectory != null)
+                OutputPathTextBox.Text = MainForm.Gp4OutputDirectory;
 
-            if(mainForm.gp4.SourcePkgPath != null)
-                BasePkgPathTextBox.Text = mainForm.gp4.SourcePkgPath;
+            if(MainForm.gp4.BasePkgPath != null)
+                BasePkgPathTextBox.Text = MainForm.gp4.BasePkgPath;
 
-            if(mainForm.gp4.BlacklistedFilesOrFolders != null) {
-                var str = mainForm.gp4.BlacklistedFilesOrFolders[0];
+            AbsolutePathCheckBox.Checked = MainForm.gp4.AbsoluteFilePaths;
+            KeystoneToggleBox.Checked = MainForm.gp4.Keystone;
+            VerboseOutputBox.Checked = MainForm.gp4.VerboseLogging;
 
-                for(var i = 1; i< mainForm.gp4.BlacklistedFilesOrFolders.Length; i++)
-                    str += $",{mainForm.gp4.BlacklistedFilesOrFolders[i]}";
+            if(MainForm.gp4.BlacklistedFilesOrFolders != null) {
+                var str = MainForm.gp4.BlacklistedFilesOrFolders[0];
+                for(var i = 1; i< MainForm.gp4.BlacklistedFilesOrFolders.Length; i++)
+                    str += $",{MainForm.gp4.BlacklistedFilesOrFolders[i]}";
 
                 FilterTextBox.Text = str;
             }
 
-            AbsolutePathCheckBox.Checked = mainForm.gp4.AbsoluteFilePaths;
-            KeystoneToggleBox.Checked = mainForm.gp4.Keystone;
 
-            if(mainForm.gp4.Passcode != "00000000000000000000000000000000")
-                CustomPasscodeTextBox.Text = mainForm.gp4.Passcode;
+            if(MainForm.gp4.Passcode != "00000000000000000000000000000000")
+                CustomPasscodeTextBox.Text = MainForm.gp4.Passcode;
 #endregion
         }
 
@@ -136,6 +137,7 @@ namespace GP4_GUI {
             this.BasePkgPathTextBox.Size = new System.Drawing.Size(317, 21);
             this.BasePkgPathTextBox.TabIndex = 2;
             this.BasePkgPathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
+            this.BasePkgPathTextBox.TextChanged += new System.EventHandler(this.BasePkgPathTextBox_TextChanged);
             // 
             // FilterTextBox
             // 
@@ -169,7 +171,7 @@ namespace GP4_GUI {
             this.OutputPathBtn.TabIndex = 8;
             this.OutputPathBtn.Text = "Browse...";
             this.OutputPathBtn.UseVisualStyleBackColor = false;
-            this.OutputPathBtn.Click += new System.EventHandler(this.OutputDirectoryBtn_Click);
+            this.OutputPathBtn.Click += new System.EventHandler(this.OutputPathBtn_Click);
             // 
             // BasePkgPathBtn
             // 
@@ -182,7 +184,7 @@ namespace GP4_GUI {
             this.BasePkgPathBtn.TabIndex = 9;
             this.BasePkgPathBtn.Text = "Browse...";
             this.BasePkgPathBtn.UseVisualStyleBackColor = false;
-            this.BasePkgPathBtn.Click += new System.EventHandler(this.SourcePkgPathBtn_Click);
+            this.BasePkgPathBtn.Click += new System.EventHandler(this.BasePkgPathBtn_Click);
             // 
             // FilterBrowseBtn
             // 
@@ -265,7 +267,7 @@ namespace GP4_GUI {
 
 
         private void ExitBtn_Click(object sender, EventArgs e) {
-            mainForm.options_page_is_open = false;
+            Venat.options_page_is_open = false;
             Dispose();
         }
 
@@ -274,19 +276,20 @@ namespace GP4_GUI {
         ///--     Options Related Functions     --\\\
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\
         #region Options Related Functions
-        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => mainForm.gp4.Keystone = KeystoneToggleBox.Checked;
-        private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => mainForm.gp4.VerboseLogging = VerboseOutputBox.Checked;
-        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => mainForm.gp4.AbsoluteFilePaths = AbsolutePathCheckBox.Checked;
-        
-        private void OutputPathTextBox_TextChanged(object sender, EventArgs e) => mainForm.Gp4OutputDirectory = ((Control)sender).Text;
-        private void OutputDirectoryBtn_Click(object sender, EventArgs e) {
-            var Browser = new FolderBrowserDialog();
+        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => Venat.gp4.Keystone = ((CheckBox)sender).Checked;
+        private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => Venat.gp4.VerboseLogging = ((CheckBox)sender).Checked;
+        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => Venat.gp4.AbsoluteFilePaths = ((CheckBox)sender).Checked;
+        private void OutputPathTextBox_TextChanged(object sender, EventArgs e) => Venat.Gp4OutputDirectory = ((Control)sender).Text;
 
-            if(Browser.ShowDialog() == DialogResult.OK)
-                OutputPathTextBox.Text = Browser.SelectedPath;
+        private void OutputPathBtn_Click(object sender, EventArgs e) {
+            using(var Browser = new FolderBrowserDialog())
+                if(Browser.ShowDialog() == DialogResult.OK)
+                    OutputPathTextBox.Text = Browser.SelectedPath;
         }
 
-        private void SourcePkgPathBtn_Click(object sender, EventArgs e) {
+        private void BasePkgPathTextBox_TextChanged(object sender, EventArgs e) => Venat.gp4.BasePkgPath = ((Control)sender).Text;
+
+        private void BasePkgPathBtn_Click(object sender, EventArgs e) {
             using(var Browser = new OpenFileDialog())
                 if(Browser.ShowDialog() == DialogResult.OK)
                     BasePkgPathTextBox.Text = Browser.FileName;
@@ -295,7 +298,7 @@ namespace GP4_GUI {
         private void FilterTextBox_TextChanged(object sender, EventArgs _) { // tst : eboot.bin, keystone, discname.txt; param.sfo
             MainForm.TextBox Sender;
             if((Sender = ((MainForm.TextBox)sender)).IsDefault) {
-                mainForm.gp4.BlacklistedFilesOrFolders = null;
+                Venat.gp4.BlacklistedFilesOrFolders = null;
                 return;
             }
 
@@ -308,27 +311,24 @@ namespace GP4_GUI {
                 if(c == ';' || c == ',')
                     filter_strings_length++;
 
-            MainForm.DLog($"filter_strings_length: {filter_strings_length}");
 
-
-            mainForm.gp4.BlacklistedFilesOrFolders = new string[filter_strings_length];
-            MainForm.DLog($"BlacklistedFilesOrFolders: {mainForm.gp4.BlacklistedFilesOrFolders.Length}");
+            Venat.gp4.BlacklistedFilesOrFolders = new string[filter_strings_length];
 
             var buffer = Encoding.UTF8.GetBytes((FilterTextBox.Text + ';').ToCharArray());
 
             try {
-                for(int array_index = 0, char_index = 0; array_index < mainForm.gp4.BlacklistedFilesOrFolders.Length; array_index++) {
+                for(int array_index = 0, char_index = 0; array_index < Venat.gp4.BlacklistedFilesOrFolders.Length; array_index++) {
                     Builder = new StringBuilder();
 
                     while(buffer[char_index] != 0x3B && buffer[char_index] != 0x2C)
                         Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[char_index++] }));
 
                     char_index++;
-                    mainForm.gp4.BlacklistedFilesOrFolders[array_index] = Builder.ToString().Trim(' ');
+                    Venat.gp4.BlacklistedFilesOrFolders[array_index] = Builder.ToString().Trim(' ');
                 }
             }
             catch (IndexOutOfRangeException ex) {
-                mainForm.WLog($"\n{ex.StackTrace}");
+                Venat.WLog($"\n{ex.StackTrace}");
 #if DEBUG
                 MainForm.DLog($"\n{ex.StackTrace}");
 #endif
@@ -349,7 +349,7 @@ namespace GP4_GUI {
         private void CustomPasscodeTextBox_FocusChanged(object sender, EventArgs e) {
             var Sender = ((MainForm.TextBox)sender);
             if(!Sender.IsDefault)
-                mainForm.gp4.Passcode = Sender.Text;
+                Venat.gp4.Passcode = Sender.Text;
         }
 
         #endregion
@@ -369,7 +369,7 @@ namespace GP4_GUI {
         private CheckBox KeystoneToggleBox;
         private CheckBox VerboseOutputBox;
         private CheckBox AbsolutePathCheckBox;
-        private MainForm mainForm;
+        private MainForm Venat;
         private MainForm.TextBox OutputPathTextBox;
         private MainForm.TextBox BasePkgPathTextBox;
         private MainForm.TextBox FilterTextBox;

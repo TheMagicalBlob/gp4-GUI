@@ -28,8 +28,18 @@ namespace GP4_GUI {
 
         public class TextBox : System.Windows.Forms.TextBox {
             public TextBox() {
+                IsDefault = true;
+                TextChanged += Set;
 
                 GotFocus += delegate (object _, EventArgs __) {
+                    if(IsDefault) {
+                        Font = new Font("Microsoft YaHei UI", 8.25F);
+                        Clear();
+                        IsDefault = false;
+                    }
+                };
+
+                Click += delegate (object _, EventArgs __) { // Jic
                     if(IsDefault) {
                         Font = new Font("Microsoft YaHei UI", 8.25F);
                         Clear();
@@ -44,12 +54,15 @@ namespace GP4_GUI {
                         IsDefault = true;
                     }
                 };
-
-                IsDefault = true;
-                TextChanged += Set;
             }
 
-            /// <summary> Yoink Default Text From First Text Assignment. </summary>
+
+            private string DefaultText;
+            public bool IsDefault { get; private set; }
+
+
+            /// <summary> Yoink Default Text From First Text Assignment.
+            ///</summary>
             void Set(object s, EventArgs e) {
                 DefaultText = Text;
                 
@@ -61,9 +74,6 @@ namespace GP4_GUI {
                     }
                 };
             }
-
-            private string DefaultText;
-            public bool IsDefault { get; private set; }
         }
 
         private class RichTextBox : System.Windows.Forms.RichTextBox {
@@ -71,12 +81,10 @@ namespace GP4_GUI {
             /// <summary> Appends Text to The Currrent Text of A Text Box, Followed By The Standard Line Terminator.<br/>Scrolls To Keep The Newest Line In View. </summary>
             /// <param name="str"> The String To Output. </param>
             public void AppendLine(string str) {
-                if(str == null || str.Length <= 0) {
-                    AppendText("\n");
-                }
+                if(str.Length <= 0) AppendText("\n");
 
-                else
-                    AppendText($"{str}\n");
+                else AppendText($"{str}\n");
+
                 ScrollToCaret();
             }
         }

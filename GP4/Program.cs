@@ -1495,8 +1495,8 @@ namespace libgp4 {
                 Errors += $"Invalid Password Length, Must Be A 32-Character String.\n\n";
 
 
-            if(SourcePkgPath != null && SourcePkgPath[SourcePkgPath.Length - 1] == '\\')
-                Errors += $"Invalid Base Application .pkg Path.\nDirectory \"{SourcePkgPath}\" Was Given.\n\n";
+            if(BasePkgPath != null && BasePkgPath[BasePkgPath.Length - 1] == '\\')
+                Errors += $"Invalid Base Application .pkg Path.\nDirectory \"{BasePkgPath}\" Was Given.\n\n";
 
 
 
