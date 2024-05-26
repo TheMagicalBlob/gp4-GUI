@@ -43,6 +43,8 @@ namespace GP4_GUI {
 #endregion
         }
 
+        private Button dummy;
+
 
         ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\
         ///--     Designer Managed Functions     --\\\
@@ -68,6 +70,7 @@ namespace GP4_GUI {
             this.FilterBrowseBtn = new System.Windows.Forms.Button();
             this.TinyVersionLabel = new System.Windows.Forms.Label();
             this.AbsolutePathCheckBox = new System.Windows.Forms.CheckBox();
+            this.dummy = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // KeystoneToggleBox
@@ -98,7 +101,7 @@ namespace GP4_GUI {
             this.Title.Location = new System.Drawing.Point(162, 4);
             this.Title.Name = "Title";
             this.Title.Size = new System.Drawing.Size(50, 16);
-            this.Title.TabIndex = 3;
+            this.Title.TabIndex = 0;
             this.Title.Text = "Options";
             // 
             // ExitBtn
@@ -201,7 +204,7 @@ namespace GP4_GUI {
             this.TinyVersionLabel.Location = new System.Drawing.Point(1, 1);
             this.TinyVersionLabel.Name = "TinyVersionLabel";
             this.TinyVersionLabel.Size = new System.Drawing.Size(57, 12);
-            this.TinyVersionLabel.TabIndex = 11;
+            this.TinyVersionLabel.TabIndex = 0;
             this.TinyVersionLabel.Text = "placeholder";
             // 
             // AbsolutePathCheckBox
@@ -217,12 +220,25 @@ namespace GP4_GUI {
             this.AbsolutePathCheckBox.UseVisualStyleBackColor = true;
             this.AbsolutePathCheckBox.CheckedChanged += new System.EventHandler(this.AbsolutePathCheckBox_CheckedChanged);
             // 
+            // dummy
+            // 
+            this.dummy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.dummy.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.dummy.Font = new System.Drawing.Font("Microsoft Sans Serif", 0.1F);
+            this.dummy.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.dummy.Location = new System.Drawing.Point(0, 0);
+            this.dummy.Name = "dummy";
+            this.dummy.Size = new System.Drawing.Size(0, 0);
+            this.dummy.TabIndex = 0;
+            this.dummy.UseVisualStyleBackColor = false;
+            // 
             // OptionsPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
             this.ClientSize = new System.Drawing.Size(387, 170);
+            this.Controls.Add(this.dummy);
             this.Controls.Add(this.AbsolutePathCheckBox);
             this.Controls.Add(this.TinyVersionLabel);
             this.Controls.Add(this.FilterBrowseBtn);
