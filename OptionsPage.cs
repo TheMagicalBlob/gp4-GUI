@@ -59,13 +59,13 @@ namespace GP4_GUI {
         }
         private void InitializeComponent() {
             this.KeystoneToggleBox = new System.Windows.Forms.CheckBox();
-            this.OutputPathTextBox = new GP4_GUI.MainForm.TextBox();
+            this.OutputPathTextBox = new GP4_GUI.TextBox();
             this.Title = new System.Windows.Forms.Label();
             this.ExitBtn = new System.Windows.Forms.Button();
             this.VerboseOutputBox = new System.Windows.Forms.CheckBox();
-            this.BasePkgPathTextBox = new GP4_GUI.MainForm.TextBox();
-            this.FilterTextBox = new GP4_GUI.MainForm.TextBox();
-            this.CustomPasscodeTextBox = new GP4_GUI.MainForm.TextBox();
+            this.BasePkgPathTextBox = new GP4_GUI.TextBox();
+            this.FilterTextBox = new GP4_GUI.TextBox();
+            this.CustomPasscodeTextBox = new GP4_GUI.TextBox();
             this.OutputPathBtn = new System.Windows.Forms.Button();
             this.BasePkgPathBtn = new System.Windows.Forms.Button();
             this.FilterBrowseBtn = new System.Windows.Forms.Button();
@@ -148,6 +148,7 @@ namespace GP4_GUI {
             this.FilterTextBox.TabIndex = 3;
             this.FilterTextBox.Text = "Blacklisted Files/Folders To Exclude, Seperated By ; or ,";
             this.FilterTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
+            this.FilterTextBox.LostFocus += new System.EventHandler(this.FilterTextBox_FocusLeft);
             // 
             // CustomPasscodeTextBox
             // 
@@ -158,6 +159,7 @@ namespace GP4_GUI {
             this.CustomPasscodeTextBox.Size = new System.Drawing.Size(317, 21);
             this.CustomPasscodeTextBox.TabIndex = 4;
             this.CustomPasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
+            this.CustomPasscodeTextBox.TextChanged += new System.EventHandler(this.CustomPasscodeTextBox_TextChanged);
             this.CustomPasscodeTextBox.LostFocus += new System.EventHandler(this.CustomPasscodeTextBox_FocusChanged);
             // 
             // OutputPathBtn
@@ -280,6 +282,7 @@ namespace GP4_GUI {
         private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => Venat.gp4.VerboseLogging = ((CheckBox)sender).Checked;
         private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => Venat.gp4.AbsoluteFilePaths = ((CheckBox)sender).Checked;
         private void OutputPathTextBox_TextChanged(object sender, EventArgs e) => Venat.Gp4OutputDirectory = ((Control)sender).Text;
+        private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) => Venat.gp4.Passcode = ((Control)sender).Text;
 
         private void OutputPathBtn_Click(object sender, EventArgs e) {
             using(var Browser = new FolderBrowserDialog())
@@ -295,9 +298,21 @@ namespace GP4_GUI {
                     BasePkgPathTextBox.Text = Browser.FileName;
         }
 
+        /// <summary>
+        /// Remove Trailing Seperators To Avoid Improperly Counting Filtered Items In The Method Below.
+        /// </summary>
+        private void FilterTextBox_FocusLeft(object control, EventArgs _) {
+            var textbox = ((TextBox)control);
+            if (!textbox.IsDefault)
+                textbox.Text = textbox.Text.TrimEnd(',', ';');
+        }
+
+        /// <summary>
+        /// Parse Individual Items From Filter Text Box, And Add Them To The Blacklist
+        /// </summary>
         private void FilterTextBox_TextChanged(object sender, EventArgs _) { // tst : eboot.bin, keystone, discname.txt; param.sfo
-            MainForm.TextBox Sender;
-            if((Sender = ((MainForm.TextBox)sender)).IsDefault) {
+            TextBox Sender;
+            if((Sender = ((TextBox)sender)).IsDefault) {
                 Venat.gp4.BlacklistedFilesOrFolders = null;
                 return;
             }
@@ -334,8 +349,9 @@ namespace GP4_GUI {
 #endif
             }
         }
+
         private void FilterBrowseBtn_Click(object sender, EventArgs e) {
-            OpenFileDialog Browser = new OpenFileDialog();
+            var Browser = new OpenFileDialog();
             Browser.Multiselect = true;
 
             if(Browser.ShowDialog() == DialogResult.OK) {
@@ -347,7 +363,7 @@ namespace GP4_GUI {
         }
 
         private void CustomPasscodeTextBox_FocusChanged(object sender, EventArgs e) {
-            var Sender = ((MainForm.TextBox)sender);
+            var Sender = ((TextBox)sender);
             if(!Sender.IsDefault)
                 Venat.gp4.Passcode = Sender.Text;
         }
@@ -369,11 +385,11 @@ namespace GP4_GUI {
         private CheckBox KeystoneToggleBox;
         private CheckBox VerboseOutputBox;
         private CheckBox AbsolutePathCheckBox;
-        private MainForm Venat;
-        private MainForm.TextBox OutputPathTextBox;
-        private MainForm.TextBox BasePkgPathTextBox;
-        private MainForm.TextBox FilterTextBox;
-        private MainForm.TextBox CustomPasscodeTextBox;
+        private readonly MainForm Venat;
+        private TextBox OutputPathTextBox;
+        private TextBox BasePkgPathTextBox;
+        private TextBox FilterTextBox;
+        private TextBox CustomPasscodeTextBox;
         #endregion
     }
 }

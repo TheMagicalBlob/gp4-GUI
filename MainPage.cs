@@ -7,10 +7,7 @@ using System.Windows.Forms;
 using libgp4;
 
 namespace GP4_GUI {
-
     public partial class MainForm : Form {
-
-        public const string Version = "ver 2.44.78 ";
         public MainForm() {
             InitializeComponent();
             BorderFunc(this);
@@ -26,68 +23,8 @@ namespace GP4_GUI {
         }
 
 
-        public class TextBox : System.Windows.Forms.TextBox {
-            public TextBox() {
-                IsDefault = true;
-                TextChanged += Set;
-
-                GotFocus += delegate (object _, EventArgs __) {
-                    if(IsDefault) {
-                        Font = new Font("Microsoft YaHei UI", 8.25F);
-                        Clear();
-                        IsDefault = false;
-                    }
-                };
-
-                Click += delegate (object _, EventArgs __) { // Jic
-                    if(IsDefault) {
-                        Font = new Font("Microsoft YaHei UI", 8.25F);
-                        Clear();
-                        IsDefault = false;
-                    }
-                };
-
-                LostFocus += delegate (object _, EventArgs __) {
-                    if(Text.Length <= 0 || Text.Trim().Length <= 0) {
-                        Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
-                        Text = DefaultText;
-                        IsDefault = true;
-                    }
-                };
-            }
-
-
-            private string DefaultText;
-            public bool IsDefault { get; private set; }
-
-
-            /// <summary> Yoink Default Text From First Text Assignment.
-            ///</summary>
-            void Set(object s, EventArgs e) {
-                DefaultText = Text;
-                
-                TextChanged -= Set;
-                TextChanged += delegate (object control, EventArgs _) {
-                    if(IsDefault && Text.Length > 0) {
-                        Font = new Font("Microsoft YaHei UI", 8.25F);
-                        IsDefault = false;
-                    }
-                };
-            }
-        }
-
-        private class RichTextBox : System.Windows.Forms.RichTextBox {
-
-            /// <summary> Appends Text to The Currrent Text of A Text Box, Followed By The Standard Line Terminator.<br/>Scrolls To Keep The Newest Line In View. </summary>
-            /// <param name="str"> The String To Output. </param>
-            public void AppendLine(string str) {
-                if(str.Length <= 0) AppendText("\n");
-
-                else AppendText($"{str}\n");
-
-                ScrollToCaret();
-            }
-        }
+        // Version = "ver 2.44.78 "; this number is hilariously outdated. Increased Arbitrarily.
+        public const string Version = "ver 2.50.102 ";
 
 
         //////////////////////\\\\\\\\\\\\\\\\\\\\\\
@@ -97,7 +34,7 @@ namespace GP4_GUI {
         private Button gengp4TestBtn;
         private Button DEBUG_Random;
         private Button dummy;
-        private Button button1;
+        private Button blakisttestBtn;
         private CheckBox DEBUG_App;
 
         private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
@@ -108,7 +45,6 @@ namespace GP4_GUI {
             gp4.GamedataFolder = @"D:\CUSA00744-" + (DEBUG_App.Checked ? "app" : DEBUG_Patch.Checked ? "patch" : "dingus");
             gp4.VerboseLogging = true;
             var newgp4path = gp4.CreateGP4(@"C:\Users\Blob\Desktop", true);
-
 
             var newgp4 = new GP4Reader(newgp4path);
 
@@ -175,12 +111,12 @@ namespace GP4_GUI {
         }
 
         private void InitializeComponent() {
-            this.GamedataFolderPathBox = new GP4_GUI.MainForm.TextBox();
+            this.GamedataFolderPathBox = new GP4_GUI.TextBox();
             this.CreateBtn = new System.Windows.Forms.Button();
             this.Title = new System.Windows.Forms.Label();
             this.MinimizeBtn = new System.Windows.Forms.Button();
             this.ExitBtn = new System.Windows.Forms.Button();
-            this.OutputWindow = new GP4_GUI.MainForm.RichTextBox();
+            this.OutputWindow = new GP4_GUI.RichTextBox();
             this.BrowseBtn = new System.Windows.Forms.Button();
             this.DisableLogBox = new System.Windows.Forms.CheckBox();
             this.OptionsBtn = new System.Windows.Forms.Button();
@@ -190,7 +126,7 @@ namespace GP4_GUI {
             this.gengp4TestBtn = new System.Windows.Forms.Button();
             this.DEBUG_Random = new System.Windows.Forms.Button();
             this.dummy = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.blakisttestBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // GamedataFolderPathBox
@@ -377,18 +313,18 @@ namespace GP4_GUI {
             this.dummy.TabIndex = 0;
             this.dummy.UseVisualStyleBackColor = false;
             // 
-            // button1
+            // blakisttestBtn
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button1.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.button1.Location = new System.Drawing.Point(383, 81);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(50, 22);
-            this.button1.TabIndex = 19;
-            this.button1.Text = "chk blk";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.blakisttestBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.blakisttestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.blakisttestBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.blakisttestBtn.Location = new System.Drawing.Point(383, 81);
+            this.blakisttestBtn.Name = "blakisttestBtn";
+            this.blakisttestBtn.Size = new System.Drawing.Size(50, 22);
+            this.blakisttestBtn.TabIndex = 19;
+            this.blakisttestBtn.Text = "chk blk";
+            this.blakisttestBtn.UseVisualStyleBackColor = false;
+            this.blakisttestBtn.Click += new System.EventHandler(this.testBlacklist);
             // 
             // MainForm
             // 
@@ -396,7 +332,7 @@ namespace GP4_GUI {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.blakisttestBtn);
             this.Controls.Add(this.dummy);
             this.Controls.Add(this.DEBUG_Random);
             this.Controls.Add(this.DEBUG_App);
@@ -586,12 +522,77 @@ namespace GP4_GUI {
         private Button OptionsBtn;
         #endregion
 
-        private void button1_Click(object sender, EventArgs e) {
+        private void testBlacklist(object sender, EventArgs e) {
             foreach(var b in gp4.BlacklistedFilesOrFolders) {
                 WLog(b);
             }
         }
 
-        private Button DummyBtn; // Manipulate Designer Stupidity (Stop Creating Methods Inside Existing Code, You Fucking Moron)
+        private Button DesignerManip; // Manipulate Designer Stupidity (Stop Creating Methods Inside Existing Code, You Fucking Moron)
+    }
+
+
+    public class RichTextBox : System.Windows.Forms.RichTextBox {
+
+        /// <summary> Appends Text to The Currrent Text of A Text Box, Followed By The Standard Line Terminator.<br/>Scrolls To Keep The Newest Line In View. </summary>
+        /// <param name="str"> The String To Output. </param>
+        public void AppendLine(string str = "") {
+            if(str.Length <= 0) AppendText("\n");
+
+            else AppendText($"{str}\n");
+
+            ScrollToCaret();
+        }
+    }
+
+    public class TextBox : System.Windows.Forms.TextBox {
+        public TextBox() {
+            IsDefault = true;
+
+            TextChanged += Set;
+
+            GotFocus += delegate (object _, EventArgs __) {
+                if(IsDefault) {
+                    Font = new Font("Microsoft YaHei UI", 8.25F);
+                    Clear();
+                    IsDefault = false;
+                }
+            };
+
+            Click += delegate (object _, EventArgs __) { // Just In Case, I Suppose.
+                if(IsDefault) {
+                    Font = new Font("Microsoft YaHei UI", 8.25F);
+                    Clear();
+                    IsDefault = false;
+                }
+            };
+
+            LostFocus += delegate (object _, EventArgs __) {
+                if(Text.Length <= 0 || Text.Trim().Length <= 0) {
+                    Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
+                    Text = DefaultText;
+                    IsDefault = true;
+                }
+            };
+        }
+
+
+        private string DefaultText;
+        public bool IsDefault { get; private set; }
+
+
+        /// <summary> Yoink Default Text From First Text Assignment.
+        ///</summary>
+        void Set(object s, EventArgs e) {
+            DefaultText = Text;
+
+            TextChanged -= Set;
+            TextChanged += delegate (object control, EventArgs _) {
+                if(IsDefault && Text.Length > 0) {
+                    Font = new Font("Microsoft YaHei UI", 8.25F);
+                    IsDefault = false;
+                }
+            };
+        }
     }
 }

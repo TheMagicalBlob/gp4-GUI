@@ -17,17 +17,17 @@ namespace libgp4 {
         public SfoParser SfoParams { get; private set; }
         public PlaygoParameters PlaygoData { get; private set; }
 
-        private string gamedata_folder;
         /// <summary> Root Path Of The PS4 Package Project The .gp4 Is To Be Created For. (Should Contain At Least An Executable And sce_sys Folder)
         ///</summary>
         public string GamedataFolder {
-            get => gamedata_folder;
+            get => _GamedataFolder;
             set {
-                gamedata_folder = value;
+                _GamedataFolder = value;
                 SfoParams = new SfoParser(this, value);
                 PlaygoData = new PlaygoParameters(this, value);
             }
         }
+        private string _GamedataFolder;
 
 
 
@@ -173,7 +173,7 @@ namespace libgp4 {
 
             if(GamedataFolder == null || PlaygoData == null || SfoParams == null) {
                 WLog("No Valid Project Folder Was Assigned. Please Provide A Valid Project Folder On Class Ini Or Through Manual Assignment To GamedataFolder Param", false);
-                goto ret;
+                return GP4OutputPath;
             }
 
             // Timestamp For GP4, Same Format Sony Used Though Sony's Technically Only Tracks The Date,
@@ -235,7 +235,6 @@ namespace libgp4 {
 #if Log
             WLog($"GP4 Creation Successful, File Saved As {GP4OutputPath}", false);
 #endif
-            ret:
             return GP4OutputPath;
         }
         #endregion
