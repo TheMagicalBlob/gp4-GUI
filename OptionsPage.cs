@@ -59,19 +59,19 @@ namespace GP4_GUI {
         }
         private void InitializeComponent() {
             this.KeystoneToggleBox = new System.Windows.Forms.CheckBox();
-            this.OutputPathTextBox = new GP4_GUI.TextBox();
             this.Title = new System.Windows.Forms.Label();
             this.ExitBtn = new System.Windows.Forms.Button();
             this.VerboseOutputBox = new System.Windows.Forms.CheckBox();
-            this.BasePkgPathTextBox = new GP4_GUI.TextBox();
-            this.FilterTextBox = new GP4_GUI.TextBox();
-            this.CustomPasscodeTextBox = new GP4_GUI.TextBox();
             this.OutputPathBtn = new System.Windows.Forms.Button();
             this.BasePkgPathBtn = new System.Windows.Forms.Button();
             this.FilterBrowseBtn = new System.Windows.Forms.Button();
             this.TinyVersionLabel = new System.Windows.Forms.Label();
             this.AbsolutePathCheckBox = new System.Windows.Forms.CheckBox();
             this.dummy = new System.Windows.Forms.Button();
+            this.CustomPasscodeTextBox = new GP4_GUI.TextBox();
+            this.FilterTextBox = new GP4_GUI.TextBox();
+            this.BasePkgPathTextBox = new GP4_GUI.TextBox();
+            this.OutputPathTextBox = new GP4_GUI.TextBox();
             this.SuspendLayout();
             // 
             // KeystoneToggleBox
@@ -84,16 +84,6 @@ namespace GP4_GUI {
             this.KeystoneToggleBox.Text = "Ignore Keystone";
             this.KeystoneToggleBox.UseVisualStyleBackColor = true;
             this.KeystoneToggleBox.CheckedChanged += new System.EventHandler(this.KeystoneToggleBox_CheckedChanged);
-            // 
-            // OutputPathTextBox
-            // 
-            this.OutputPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
-            this.OutputPathTextBox.Location = new System.Drawing.Point(6, 30);
-            this.OutputPathTextBox.Name = "OutputPathTextBox";
-            this.OutputPathTextBox.Size = new System.Drawing.Size(317, 21);
-            this.OutputPathTextBox.TabIndex = 1;
-            this.OutputPathTextBox.Text = "Add A Custom .gp4 Output Directory Here...";
-            this.OutputPathTextBox.TextChanged += new System.EventHandler(this.OutputPathTextBox_TextChanged);
             // 
             // Title
             // 
@@ -128,39 +118,6 @@ namespace GP4_GUI {
             this.VerboseOutputBox.Text = "Verbose Output";
             this.VerboseOutputBox.UseVisualStyleBackColor = true;
             this.VerboseOutputBox.CheckedChanged += new System.EventHandler(this.LimitedOutputBox_CheckedChanged);
-            // 
-            // BasePkgPathTextBox
-            // 
-            this.BasePkgPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
-            this.BasePkgPathTextBox.Location = new System.Drawing.Point(6, 56);
-            this.BasePkgPathTextBox.Name = "BasePkgPathTextBox";
-            this.BasePkgPathTextBox.Size = new System.Drawing.Size(317, 21);
-            this.BasePkgPathTextBox.TabIndex = 2;
-            this.BasePkgPathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
-            this.BasePkgPathTextBox.TextChanged += new System.EventHandler(this.BasePkgPathTextBox_TextChanged);
-            // 
-            // FilterTextBox
-            // 
-            this.FilterTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Italic);
-            this.FilterTextBox.Location = new System.Drawing.Point(7, 114);
-            this.FilterTextBox.Name = "FilterTextBox";
-            this.FilterTextBox.Size = new System.Drawing.Size(316, 21);
-            this.FilterTextBox.TabIndex = 3;
-            this.FilterTextBox.Text = "Blacklisted Files/Folders To Exclude, Seperated By ; or ,";
-            this.FilterTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
-            this.FilterTextBox.LostFocus += new System.EventHandler(this.FilterTextBox_FocusLeft);
-            // 
-            // CustomPasscodeTextBox
-            // 
-            this.CustomPasscodeTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
-            this.CustomPasscodeTextBox.Location = new System.Drawing.Point(6, 139);
-            this.CustomPasscodeTextBox.MaxLength = 32;
-            this.CustomPasscodeTextBox.Name = "CustomPasscodeTextBox";
-            this.CustomPasscodeTextBox.Size = new System.Drawing.Size(317, 21);
-            this.CustomPasscodeTextBox.TabIndex = 4;
-            this.CustomPasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
-            this.CustomPasscodeTextBox.TextChanged += new System.EventHandler(this.CustomPasscodeTextBox_TextChanged);
-            this.CustomPasscodeTextBox.LostFocus += new System.EventHandler(this.CustomPasscodeTextBox_FocusChanged);
             // 
             // OutputPathBtn
             // 
@@ -214,8 +171,6 @@ namespace GP4_GUI {
             // AbsolutePathCheckBox
             // 
             this.AbsolutePathCheckBox.AutoSize = true;
-            this.AbsolutePathCheckBox.Checked = true;
-            this.AbsolutePathCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.AbsolutePathCheckBox.Location = new System.Drawing.Point(13, 87);
             this.AbsolutePathCheckBox.Name = "AbsolutePathCheckBox";
             this.AbsolutePathCheckBox.Size = new System.Drawing.Size(150, 17);
@@ -235,6 +190,49 @@ namespace GP4_GUI {
             this.dummy.Size = new System.Drawing.Size(0, 0);
             this.dummy.TabIndex = 0;
             this.dummy.UseVisualStyleBackColor = false;
+            // 
+            // CustomPasscodeTextBox
+            // 
+            this.CustomPasscodeTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
+            this.CustomPasscodeTextBox.Location = new System.Drawing.Point(6, 139);
+            this.CustomPasscodeTextBox.MaxLength = 32;
+            this.CustomPasscodeTextBox.Name = "CustomPasscodeTextBox";
+            this.CustomPasscodeTextBox.Size = new System.Drawing.Size(317, 21);
+            this.CustomPasscodeTextBox.TabIndex = 4;
+            this.CustomPasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
+            this.CustomPasscodeTextBox.TextChanged += new System.EventHandler(this.CustomPasscodeTextBox_TextChanged);
+            this.CustomPasscodeTextBox.LostFocus += new System.EventHandler(this.CustomPasscodeTextBox_FocusChanged);
+            // 
+            // FilterTextBox
+            // 
+            this.FilterTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Italic);
+            this.FilterTextBox.Location = new System.Drawing.Point(7, 114);
+            this.FilterTextBox.Name = "FilterTextBox";
+            this.FilterTextBox.Size = new System.Drawing.Size(316, 21);
+            this.FilterTextBox.TabIndex = 3;
+            this.FilterTextBox.Text = "Blacklisted Files/Folders To Exclude, Seperated By ; or ,";
+            this.FilterTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
+            this.FilterTextBox.LostFocus += new System.EventHandler(this.FilterTextBox_FocusLeft);
+            // 
+            // BasePkgPathTextBox
+            // 
+            this.BasePkgPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
+            this.BasePkgPathTextBox.Location = new System.Drawing.Point(6, 56);
+            this.BasePkgPathTextBox.Name = "BasePkgPathTextBox";
+            this.BasePkgPathTextBox.Size = new System.Drawing.Size(317, 21);
+            this.BasePkgPathTextBox.TabIndex = 2;
+            this.BasePkgPathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
+            this.BasePkgPathTextBox.TextChanged += new System.EventHandler(this.BasePkgPathTextBox_TextChanged);
+            // 
+            // OutputPathTextBox
+            // 
+            this.OutputPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
+            this.OutputPathTextBox.Location = new System.Drawing.Point(6, 30);
+            this.OutputPathTextBox.Name = "OutputPathTextBox";
+            this.OutputPathTextBox.Size = new System.Drawing.Size(317, 21);
+            this.OutputPathTextBox.TabIndex = 1;
+            this.OutputPathTextBox.Text = "Add A Custom .gp4 Output Directory Here...";
+            this.OutputPathTextBox.TextChanged += new System.EventHandler(this.OutputPathTextBox_TextChanged);
             // 
             // OptionsPage
             // 

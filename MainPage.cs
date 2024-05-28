@@ -38,13 +38,12 @@ namespace GP4_GUI {
             if (cat) WLog($"Source .pkg Path: {newgp4.BaseAppPkgPath}");
 
 
-            WLog($"{newgp4.FileCount} Files");
+            WLog($"{newgp4.Files.Length} Files");
             foreach(var f in newgp4.Files)
                 WLog($"  {f}");
-            WLog($"{newgp4.SubfolderCount} Subfolders");
+            WLog($"{newgp4.Subfolders.Length} Subfolders");
             foreach(var s in newgp4.Subfolders)
                 WLog($"  {s}");
-            WLog($"{newgp4.SubfolderCount} Subfolders");
             foreach(var sn in newgp4.SubfolderNames)
                 WLog($"  {sn}");
 
@@ -350,9 +349,9 @@ namespace GP4_GUI {
 
         private static void MinimizeBtn_Click(object sender, EventArgs e) => ActiveForm.WindowState = FormWindowState.Minimized;
         private static void ExitBtn_Click(object sender, EventArgs e) => Environment.Exit(0);
-        public static void ExitBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100);
-        public static void MinimizeBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255);
-        public static void ExitBtnML(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0);
+        private static void ExitBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100);
+        private static void MinimizeBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255);
+        private static void ExitBtnML(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0);
 
 
         public void MouseUpFunc(object sender, MouseEventArgs e) {

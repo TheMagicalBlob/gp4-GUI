@@ -11,7 +11,7 @@ namespace libgp4 {
         ///////////////\\\\\\\\\\\\\\\
         //--     User Options     --\\
         ///////////////\\\\\\\\\\\\\\\
-        #region User Options
+#region User Options
 
         /// <summary>
         /// An Array Of Parameters Parsed From The param.sfo File In The Application/Patch's System Folder (sce_sys\param.sfo)
@@ -116,51 +116,6 @@ namespace libgp4 {
         ///--     User Functions     --\\\
         /////////////////\\\\\\\\\\\\\\\\\
         #region User Functions
-
-        /// <summary>
-        /// Add External Files To The Project's File Listing (wip, this wouldn't work the way it is lol)
-        /// </summary>
-        /// <param name="TargetPaths"> The Destination Paths In The Created Package. <param/>
-        /// <param name="OriginalPaths"> Source Paths Of The Files Being Added. <param/>
-        public void AddFiles(string[] TargetPaths, string[] OriginalPaths) {
-            if(extra_files == null) {
-                extra_files = new string[OriginalPaths.Length][];
-
-                for(var i = 0; i < extra_files.Length; ++i) {
-                    extra_files[i][0] = TargetPaths[i];
-                    extra_files[i][1] = OriginalPaths[i];
-                }
-                return;
-            }
-
-
-            var buffer = extra_files;
-            buffer.CopyTo(extra_files = new string[buffer.Length + OriginalPaths.Length][], 0);
-
-            for(var i = buffer.Length; i < extra_files.Length; ++i) {
-                extra_files[i][0] = TargetPaths[i];
-                extra_files[i][1] = OriginalPaths[i];
-            }
-        }
-
-        /// <summary>
-        /// Add An External File To The Project's File Listing (wip, this wouldn't work the way it is lol)
-        /// </summary>
-        /// <param name="TargetPath"> The Destination Path In The Created Package. <param/>
-        /// <param name="OriginalPath"> Source Path Of The File Being Added. <param/>
-        public void AddFile(string TargetPath, string OriginalPath) {
-            if(extra_files != null) {
-                var buffer = extra_files;
-                buffer.CopyTo(extra_files = new string[buffer.Length + 1][], 0);
-
-                extra_files[extra_files.Length - 1][0] = OriginalPath;
-                extra_files[extra_files.Length - 1][1] = TargetPath;
-                return;
-            }
-
-            extra_files = new string[][] { new string[] { OriginalPath, TargetPath } };
-        }
-
 
         /// <summary>
         /// Build A New .gp4 Project File For The Provided Gamedata With The Current Options/Settings, And Save It In The Specified OutputDirectory.<br/><br/>

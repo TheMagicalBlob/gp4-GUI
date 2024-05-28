@@ -6,10 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-/// <summary>
-/// A Small Library For Building .gp4 Files For Use In PS4 .pkg Creation, And Grabbing Data From Existing Ones
-///</summary>
+// A Small Library For Building .gp4 Files For Use In PS4 .pkg Creation, And Grabbing Data From Existing Ones
 namespace libgp4 {
+#pragma warning disable CS1587
 
     /// <summary>
     /// Small Class For Reading Data From .gp4 Projects.<br/><br/>
@@ -44,6 +43,11 @@ namespace libgp4 {
         ///  <br/> [string] ChunkRange
         ///</summary>
         public struct Scenario {
+
+            /// <summary>
+            /// Create A New Scenario Instance From A .gp4 Node
+            /// </summary>
+            /// <param name="gp4Stream"> The XmlReader Instance With The Scneario Node </param>
             public Scenario(XmlReader gp4Stream) {
                 Type = gp4Stream.GetAttribute("type");
                 Label = gp4Stream.GetAttribute("label");
@@ -428,7 +432,6 @@ namespace libgp4 {
                                 }
 
                                 Files.Add(gp4.GetAttribute("orig_path"));
-                                FileCount++;
 
                                 // * Check .gp4 Integrity
                                 if(project_file_blacklist.Contains(Files.Last())) {
@@ -466,7 +469,6 @@ namespace libgp4 {
                                 else
                                     Subfolders.Add(SubfolderNames.Last()); // Add As New Folder
 
-                                SubfolderCount++;
                                 i = gp4.Depth;
                             }
 
@@ -526,8 +528,6 @@ namespace libgp4 {
         /// <summary> Array Of All Files Listed In The .gp4 Project
         ///</summary>
         public string[] Files { get; private set; }
-        public int FileCount { get; private set; }
-
 
         /// <summary> Array Containing The Names Of Each Folder/Subfolder Within The Project Folder
         ///</summary>
@@ -536,18 +536,22 @@ namespace libgp4 {
         /// <summary> Array Containing The Full Path For Each Folder/Subfolder Within The Project Folder
         ///</summary>
         public string[] Subfolders { get; private set; }
-        public int SubfolderCount { get; private set; }
-
 
         /// <summary> Array Containing Chunk Data For The Selected .gp4 Project File
         ///</summary>
         public string[] Chunks { get; private set; }
+        /// <summary>
+        /// chunk_count Attribute From The Chunk Info Node.
+        /// </summary>
         public int ChunkCount { get; private set; }
 
 
         /// <summary> Array Of Scenario Data For The .gp4 Project.
         /// </summary>
         public Scenario[] Scenarios { get; private set; }
+        /// <summary>
+        /// scenario_count Attribute From The Chunk Info Node.
+        /// </summary>
         public int ScenarioCount { get; private set; }
 
         /// <summary> The Default Scenario ID Of The .gp4 Project.
@@ -987,7 +991,7 @@ namespace libgp4 {
         /// Allows For The Editing Of Various Options Before .gp4 Creation.
         /// </summary>
         /// 
-        /// <param name="GamedataFolder"> The Folder Containing The Gamedata To Create A .gp4 Project File For. </param>
+        /// <param name="gamedataFolder"> The Folder Containing The Gamedata To Create A .gp4 Project File For. </param>
         public GP4Creator(string gamedataFolder) {
             Passcode = "00000000000000000000000000000000";
             Keystone = true;
@@ -1010,6 +1014,7 @@ namespace libgp4 {
         ///</summary>
         public class SfoParser {
 
+#pragma warning disable CS1591
             public readonly string
                 app_ver,     // App Patch Version
                 version,     // Remaster Ver
@@ -1018,7 +1023,6 @@ namespace libgp4 {
                 category,    // Category Of The PS4 Application (gd / gp)
                 storage_type // Storage Type For The Package (25gb/50gb)
             ;
-
 
             /// <summary>
             /// Parse param.sfo For Required .gp4 Variables. <br/> 
@@ -1034,7 +1038,7 @@ namespace libgp4 {
             /// </summary>
             /// 
             /// <param name="Parent">Current GP4 Creator Incstance (For Logging With Current Verbosity Settings 'n Shit)</param>
-            /// <param name="gamedata_folder"> PS4 Project Folder Containing The sce_sys Subfolder </param>
+            /// <param name="gamedataFolder"> PS4 Project Folder Containing The sce_sys Subfolder </param>
             /// 
             /// <exception cref="InvalidDataException"/>
             public SfoParser(GP4Creator Parent, string gamedataFolder) {
@@ -1165,7 +1169,10 @@ namespace libgp4 {
                             case "PUBTOOLINFO":
 #if GUIExtras
                                 // Store Some Extra Things I May Use In My .gp4 GUI
+                                Debug.WriteLine((string)SfoParams[i]);
                                 var arr = ((string)SfoParams[i]).Split(',');
+                                foreach(var v in arr)
+                                    Debug.WriteLine(v);
                                 Parent.SfoCreationDate = arr[0].Substring(arr[0].IndexOf('='));
                                 Parent.SdkVersion = arr[1].Substring(arr[1].IndexOf('='));
                                 storage_type = arr[2].Substring(arr[2].IndexOf('=')); // (digital25 / bd50)
@@ -1204,7 +1211,6 @@ namespace libgp4 {
         /// <summary> Class For Reading Chunk &amp; Scenario Data Used In .gp4 Creation From The playgo-chunk.dat File (CUSA1234-example\sce_sys\playgo-chunk.dat)
         ///</summary>
         public class PlaygoParameters {
-
             public readonly int
                 chunk_count,        // Amount Of Chunks In The Application
                 scenario_count,     // Amount Of Scenarios In The Application
@@ -1225,6 +1231,7 @@ namespace libgp4 {
                 chunk_labels,   // Array Of All Chunk Names
                 scenario_labels // Array Of All Scenario Names
             ;
+#pragma warning restore CS1591
 
 
             /// <summary>
@@ -1242,7 +1249,7 @@ namespace libgp4 {
             ///  <br/> content_id
             /// </summary>
             /// <param name="Parent"></param>
-            /// <param name="gamedata_folder"></param>
+            /// <param name="gamedataFolder"></param>
             /// <exception cref="InvalidDataException"></exception>
             public PlaygoParameters(GP4Creator Parent, string gamedataFolder) {
                 chunk_count = 0;
@@ -1397,36 +1404,6 @@ namespace libgp4 {
         ///--     Internal Variables     --\\\
         ////////////////////\\\\\\\\\\\\\\\\\\
         #region Internal Variables
-
-        /// <summary> Names Of Files That Are Always To Be Excluded From .gp4 Projects By Default.
-        ///</summary>
-        public readonly string[] DefaultBlacklist = new string[] {
-                    // Drunk Canadian Guy
-                    "right.sprx",
-                    "sce_discmap.plt",
-                    "sce_discmap_patch.plt",
-                    @"sce_sys\playgo-chunk",
-                    @"sce_sys\psreserved.dat",
-                    @"sce_sys\playgo-manifest.xml",
-                    @"sce_sys\origin-deltainfo.dat",
-                    // Al Azif
-                    @"sce_sys\.metas",
-                    @"sce_sys\.digests",
-                    @"sce_sys\.image_key",
-                    @"sce_sys\license.dat",
-                    @"sce_sys\.entry_keys",
-                    @"sce_sys\.entry_names",
-                    @"sce_sys\license.info",
-                    @"sce_sys\selfinfo.dat",
-                    @"sce_sys\imageinfo.dat",
-                    @"sce_sys\.unknown_0x21",
-                    @"sce_sys\.unknown_0xC0",
-                    @"sce_sys\pubtoolinfo.dat",
-                    @"sce_sys\app\playgo-chunk",
-                    @"sce_sys\.general_digests",
-                    @"sce_sys\target-deltainfo.dat",
-                    @"sce_sys\app\playgo-manifest.xml"
-        };
 
         /// <summary> List Of Additional Files To Include In The Project, Added by The User.
         ///</summary>

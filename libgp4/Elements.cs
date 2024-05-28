@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
 using System.Xml;
 
 namespace libgp4 {
@@ -224,7 +223,33 @@ namespace libgp4 {
                 return true;
             }
 
-            foreach(var blacklisted_file_or_folder in DefaultBlacklist)
+            foreach(var blacklisted_file_or_folder in new string[] {
+                    // Drunk Canadian Guy
+                    "right.sprx",
+                    "sce_discmap.plt",
+                    "sce_discmap_patch.plt",
+                    @"sce_sys\playgo-chunk",
+                    @"sce_sys\psreserved.dat",
+                    @"sce_sys\playgo-manifest.xml",
+                    @"sce_sys\origin-deltainfo.dat",
+                    // Al Azif
+                    @"sce_sys\.metas",
+                    @"sce_sys\.digests",
+                    @"sce_sys\.image_key",
+                    @"sce_sys\license.dat",
+                    @"sce_sys\.entry_keys",
+                    @"sce_sys\.entry_names",
+                    @"sce_sys\license.info",
+                    @"sce_sys\selfinfo.dat",
+                    @"sce_sys\imageinfo.dat",
+                    @"sce_sys\.unknown_0x21",
+                    @"sce_sys\.unknown_0xC0",
+                    @"sce_sys\pubtoolinfo.dat",
+                    @"sce_sys\app\playgo-chunk",
+                    @"sce_sys\.general_digests",
+                    @"sce_sys\target-deltainfo.dat",
+                    @"sce_sys\app\playgo-manifest.xml"
+        })
                 if(filepath.Contains(blacklisted_file_or_folder)) {
 #if Log
                     WLog($"Ignoring: {filepath}", true);
@@ -260,8 +285,8 @@ namespace libgp4 {
                 ".prx",
                 ".dll"
             })
-                if(filepath.Contains(file))
-                    return true;
+            if(filepath.Contains(file))
+                return true;
 
             return false;
         }
@@ -279,8 +304,8 @@ namespace libgp4 {
                 "sce_module",
                 ".bin"
             })
-                if(filepath.Contains(filter))
-                    return true;
+            if(filepath.Contains(filter))
+                return true;
 
             return false;
         }
