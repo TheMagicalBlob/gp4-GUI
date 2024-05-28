@@ -16,7 +16,7 @@ namespace GP4_GUI {
             MainForm.options_page_is_open = true;
 
             Location = new Point(LastPos.X + 30, LastPos.Y + 60);
-            TinyVersionLabel.Text = MainForm.Version;
+            TinyVersionLabel.Text = Version;
 
 #region Load Options
             // Restore Edited User Settings To Controls

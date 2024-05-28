@@ -17,7 +17,7 @@ namespace libgp4 {
     ///  1. Create A New Instance To Parse And Return All Relevant Data From The .gp4 File.<br/><br/>
     ///  2. Use The A Static Method To Read A Specific Attribute From The .gp4, Rather Than Reading Them All To Grab One/A Couple Things.
     ///</summary>
-    public class GP4Reader{
+    public class GP4Reader {
 
         /// <summary>
         ///  Create A New Instance Of The GP4Reader Class With A Given .gp4 File.<br/>
@@ -578,11 +578,6 @@ namespace libgp4 {
         ///--     User Functions     --\\\
         /////////////////\\\\\\\\\\\\\\\\\
         #region User Functions
-
-
-
-
-
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
         ///</summary>
         public void VerifyGP4() {
@@ -976,7 +971,7 @@ namespace libgp4 {
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
         ///</summary>
         public static void VerifyGP4(string GP4Path) {
-            // TODO: replace me with a stripped down version
+            // TODO: replace me with a stripped down version instead of a redundant class initialization
             new GP4Reader(GP4Path).VerifyGP4();
         }
         #endregion
@@ -1015,7 +1010,7 @@ namespace libgp4 {
         ///</summary>
         public class SfoParser {
 
-            public string
+            public readonly string
                 app_ver,     // App Patch Version
                 version,     // Remaster Ver
                 content_id,  // Content Id From sce_sys/param.sfo
@@ -1209,27 +1204,27 @@ namespace libgp4 {
         }
 
 
-        /// <summary> Class For Reading Chunk &amp; Scenario Data USed In .gp4 Creation From The playgo-chunk.dat File (CUSA1234-example\sce_sys\playgo-chunk.dat)
+        /// <summary> Class For Reading Chunk &amp; Scenario Data Used In .gp4 Creation From The playgo-chunk.dat File (CUSA1234-example\sce_sys\playgo-chunk.dat)
         ///</summary>
         public class PlaygoParameters {
 
-            public int
-                chunk_count,    // Amount Of Chunks In The Application
-                scenario_count, // Amount Of Scenarios In The Application
+            public readonly int
+                chunk_count,        // Amount Of Chunks In The Application
+                scenario_count,     // Amount Of Scenarios In The Application
                 default_scenario_id // Id/Index Of The Application's Default Scenario
             ;
 
-            public int[]
+            public readonly int[]
                 scenario_types,       // The Types Of Each Scenario (SP / MP)
                 scenario_chunk_range, // Array Of Chunk Ranges For Each Scenario
                 initial_chunk_count   // The Initial Chunk Count Of Each Scenario
             ;
 
-            public string
+            public readonly string
                 playgo_content_id // Content Id From sce_sys/playgo-chunk.dat To Check Against Content Id In sce_sys/param.sfo
             ;
 
-            public string[]
+            public readonly string[]
                 chunk_labels,   // Array Of All Chunk Names
                 scenario_labels // Array Of All Scenario Names
             ;

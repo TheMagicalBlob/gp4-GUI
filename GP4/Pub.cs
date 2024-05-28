@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Xml;
 using System.Collections.Generic;
 
@@ -14,7 +12,15 @@ namespace libgp4 {
         //--     User Options     --\\
         ///////////////\\\\\\\\\\\\\\\
 #region User Options
+
+        /// <summary>
+        /// An Array Of Parameters Parsed From The param.sfo File In The Application/Patch's System Folder (sce_sys\param.sfo)
+        /// </summary>
         public SfoParser SfoParams { get; private set; }
+
+        /// <summary>
+        /// An Array Of Parameters Parsed From The playgo-chunk.dat File In The Application/Patch's System Folder (sce_sys\playgo-chunk.dat)
+        /// </summary>
         public PlaygoParameters PlaygoData { get; private set; }
 
         /// <summary> Root Path Of The PS4 Package Project The .gp4 Is To Be Created For. (Should Contain At Least An Executable And sce_sys Folder)
