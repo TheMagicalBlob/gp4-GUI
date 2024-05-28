@@ -2,11 +2,10 @@
 - themagicalblob (Discord)
 - @TheMagicalBlob (Twitter / X)
 - TheMagicalDildo (Reddit... Use Discord, Please)
-- alteringorbisgames@gmail.com
 
 # GP4 GUI
-Legal gengp4.exe alternative written in C# made to avoid dealing with some of the more infuriating
-aspects of gengp4.exe, like writing to param.sfo, or building useless gp4's if the folder name isn't
-formatted perfectly _(TITLEID-category)._
+Open-source alternative to Sony's gengp4.exe written in C#, rather than Delphi.
 
-This is the GUI version of the **CSharp GP4 Writer** POC. I'm making a proper cmd line version and a .dll for inclusion in other projects.
+Made to avoid dealing with some of the more infuriating aspects of gengp4.exe that often end up breaking the .gp4 project file,
+e.g. writing to the param.sfo and allegedly stripping any remaining symbols from executables (Unsure about the latter, someone confirm)
+or building useless gp4's if the folder name isn't formatted "correctly" _(TITLEID-category1.00 == good, but TITLEID-1.00category == bad)._
