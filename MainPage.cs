@@ -14,29 +14,17 @@ namespace GP4_GUI {
             AddControlEventHandlers(Controls, this);
 
             gp4 = new GP4Creator() {
-                LoggingMethod = delegate (object str) {
+                LoggingMethod = (object str) => {
                     OutputWindow.AppendLine((string)str);
                 }
             };
         }
 
-
-        //////////////////////\\\\\\\\\\\\\\\\\\\\\\
-        ///--      DEBUG TESTING (GP4 LIB)     --\\\
-        //////////////////////\\\\\\\\\\\\\\\\\\\\\\
-        private CheckBox DEBUG_Patch;
-        private Button gengp4TestBtn;
-        private Button DEBUG_Random;
+        private Button TestBtn;
         private Button dummy;
-        private Button blakisttestBtn;
-        private CheckBox DEBUG_App;
 
-        private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
-        private void gengp4TestBtn_Click(object sender = null, EventArgs e = null) => Process.Start(@"C:\Users\Blob\Desktop\gengp4 test.bat");
-        private void DEBUG_App_Click(object sender, EventArgs e) => DEBUG_App.Checked = !(DEBUG_Patch.Checked = !DEBUG_Patch.Checked);
-        private void DEBUG_Patch_Click(object sender, EventArgs e) => DEBUG_Patch.Checked = !(DEBUG_App.Checked = !DEBUG_App.Checked);
-        private void DEBUG_Random_Click(object sender, EventArgs e) {
-            gp4.GamedataFolder = @"D:\CUSA00744-" + (DEBUG_App.Checked ? "app" : DEBUG_Patch.Checked ? "patch" : "dingus");
+        private void TestBtn_Click(object sender, EventArgs e) {
+#if DEBUG
             gp4.VerboseLogging = true;
             var newgp4path = gp4.CreateGP4(@"C:\Users\Blob\Desktop", true);
 
@@ -110,6 +98,7 @@ namespace GP4_GUI {
             //===============\\
 
             System.Diagnostics.Process.Start(newgp4path);
+#endif
         }
         //============================\\
 
@@ -133,17 +122,12 @@ namespace GP4_GUI {
             this.MinimizeBtn = new System.Windows.Forms.Button();
             this.ExitBtn = new System.Windows.Forms.Button();
             this.BrowseBtn = new System.Windows.Forms.Button();
-            this.DisableLogBox = new System.Windows.Forms.CheckBox();
             this.OptionsBtn = new System.Windows.Forms.Button();
             this.ClearLogBtn = new System.Windows.Forms.Button();
-            this.DEBUG_Patch = new System.Windows.Forms.CheckBox();
-            this.DEBUG_App = new System.Windows.Forms.CheckBox();
-            this.gengp4TestBtn = new System.Windows.Forms.Button();
-            this.DEBUG_Random = new System.Windows.Forms.Button();
             this.dummy = new System.Windows.Forms.Button();
-            this.blakisttestBtn = new System.Windows.Forms.Button();
             this.OutputWindow = new GP4_GUI.RichTextBox();
             this.GamedataFolderPathBox = new GP4_GUI.TextBox();
+            this.TestBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateBtn
@@ -151,7 +135,7 @@ namespace GP4_GUI {
             this.CreateBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.CreateBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.CreateBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CreateBtn.Location = new System.Drawing.Point(370, 58);
+            this.CreateBtn.Location = new System.Drawing.Point(373, 58);
             this.CreateBtn.Name = "CreateBtn";
             this.CreateBtn.Size = new System.Drawing.Size(75, 23);
             this.CreateBtn.TabIndex = 3;
@@ -201,30 +185,20 @@ namespace GP4_GUI {
             this.BrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.BrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.BrowseBtn.Location = new System.Drawing.Point(305, 58);
+            this.BrowseBtn.Location = new System.Drawing.Point(311, 58);
             this.BrowseBtn.Name = "BrowseBtn";
-            this.BrowseBtn.Size = new System.Drawing.Size(60, 22);
+            this.BrowseBtn.Size = new System.Drawing.Size(60, 23);
             this.BrowseBtn.TabIndex = 7;
             this.BrowseBtn.Text = "Browse...";
             this.BrowseBtn.UseVisualStyleBackColor = false;
             this.BrowseBtn.Click += new System.EventHandler(this.BrowseBtn_Click);
-            // 
-            // DisableLogBox
-            // 
-            this.DisableLogBox.AutoSize = true;
-            this.DisableLogBox.Location = new System.Drawing.Point(3, 59);
-            this.DisableLogBox.Name = "DisableLogBox";
-            this.DisableLogBox.Size = new System.Drawing.Size(82, 17);
-            this.DisableLogBox.TabIndex = 8;
-            this.DisableLogBox.Text = "Disable Log";
-            this.DisableLogBox.UseVisualStyleBackColor = true;
             // 
             // OptionsBtn
             // 
             this.OptionsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.OptionsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.OptionsBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.OptionsBtn.Location = new System.Drawing.Point(8, 4);
+            this.OptionsBtn.Location = new System.Drawing.Point(4, 4);
             this.OptionsBtn.Name = "OptionsBtn";
             this.OptionsBtn.Size = new System.Drawing.Size(75, 23);
             this.OptionsBtn.TabIndex = 9;
@@ -238,63 +212,13 @@ namespace GP4_GUI {
             this.ClearLogBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ClearLogBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 5.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ClearLogBtn.ForeColor = System.Drawing.SystemColors.Control;
-            this.ClearLogBtn.Location = new System.Drawing.Point(87, 5);
+            this.ClearLogBtn.Location = new System.Drawing.Point(4, 83);
             this.ClearLogBtn.Name = "ClearLogBtn";
-            this.ClearLogBtn.Size = new System.Drawing.Size(15, 16);
+            this.ClearLogBtn.Size = new System.Drawing.Size(36, 17);
             this.ClearLogBtn.TabIndex = 15;
-            this.ClearLogBtn.Text = "C";
+            this.ClearLogBtn.Text = "Clear";
             this.ClearLogBtn.UseVisualStyleBackColor = false;
             this.ClearLogBtn.Click += new System.EventHandler(this.ClearLogBtn_Click);
-            // 
-            // DEBUG_Patch
-            // 
-            this.DEBUG_Patch.AutoSize = true;
-            this.DEBUG_Patch.Location = new System.Drawing.Point(171, 60);
-            this.DEBUG_Patch.Name = "DEBUG_Patch";
-            this.DEBUG_Patch.Size = new System.Drawing.Size(54, 17);
-            this.DEBUG_Patch.TabIndex = 16;
-            this.DEBUG_Patch.Text = "Patch";
-            this.DEBUG_Patch.UseVisualStyleBackColor = true;
-            this.DEBUG_Patch.Click += new System.EventHandler(this.DEBUG_Patch_Click);
-            // 
-            // DEBUG_App
-            // 
-            this.DEBUG_App.AutoSize = true;
-            this.DEBUG_App.Checked = true;
-            this.DEBUG_App.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.DEBUG_App.Location = new System.Drawing.Point(127, 60);
-            this.DEBUG_App.Name = "DEBUG_App";
-            this.DEBUG_App.Size = new System.Drawing.Size(45, 17);
-            this.DEBUG_App.TabIndex = 17;
-            this.DEBUG_App.Text = "App";
-            this.DEBUG_App.UseVisualStyleBackColor = true;
-            this.DEBUG_App.Click += new System.EventHandler(this.DEBUG_App_Click);
-            // 
-            // gengp4TestBtn
-            // 
-            this.gengp4TestBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.gengp4TestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.gengp4TestBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.gengp4TestBtn.Location = new System.Drawing.Point(127, 79);
-            this.gengp4TestBtn.Name = "gengp4TestBtn";
-            this.gengp4TestBtn.Size = new System.Drawing.Size(90, 19);
-            this.gengp4TestBtn.TabIndex = 15;
-            this.gengp4TestBtn.Text = "createOrbisGP4";
-            this.gengp4TestBtn.UseVisualStyleBackColor = false;
-            this.gengp4TestBtn.Click += new System.EventHandler(this.gengp4TestBtn_Click);
-            // 
-            // DEBUG_Random
-            // 
-            this.DEBUG_Random.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.DEBUG_Random.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.DEBUG_Random.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.DEBUG_Random.Location = new System.Drawing.Point(262, 59);
-            this.DEBUG_Random.Name = "DEBUG_Random";
-            this.DEBUG_Random.Size = new System.Drawing.Size(32, 22);
-            this.DEBUG_Random.TabIndex = 18;
-            this.DEBUG_Random.Text = "test";
-            this.DEBUG_Random.UseVisualStyleBackColor = false;
-            this.DEBUG_Random.Click += new System.EventHandler(this.DEBUG_Random_Click);
             // 
             // dummy
             // 
@@ -307,19 +231,6 @@ namespace GP4_GUI {
             this.dummy.Size = new System.Drawing.Size(0, 0);
             this.dummy.TabIndex = 0;
             this.dummy.UseVisualStyleBackColor = false;
-            // 
-            // blakisttestBtn
-            // 
-            this.blakisttestBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.blakisttestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.blakisttestBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.blakisttestBtn.Location = new System.Drawing.Point(383, 81);
-            this.blakisttestBtn.Name = "blakisttestBtn";
-            this.blakisttestBtn.Size = new System.Drawing.Size(50, 22);
-            this.blakisttestBtn.TabIndex = 19;
-            this.blakisttestBtn.Text = "chk blk";
-            this.blakisttestBtn.UseVisualStyleBackColor = false;
-            this.blakisttestBtn.Click += new System.EventHandler(this.testBlacklist);
             // 
             // OutputWindow
             // 
@@ -337,11 +248,25 @@ namespace GP4_GUI {
             // GamedataFolderPathBox
             // 
             this.GamedataFolderPathBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.GamedataFolderPathBox.Location = new System.Drawing.Point(8, 34);
+            this.GamedataFolderPathBox.Location = new System.Drawing.Point(5, 33);
             this.GamedataFolderPathBox.Name = "GamedataFolderPathBox";
-            this.GamedataFolderPathBox.Size = new System.Drawing.Size(437, 21);
+            this.GamedataFolderPathBox.Size = new System.Drawing.Size(442, 21);
             this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
+            // 
+            // TestBtn
+            // 
+            this.TestBtn.BackColor = System.Drawing.SystemColors.ControlText;
+            this.TestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.TestBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 5.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TestBtn.ForeColor = System.Drawing.SystemColors.Control;
+            this.TestBtn.Location = new System.Drawing.Point(411, 103);
+            this.TestBtn.Name = "TestBtn";
+            this.TestBtn.Size = new System.Drawing.Size(36, 17);
+            this.TestBtn.TabIndex = 16;
+            this.TestBtn.Text = "TEST";
+            this.TestBtn.UseVisualStyleBackColor = false;
+            this.TestBtn.Click += new System.EventHandler(this.TestBtn_Click);
             // 
             // MainForm
             // 
@@ -349,15 +274,13 @@ namespace GP4_GUI {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
-            this.Controls.Add(this.blakisttestBtn);
+#if DEBUG
+            this.Controls.Add(this.TestBtn);
+            this.TestBtn.BringToFront();
+#endif
             this.Controls.Add(this.dummy);
-            this.Controls.Add(this.DEBUG_Random);
-            this.Controls.Add(this.DEBUG_App);
-            this.Controls.Add(this.DEBUG_Patch);
-            this.Controls.Add(this.gengp4TestBtn);
             this.Controls.Add(this.ClearLogBtn);
             this.Controls.Add(this.OptionsBtn);
-            this.Controls.Add(this.DisableLogBox);
             this.Controls.Add(this.BrowseBtn);
             this.Controls.Add(this.OutputWindow);
             this.Controls.Add(this.ExitBtn);
@@ -408,7 +331,7 @@ namespace GP4_GUI {
                 }
                 Item.MouseDown += new MouseEventHandler(MouseDownFunc);
                 Item.MouseUp += new MouseEventHandler(MouseUpFunc);
-                if(!Item.Name.Contains("TextBox") && !Item.Name.Contains("OutputWindow")) // So You Can Drag Select The Text Lol
+                if(!Item.Name.Contains("Box") && !Item.Name.Contains("OutputWindow")) // So You Can Drag Select The Text Lol
                     Item.MouseMove += new MouseEventHandler(MoveForm);
             }
             try {
@@ -485,6 +408,7 @@ namespace GP4_GUI {
 #endif
         }
 
+        private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
 
         /// <summary>
         /// Create Page For Changing Various .gp4 Options. <br/>(passcode, source pkg, etc)
@@ -548,17 +472,10 @@ namespace GP4_GUI {
         private Button ExitBtn;
         private RichTextBox OutputWindow;
         private Button BrowseBtn;
-        private CheckBox DisableLogBox;
         private Button OptionsBtn;
         #endregion
 
-        private void testBlacklist(object sender, EventArgs e) {
-            foreach(var b in gp4.BlacklistedFilesOrFolders) {
-                WLog(b);
-            }
-        }
-
-        private Button DesignerManip; // Manipulate Designer Stupidity (Stop Creating Methods Inside Existing Code, You Fucking Moron)
+        private readonly Button DesignerManip; // Manipulate Designer Stupidity (Stop Creating Methods Inside Existing Code, You Fucking Moron)
     }
 
 
@@ -581,7 +498,7 @@ namespace GP4_GUI {
 
             TextChanged += Set;
 
-            GotFocus += delegate (object _, EventArgs __) {
+            GotFocus += (object _, EventArgs __) => {
                 if(IsDefault) {
                     Font = new Font("Microsoft YaHei UI", 8.25F);
                     Clear();
@@ -589,7 +506,7 @@ namespace GP4_GUI {
                 }
             };
 
-            Click += delegate (object _, EventArgs __) { // Just In Case, I Suppose.
+            Click += (object _, EventArgs __) => { // Just In Case, I Suppose.
                 if(IsDefault) {
                     Font = new Font("Microsoft YaHei UI", 8.25F);
                     Clear();
@@ -597,7 +514,7 @@ namespace GP4_GUI {
                 }
             };
 
-            LostFocus += delegate (object _, EventArgs __) {
+            LostFocus += (object _, EventArgs __) => {
                 if(Text.Length <= 0 || Text.Trim().Length <= 0) {
                     Font = new Font("Microsoft YaHei UI", 8.25F, FontStyle.Italic);
                     Text = DefaultText;
@@ -617,7 +534,7 @@ namespace GP4_GUI {
             DefaultText = Text;
 
             TextChanged -= Set;
-            TextChanged += delegate (object control, EventArgs _) {
+            TextChanged += (object control, EventArgs _) => {
                 if(IsDefault && Text.Length > 0) {
                     Font = new Font("Microsoft YaHei UI", 8.25F);
                     IsDefault = false;
