@@ -172,8 +172,8 @@ namespace libgp4 {
         /// <param name="VerifyIntegrity"> Set Whether Or Not To Abort The Creation Process If An Error Is Found That Would Cause .pkg Creation To Fail, Or Simply Log It To The Standard Console Output And/Or LogOutput(string) Action. </param>
         public string CreateGP4(string GP4OutputPath, bool VerifyIntegrity) {
 #if Log
-            WLog($"Starting .gp4 Creation.", false);
-            WLog($"PKG Passcode: {Passcode}\nSource .pkg Path: {BasePkgPath}\n.gp4 Destination Path: {GP4OutputPath}", true);
+            WLog($"Starting .gp4 Creation. PKG Passcode: {Passcode}\n", false);
+            WLog($".gp4 Destination Path: {GP4OutputPath}\nSource .pkg Path: {BasePkgPath ?? "Not Applicable"}", true);
 #endif
 
 

@@ -219,13 +219,15 @@ namespace libgp4 {
         /// </summary>
         /// <returns> True If The File in filepath Shouldn't Be Included In The .gp4 </returns>
         private bool FileShouldBeExcluded(string filepath) {
-            if(filepath.Contains("sce_sys") && filepath.Contains(".dds"))
+            if(filepath.Contains("sce_sys") && filepath.Contains(".dds")) {
+                WLog("Ignoring .dds In System Folder.", true);
                 return true;
+            }
 
             foreach(var blacklisted_file_or_folder in DefaultBlacklist)
                 if(filepath.Contains(blacklisted_file_or_folder)) {
 #if Log
-                    DLog($"Ignoring: {filepath}");
+                    WLog($"Ignoring: {filepath}", true);
 #endif
                     return true;
                 }
@@ -234,7 +236,7 @@ namespace libgp4 {
                 foreach(var blacklisted_file_or_folder in BlacklistedFilesOrFolders) {
                     if(filepath.Contains(blacklisted_file_or_folder)) {
 #if Log
-                        DLog($"User Ignoring: {filepath}");
+                        WLog($"User Ignoring: {filepath}", true);
 #endif
                         return true;
                     }
@@ -249,18 +251,17 @@ namespace libgp4 {
         /// </summary>
         /// <returns> True If Pfs Compression Should Be Enabled. </returns>
         private bool SkipPfsCompressionForFile(string filepath) {
-            var Blacklist = new string[] {
+            // TOTO: Figure Out How To Dynamically
+            foreach(var file in new string[] {
                 "sce_sys",
                 "sce_module",
                 ".elf",
                 ".bin",
                 ".prx",
                 ".dll"
-            };
-
-            foreach(var file in Blacklist)
-                if(filepath.Contains(file))
-                    return true;
+            })
+            if(filepath.Contains(file))
+                return true;
 
             return false;
         }
@@ -272,16 +273,14 @@ namespace libgp4 {
         /// </summary>
         /// <returns> True If The Chunk Attribute Should Be Skipped. </returns>
         private bool SkipChunkAttributeForFile(string filepath) {
-            var Blacklist = new string[] {
+            foreach(var filter in new string[] {
                 "keystone",
                 "sce_sys",
                 "sce_module",
                 ".bin"
-            };
-
-            foreach(var filter in Blacklist)
-                if(filepath.Contains(filter))
-                    return true;
+            })
+            if(filepath.Contains(filter))
+                return true;
 
             return false;
         }
