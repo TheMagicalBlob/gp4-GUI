@@ -433,7 +433,8 @@ namespace GP4_GUI {
 
             var Browser = new OpenFileDialog() {
                 ValidateNames = false,
-                FileName = "Press 'Open' Once Inside The Desired Folder",
+                Filter = "Folder Selection|*.",
+                FileName = "Press 'Open' Once Inside The Desired Folder.",
                 CheckFileExists = false,
                 CheckPathExists = false
             };
