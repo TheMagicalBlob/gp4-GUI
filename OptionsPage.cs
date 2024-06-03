@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace GP4_GUI {
-
+    
     public partial class OptionsPage : Form {
 
         public OptionsPage(MainForm MainForm, Point LastPos) {
@@ -23,8 +23,8 @@ namespace GP4_GUI {
             if(MainForm.Gp4OutputDirectory != null)
                 OutputPathTextBox.Text = MainForm.Gp4OutputDirectory;
 
-            if(MainForm.gp4.BasePkgPath != null)
-                BasePkgPathTextBox.Text = MainForm.gp4.BasePkgPath;
+            if(MainForm.gp4.BasePackagePath != null)
+                BasePackagePathTextBox.Text = MainForm.gp4.BasePackagePath;
 
             AbsolutePathCheckBox.Checked = MainForm.gp4.AbsoluteFilePaths;
             KeystoneToggleBox.Checked = MainForm.gp4.Keystone;
@@ -63,14 +63,14 @@ namespace GP4_GUI {
             this.ExitBtn = new System.Windows.Forms.Button();
             this.VerboseOutputBox = new System.Windows.Forms.CheckBox();
             this.OutputPathBtn = new System.Windows.Forms.Button();
-            this.BasePkgPathBtn = new System.Windows.Forms.Button();
+            this.BasePackagePathBtn = new System.Windows.Forms.Button();
             this.FilterBrowseBtn = new System.Windows.Forms.Button();
             this.TinyVersionLabel = new System.Windows.Forms.Label();
             this.AbsolutePathCheckBox = new System.Windows.Forms.CheckBox();
             this.dummy = new System.Windows.Forms.Button();
             this.CustomPasscodeTextBox = new GP4_GUI.TextBox();
             this.FilterTextBox = new GP4_GUI.TextBox();
-            this.BasePkgPathTextBox = new GP4_GUI.TextBox();
+            this.BasePackagePathTextBox = new GP4_GUI.TextBox();
             this.OutputPathTextBox = new GP4_GUI.TextBox();
             this.SuspendLayout();
             // 
@@ -132,18 +132,18 @@ namespace GP4_GUI {
             this.OutputPathBtn.UseVisualStyleBackColor = false;
             this.OutputPathBtn.Click += new System.EventHandler(this.OutputPathBtn_Click);
             // 
-            // BasePkgPathBtn
+            // BasePackagePathBtn
             // 
-            this.BasePkgPathBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
-            this.BasePkgPathBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.BasePkgPathBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.BasePkgPathBtn.Location = new System.Drawing.Point(325, 55);
-            this.BasePkgPathBtn.Name = "BasePkgPathBtn";
-            this.BasePkgPathBtn.Size = new System.Drawing.Size(60, 22);
-            this.BasePkgPathBtn.TabIndex = 9;
-            this.BasePkgPathBtn.Text = "Browse...";
-            this.BasePkgPathBtn.UseVisualStyleBackColor = false;
-            this.BasePkgPathBtn.Click += new System.EventHandler(this.BasePkgPathBtn_Click);
+            this.BasePackagePathBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.BasePackagePathBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.BasePackagePathBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.BasePackagePathBtn.Location = new System.Drawing.Point(325, 55);
+            this.BasePackagePathBtn.Name = "BasePackagePathBtn";
+            this.BasePackagePathBtn.Size = new System.Drawing.Size(60, 22);
+            this.BasePackagePathBtn.TabIndex = 9;
+            this.BasePackagePathBtn.Text = "Browse...";
+            this.BasePackagePathBtn.UseVisualStyleBackColor = false;
+            this.BasePackagePathBtn.Click += new System.EventHandler(this.BasePackagePathBtn_Click);
             // 
             // FilterBrowseBtn
             // 
@@ -212,17 +212,16 @@ namespace GP4_GUI {
             this.FilterTextBox.TabIndex = 3;
             this.FilterTextBox.Text = "Blacklisted Files/Folders To Exclude, Seperated By ; or ,";
             this.FilterTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
-            this.FilterTextBox.LostFocus += new System.EventHandler(this.FilterTextBox_FocusLeft);
             // 
-            // BasePkgPathTextBox
+            // BasePackagePathTextBox
             // 
-            this.BasePkgPathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
-            this.BasePkgPathTextBox.Location = new System.Drawing.Point(6, 56);
-            this.BasePkgPathTextBox.Name = "BasePkgPathTextBox";
-            this.BasePkgPathTextBox.Size = new System.Drawing.Size(317, 21);
-            this.BasePkgPathTextBox.TabIndex = 2;
-            this.BasePkgPathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
-            this.BasePkgPathTextBox.TextChanged += new System.EventHandler(this.BasePkgPathTextBox_TextChanged);
+            this.BasePackagePathTextBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic);
+            this.BasePackagePathTextBox.Location = new System.Drawing.Point(6, 56);
+            this.BasePackagePathTextBox.Name = "BasePackagePathTextBox";
+            this.BasePackagePathTextBox.Size = new System.Drawing.Size(317, 21);
+            this.BasePackagePathTextBox.TabIndex = 2;
+            this.BasePackagePathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
+            this.BasePackagePathTextBox.TextChanged += new System.EventHandler(this.BasePackagePathTextBox_TextChanged);
             // 
             // OutputPathTextBox
             // 
@@ -244,11 +243,11 @@ namespace GP4_GUI {
             this.Controls.Add(this.AbsolutePathCheckBox);
             this.Controls.Add(this.TinyVersionLabel);
             this.Controls.Add(this.FilterBrowseBtn);
-            this.Controls.Add(this.BasePkgPathBtn);
+            this.Controls.Add(this.BasePackagePathBtn);
             this.Controls.Add(this.OutputPathBtn);
             this.Controls.Add(this.CustomPasscodeTextBox);
             this.Controls.Add(this.FilterTextBox);
-            this.Controls.Add(this.BasePkgPathTextBox);
+            this.Controls.Add(this.BasePackagePathTextBox);
             this.Controls.Add(this.VerboseOutputBox);
             this.Controls.Add(this.ExitBtn);
             this.Controls.Add(this.Title);
@@ -288,22 +287,39 @@ namespace GP4_GUI {
                     OutputPathTextBox.Text = Browser.SelectedPath;
         }
 
-        private void BasePkgPathTextBox_TextChanged(object sender, EventArgs e) => Venat.gp4.BasePkgPath = ((Control)sender).Text;
+        private void BasePackagePathTextBox_TextChanged(object sender, EventArgs e) => Venat.gp4.BasePackagePath = ((Control)sender).Text;
 
-        private void BasePkgPathBtn_Click(object sender, EventArgs e) {
+        private void BasePackagePathBtn_Click(object sender, EventArgs e) {
             using(var Browser = new OpenFileDialog())
                 if(Browser.ShowDialog() == DialogResult.OK)
-                    BasePkgPathTextBox.Text = Browser.FileName;
+                    BasePackagePathTextBox.Text = Browser.FileName;
         }
 
-        /// <summary>
+        private void FilterBrowseBtn_Click(object sender, EventArgs e) {
+            var Browser = new OpenFileDialog() {
+                Multiselect = true,
+                Title = "Folders Must Be Added Manually To The Text Box (Blame Microsoft)"
+            };
+
+            if(Browser.ShowDialog() == DialogResult.OK) {
+                if(FilterTextBox.IsDefault)
+                    ((TextBox)sender).Clear();
+
+                foreach(string file in Browser.FileNames)
+                    FilterTextBox.Text += $"{file},";
+            }
+
+            Browser.Dispose();
+        }
+
+        /* <summary>
         /// Remove Trailing Seperators To Avoid Improperly Counting Filtered Items In The Method Below.
         /// </summary>
         private void FilterTextBox_FocusLeft(object control, EventArgs _) {
             var textbox = ((TextBox)control);
             if (!textbox.IsDefault)
                 textbox.Text = textbox.Text.TrimEnd(',', ';');
-        }
+        }*/
 
         /// <summary>
         /// Parse Individual Items From Filter Text Box, And Add Them To The Blacklist
@@ -320,7 +336,7 @@ namespace GP4_GUI {
 
             // Get Amount Of Filtered Files/Paths
             var filter_strings_length = 1;
-            foreach(var c in (FilterTextBox.Text).ToCharArray())
+            foreach(var c in (FilterTextBox.Text.Trim(',', ';')).ToCharArray())
                 if(c == ';' || c == ',')
                     filter_strings_length++;
 
@@ -347,19 +363,7 @@ namespace GP4_GUI {
 #endif
             }
         }
-
-        private void FilterBrowseBtn_Click(object sender, EventArgs e) {
-            var Browser = new OpenFileDialog();
-            Browser.Multiselect = true;
-
-            if(Browser.ShowDialog() == DialogResult.OK) {
-                FilterTextBox.Clear();
-                foreach(string file in Browser.FileNames)
-                    FilterTextBox.Text += $"{file}, ";
-            }
-            Browser.Dispose();
-        }
-
+        
         private void CustomPasscodeTextBox_FocusChanged(object sender, EventArgs e) {
             var Sender = ((TextBox)sender);
             if(!Sender.IsDefault)
@@ -378,14 +382,14 @@ namespace GP4_GUI {
         private Label Title;
         private Button ExitBtn;
         private Button OutputPathBtn;
-        private Button BasePkgPathBtn;
+        private Button BasePackagePathBtn;
         private Button FilterBrowseBtn;
         private CheckBox KeystoneToggleBox;
         private CheckBox VerboseOutputBox;
         private CheckBox AbsolutePathCheckBox;
         private readonly MainForm Venat;
         private TextBox OutputPathTextBox;
-        private TextBox BasePkgPathTextBox;
+        private TextBox BasePackagePathTextBox;
         private TextBox FilterTextBox;
         private TextBox CustomPasscodeTextBox;
         #endregion

@@ -58,7 +58,8 @@ namespace libgp4 {
         /// <summary>
         /// Path To The Base Application Package The New Package Is To Be Married To.
         /// </summary>
-        public string BasePkgPath;
+        public string BasePackagePath { get => _basePackagePath; set { _basePackagePath = value.Replace("\"", string.Empty); } }
+        private string _basePackagePath;
 
         /// <summary>
         /// Set Whether Or Not To Use Absolute Or Relative Pathnames For The .gp4 Project's File Listing 
@@ -127,8 +128,8 @@ namespace libgp4 {
         /// <param name="VerifyIntegrity"> Set Whether Or Not To Abort The Creation Process If An Error Is Found That Would Cause .pkg Creation To Fail, Or Simply Log It To The Standard Console Output And/Or LogOutput(string) Action. </param>
         public string CreateGP4(string GP4OutputPath, bool VerifyIntegrity) {
 #if Log
-            WLog($"Starting .gp4 Creation. PKG Passcode: {Passcode}\n", false);
-            WLog($".gp4 Destination Path: {GP4OutputPath}\nSource .pkg Path: {BasePkgPath ?? "Not Applicable"}", true);
+            WLog($"Starting .gp4 Creation.\nPackage Passcode: {Passcode}\n", false);
+            WLog($".gp4 Destination Path: {GP4OutputPath}\nSource .pkg Path: {BasePackagePath ?? "Not Applicable"}", true);
 #endif
 
 
@@ -175,7 +176,7 @@ namespace libgp4 {
                     PlaygoData,
                     gp4,
                     Passcode,
-                    BasePkgPath,
+                    BasePackagePath,
                     gp4_timestamp
             );
 

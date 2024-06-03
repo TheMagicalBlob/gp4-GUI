@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -69,7 +68,7 @@ namespace GP4_GUI {
             string[] files, subfolders;
             var _cat = GP4Reader.IsPatchPackage(newgp4path);
             WLog($"Is Patch Project: {_cat}");
-            if(_cat) WLog($"Source .pkg Path: {GP4Reader.GetBasePkgPath(newgp4path)}");
+            if(_cat) WLog($"Source .pkg Path: {GP4Reader.GetBasePackagePath(newgp4path)}");
 
             WLog($"{(files = GP4Reader.GetFileListing(newgp4path)).Length} Files");
             foreach(var f in files)
@@ -190,7 +189,7 @@ namespace GP4_GUI {
             this.BrowseBtn.TabIndex = 7;
             this.BrowseBtn.Text = "Browse...";
             this.BrowseBtn.UseVisualStyleBackColor = false;
-            this.BrowseBtn.Click += new System.EventHandler(this.BrowseBtn_Click);
+            this.BrowseBtn.MouseClick += new System.Windows.Forms.MouseEventHandler(this.BrowseBtn_Click);
             // 
             // OptionsBtn
             // 
@@ -422,12 +421,26 @@ namespace GP4_GUI {
         }
 
 
-        /// <summary> Open Windows' Ghastly File Browser Dialog To Search For The Gamedata Folder
+        /// <summary> Use The Dummy File Method To Open A Folder.
         /// </summary>
-        private void BrowseBtn_Click(object sender, EventArgs e) {
-            using(var Browser = new FolderBrowserDialog())
-                if(Browser.ShowDialog() == DialogResult.OK)
-                    GamedataFolderPathBox.Text = Browser.SelectedPath;
+        private void BrowseBtn_Click(object sender, MouseEventArgs e) {
+            if(e.Button == MouseButtons.Right) {
+                using(var FBrowser = new FolderBrowserDialog())
+                    if(FBrowser.ShowDialog() == DialogResult.OK)
+                        GamedataFolderPathBox.Text = FBrowser.SelectedPath;
+            }
+
+
+            var Browser = new OpenFileDialog() {
+                ValidateNames = false,
+                FileName = "Press 'Open' Once Inside The Desired Folder",
+                CheckFileExists = false,
+                CheckPathExists = false
+            };
+
+            if(Browser.ShowDialog() == DialogResult.OK) {
+                GamedataFolderPathBox.Text = Browser.FileName.Remove(Browser.FileName.LastIndexOf('\\'));
+            }
         }
 
 

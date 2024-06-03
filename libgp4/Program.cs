@@ -840,7 +840,7 @@ namespace libgp4 {
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns> The Path Of The Base Game Package The .gp4 Project File's Patch Is To Be Married With
         ///</returns>
-        public static string GetBasePkgPath(string GP4Path) => GetAttribute(GP4Path, "package", "app_path");
+        public static string GetBasePackagePath(string GP4Path) => GetAttribute(GP4Path, "package", "app_path");
 
         /// <param name="GP4Path"> Absolute Path To The .gp4 File Being Checked </param>
         /// <returns> The Amount Of Chunks In The Application/Patch Project.
@@ -1464,8 +1464,8 @@ namespace libgp4 {
                 Errors += $"Invalid Password Length, Must Be A 32-Character String.\n\n";
 
 
-            if(BasePkgPath != null && BasePkgPath[BasePkgPath.Length - 1] == '\\')
-                Errors += $"Invalid Base Application .pkg Path.\nDirectory \"{BasePkgPath}\" Was Given.\n\n";
+            if(BasePackagePath != null && BasePackagePath[BasePackagePath.Length - 1] == '\\')
+                Errors += $"Invalid Base Application .pkg Path.\nDirectory \"{BasePackagePath}\" Was Given.\n\n";
 
 
 
